@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /contact-submit
+Disallow: /admin/
+Sitemap: https://wavesjyvaskyla.fi/sitemap.xml

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://wavesjyvaskyla.fi/</loc>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://wavesjyvaskyla.fi/menu</loc>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/menu"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/menu"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://wavesjyvaskyla.fi/lounas</loc>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/lounas"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/lunch"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://wavesjyvaskyla.fi/tapahtumat</loc>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/tapahtumat"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/events"/>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://wavesjyvaskyla.fi/kuvat</loc>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/kuvat"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/gallery"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wavesjyvaskyla.fi/yhteystiedot</loc>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/yhteystiedot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/contact"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wavesjyvaskyla.fi/tietosuoja</loc>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/tietosuoja"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/privacy"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
