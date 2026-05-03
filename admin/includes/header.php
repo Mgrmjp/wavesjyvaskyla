@@ -53,6 +53,7 @@ $isNavActive = static function (string $href) use ($requestPath): bool {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= esc($title ?? 'Admin') ?> — Waves</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/admin/assets/admin.css">
 </head>
 <body>

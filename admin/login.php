@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="fi">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin — Waves</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
 *{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f5;margin:0;padding:0;display:flex;align-items:center;justify-content:center;min-height:100vh}
 .login-box{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);width:100%;max-width:360px}
