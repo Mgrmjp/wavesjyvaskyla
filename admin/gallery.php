@@ -1,25 +1,35 @@
 <?php
+require_once __DIR__ . '/../includes/bootstrap.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/includes/helpers.php';
 adminAuth();
 
 $gallery = DataStore::load('gallery');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     checkCsrf();
-
     if (isset($_POST['action']) && $_POST['action'] === 'toggle') {
         $imgId = $_POST['id'] ?? '';
         foreach ($gallery as &$img) {
+            if (($img['id'] ?? '') === $imgId) { $img['visible'] = !($img['visible'] ?? true); break; }
+        }
+        DataStore::save('gallery', $gallery);
+        header('Location: /admin/gallery.php'); exit;
+    }
+    if (isset($_POST['action']) && $_POST['action'] === 'edit') {
+        $imgId = $_POST['id'] ?? '';
+        foreach ($gallery as &$img) {
             if (($img['id'] ?? '') === $imgId) {
-                $img['visible'] = !($img['visible'] ?? true);
+                $img['caption_fi'] = $_POST['caption_fi'] ?? '';
+                $img['caption_en'] = $_POST['caption_en'] ?? '';
+                $img['alt_fi'] = $_POST['alt_fi'] ?? '';
+                $img['alt_en'] = $_POST['alt_en'] ?? '';
                 break;
             }
         }
         DataStore::save('gallery', $gallery);
-        header('Location: /admin/gallery.php');
-        exit;
+        header('Location: /admin/gallery.php'); exit;
     }
-
     if (isset($_POST['action']) && $_POST['action'] === 'delete') {
         $imgId = $_POST['id'] ?? '';
         foreach ($gallery as $i => $img) {
@@ -31,37 +41,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         DataStore::save('gallery', $gallery);
-        header('Location: /admin/gallery.php');
-        exit;
+        header('Location: /admin/gallery.php'); exit;
     }
-
-    if (!empty($_FILES['image']['tmp_name'])) {
+    if (isset($_FILES['image'])) {
         $file = $_FILES['image'];
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
-        if (!in_array($ext, $allowed)) {
-            $error = 'Ei tuettu tiedostomuoto. Sallitut: jpg, png, webp, avif';
-        } elseif ($file['size'] > 10 * 1024 * 1024) {
-            $error = 'Tiedosto on liian suuri (max 10 MB)';
-        } else {
-            $filename = generateId() . '.' . $ext;
-            $dest = ROOT . '/uploads/' . $filename;
-            if (move_uploaded_file($file['tmp_name'], $dest)) {
-                $gallery[] = [
-                    'id'       => generateId(),
-                    'filename' => $filename,
-                    'caption_fi' => $_POST['caption_fi'] ?? '',
-                    'caption_en' => $_POST['caption_en'] ?? '',
-                    'visible'  => true,
-                    'added'    => date('Y-m-d'),
-                ];
-                DataStore::save('gallery', $gallery);
-                header('Location: /admin/gallery.php');
-                exit;
-            } else {
-                $error = 'Tiedoston tallennus epäonnistui.';
+        $uploadError = (int) ($file['error'] ?? UPLOAD_ERR_OK);
+        if (in_array($uploadError, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) $error = 'Tiedosto on liian suuri (max 10 MB)';
+        elseif ($uploadError !== UPLOAD_ERR_OK || empty($file['tmp_name'])) $error = 'Kuvan lataus epäonnistui.';
+        else {
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
+            if (!in_array($ext, $allowed)) $error = 'Ei tuettu tiedostomuoto. Sallitut: jpg, png, webp, avif';
+            elseif ($file['size'] > 10 * 1024 * 1024) $error = 'Tiedosto on liian suuri (max 10 MB)';
+            else {
+                $filename = generateId() . '.' . $ext;
+                if (move_uploaded_file($file['tmp_name'], ROOT . '/uploads/' . $filename)) {
+                    $gallery[] = [
+                        'id' => generateId(), 'filename' => $filename,
+                        'caption_fi' => $_POST['caption_fi'] ?? '', 'caption_en' => $_POST['caption_en'] ?? '',
+                        'alt_fi' => $_POST['alt_fi'] ?? '', 'alt_en' => $_POST['alt_en'] ?? '',
+                        'visible' => true, 'added' => date('Y-m-d'),
+                    ];
+                    DataStore::save('gallery', $gallery);
+                    header('Location: /admin/gallery.php'); exit;
+                } else $error = 'Tiedoston tallennus epäonnistui.';
             }
         }
+    }
+}
+
+// Usage tracking: check which menu items use this image
+$menuData = DataStore::load('menu');
+$menuImages = [];
+foreach ($menuData['items'] ?? [] as $item) {
+    if (!empty($item['image'])) {
+        $menuImages[$item['image']][] = $item['name_fi'] ?? '';
     }
 }
 
@@ -69,75 +83,97 @@ $title = 'Kuvagalleria';
 include __DIR__ . '/includes/header.php';
 ?>
 
-<?php if (!empty($error)): ?><div class="alert" style="background:#fef2f2;border-color:#fecaca;color:#991b1b"><?= esc($error) ?></div><?php endif; ?>
+<?php if (!empty($error)): ?><div class="alert alert--error"><?= esc($error) ?></div><?php endif; ?>
 
 <div class="card">
     <h2>Lisää kuva</h2>
     <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="csrf" value="<?= csrf() ?>">
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Kuva (jpg, png, webp, max 10 MB)</label>
-                <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/avif" required>
-            </div>
-            <div class="grid-2">
-                <div class="form-group"><label>Kuvateksti (FI)</label><input type="text" name="caption_fi"></div>
-                <div class="form-group"><label>Kuvateksti (EN)</label><input type="text" name="caption_en"></div>
-            </div>
+        <input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+        <div class="admin-dropzone" id="gallery-dropzone">
+            <input type="file" name="image" id="gallery-file" accept="image/jpeg,image/png,image/webp,image/avif" required>
+            <div class="admin-dropzone__icon">▢</div>
+            <p class="admin-dropzone__text">Raahaa kuva tähän tai klikkaa valitaksesi</p>
+            <p class="admin-dropzone__hint">jpg, png, webp, avif · max 10 MB</p>
+            <div class="admin-dropzone__preview" style="display:none"></div>
         </div>
-        <button type="submit">Lähetä</button>
+        <div class="grid-2 mt-4">
+            <div class="form-group"><label>Kuvateksti (FI)</label><input type="text" name="caption_fi"></div>
+            <div class="form-group"><label>Kuvateksti (EN)</label><input type="text" name="caption_en"></div>
+            <div class="form-group"><label>ALT-teksti (FI)</label><input type="text" name="alt_fi" placeholder="Kuvaileva teksti näkövammaisille"></div>
+            <div class="form-group"><label>ALT-teksti (EN)</label><input type="text" name="alt_en" placeholder="Descriptive text for accessibility"></div>
+        </div>
+        <button type="submit" class="btn btn--primary mt-4">Lähetä</button>
     </form>
 </div>
 
 <div class="card">
-    <h2>Kuvat (<?= count($gallery) ?>)</h2>
+    <div class="section-head">
+        <div>
+            <h2>Kuvat (<?= count($gallery) ?>)</h2>
+        </div>
+    </div>
     <?php if (empty($gallery)): ?>
-        <p class="text-gray">Ei kuvia vielä.</p>
+    <?php renderEmptyState('▢', 'Ei kuvia vielä', 'Lisää ensimmäinen kuva yllä olevasta latausalueesta.'); ?>
     <?php else: ?>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
-            <?php foreach ($gallery as $img): ?>
-            <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden;">
-                <div style="aspect-ratio:1;overflow:hidden;background:#e5e7eb;">
-                    <?php
-                    $src = '/uploads/' . ($img['filename'] ?? '');
-                    if (file_exists(ROOT . '/uploads/' . ($img['filename'] ?? ''))):
-                    ?>
-                    <img src="<?= esc($src) ?>" alt="" style="width:100%;height:100%;object-fit:cover;">
-                    <?php else: ?>
-                    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#9ca3af;font-size:0.75rem;">Puuttuu</div>
-                    <?php endif; ?>
+    <div class="gallery-grid">
+        <?php foreach ($gallery as $img): ?>
+        <?php
+        $src = '/uploads/' . ($img['filename'] ?? '');
+        $fileExists = file_exists(ROOT . '/uploads/' . ($img['filename'] ?? ''));
+        $usage = $menuImages[$img['filename'] ?? ''] ?? [];
+        ?>
+        <div class="gallery-card">
+            <div class="gallery-card__image">
+                <?php if ($fileExists): ?>
+                <img src="<?= esc($src) ?>" alt="" loading="lazy">
+                <?php else: ?>
+                <span class="gallery-card__placeholder">Puuttuu</span>
+                <?php endif; ?>
+            </div>
+            <div class="gallery-card__body">
+                <?php if (!empty($img['caption_fi'])): ?><p class="gallery-card__caption"><?= esc($img['caption_fi']) ?></p><?php endif; ?>
+                <div class="gallery-card__meta">
+                    <span>Lisätty <?= date('d.m.Y', strtotime($img['added'] ?? 'now')) ?></span>
+                    <span>&middot;</span>
+                    <span class="<?= ($img['visible'] ?? true) ? 'gallery-card__status--visible' : 'gallery-card__status--hidden' ?>"><?= ($img['visible'] ?? true) ? 'Näkyvissä' : 'Piilotettu' ?></span>
                 </div>
-                <div style="padding:0.5rem;">
-                    <?php if (!empty($img['caption_fi'])): ?>
-                        <p class="text-sm mb-1" style="margin:0;"><?= esc($img['caption_fi']) ?></p>
-                    <?php endif; ?>
-                    <p class="text-xs text-gray">
-                        Lisätty <?= date('d.m.Y', strtotime($img['added'] ?? 'now')) ?>
-                        &nbsp;·&nbsp;
-                        <span style="color:<?= ($img['visible'] ?? true) ? '#16a34a' : '#dc2626' ?>">
-                            <?= ($img['visible'] ?? true) ? 'Näkyvissä' : 'Piilotettu' ?>
-                        </span>
-                    </p>
-                    <div class="flex gap-2" style="margin-top:0.5rem;">
-                        <form method="post" style="display:inline;">
+                <?php if (!empty($usage)): ?>
+                <div class="text-xs text-gray mt-2">Käytössä menussa: <?= esc(implode(', ', $usage)) ?></div>
+                <?php endif; ?>
+                <details class="admin-collapsible" style="margin-top:0.5rem;border:1px solid var(--line);border-radius:8px">
+                    <summary style="padding:0.4rem 0.65rem;font-size:0.75rem">Muokkaa</summary>
+                    <div style="padding:0.65rem">
+                        <form method="post">
                             <input type="hidden" name="csrf" value="<?= csrf() ?>">
-                            <input type="hidden" name="action" value="toggle">
+                            <input type="hidden" name="action" value="edit">
                             <input type="hidden" name="id" value="<?= esc($img['id'] ?? '') ?>">
-                            <button type="submit" style="background:#f1f5f9;border:1px solid #d1d5db;padding:0.25rem 0.5rem;border-radius:4px;font-size:0.75rem;cursor:pointer;">
-                                <?= ($img['visible'] ?? true) ? 'Piilota' : 'Näytä' ?>
-                            </button>
-                        </form>
-                        <form method="post" style="display:inline;" onsubmit="return confirm('Poista kuva?')">
-                            <input type="hidden" name="csrf" value="<?= csrf() ?>">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="id" value="<?= esc($img['id'] ?? '') ?>">
-                            <button type="submit" style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:0.25rem 0.5rem;border-radius:4px;font-size:0.75rem;cursor:pointer;">Poista</button>
+                            <div class="form-group" style="margin-bottom:0.5rem"><label style="font-size:0.7rem">Kuvateksti FI</label><input type="text" name="caption_fi" value="<?= esc($img['caption_fi'] ?? '') ?>"></div>
+                            <div class="form-group" style="margin-bottom:0.5rem"><label style="font-size:0.7rem">Kuvateksti EN</label><input type="text" name="caption_en" value="<?= esc($img['caption_en'] ?? '') ?>"></div>
+                            <div class="form-group" style="margin-bottom:0.5rem"><label style="font-size:0.7rem">ALT FI</label><input type="text" name="alt_fi" value="<?= esc($img['alt_fi'] ?? '') ?>"></div>
+                            <div class="form-group" style="margin-bottom:0.5rem"><label style="font-size:0.7rem">ALT EN</label><input type="text" name="alt_en" value="<?= esc($img['alt_en'] ?? '') ?>"></div>
+                            <button type="submit" class="btn btn--secondary btn--sm">Tallenna</button>
                         </form>
                     </div>
+                </details>
+                <div class="gallery-card__actions">
+                    <form method="post" style="display:inline">
+                        <input type="hidden" name="csrf" value="<?= csrf() ?>">
+                        <input type="hidden" name="action" value="toggle">
+                        <input type="hidden" name="id" value="<?= esc($img['id'] ?? '') ?>">
+                        <button type="submit" class="gallery-btn"><?= ($img['visible'] ?? true) ? 'Piilota' : 'Näytä' ?></button>
+                    </form>
+                    <form method="post" style="display:inline" onsubmit="return confirm('Poista tämä kuva? <?= !empty($usage) ? 'Sitä käytetään menussa (' . esc(implode(', ', $usage)) . ').' : '' ?>')">
+                        <input type="hidden" name="csrf" value="<?= csrf() ?>">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="id" value="<?= esc($img['id'] ?? '') ?>">
+                        <button type="submit" class="gallery-btn gallery-btn--danger">Poista</button>
+                    </form>
                 </div>
             </div>
-            <?php endforeach; ?>
         </div>
+        <?php endforeach; ?>
+    </div>
     <?php endif; ?>
 </div>
 

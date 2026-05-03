@@ -1,4 +1,5 @@
 node_modules/
+screenshots/
 assets/css/index.css
 .htaccess
 deploy/

@@ -13,8 +13,6 @@ foreach ($allEvents as $e) {
         $past[] = $e;
     }
 }
-usort($upcoming, fn($a, $b) => ($a['date'] ?? '') <=> ($b['date'] ?? ''));
-usort($past, fn($a, $b) => ($b['date'] ?? '') <=> ($a['date'] ?? ''));
 
 include INCLUDES_DIR . '/header.php';
 ?>

@@ -1,6 +1,10 @@
 {
+  "scripts": {
+    "screenshots": "node scripts/capture-views.mjs"
+  },
   "devDependencies": {
     "@tailwindcss/cli": "^4.2.4",
+    "playwright": "^1.59.1",
     "tailwindcss": "^4.2.4"
   },
   "dependencies": {

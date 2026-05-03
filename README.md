@@ -128,6 +128,41 @@ npm run css:build
 
 (Note: `src/css/` and `package.json` are for dev only, not deployed.)
 
+## Screenshot Capture
+
+To capture desktop and mobile screenshots for the public site and admin views:
+
+1. Start the site locally.
+
+```bash
+php -d session.save_path=/tmp -S 127.0.0.1:8080
+```
+
+2. Install Playwright once for this repo.
+
+```bash
+npm install -D playwright
+npx playwright install chromium
+```
+
+3. Run the screenshot script.
+
+```bash
+ADMIN_PASSWORD='your-admin-password' npm run screenshots
+```
+
+By default, screenshots are written to `screenshots/` and include:
+
+- Public FI: `/`, `/menu`, `/lounas`, `/tapahtumat`, `/yhteystiedot`, `/kuvat`
+- Public EN: `/en/`, `/en/menu`, `/en/lunch`, `/en/events`, `/en/contact`, `/en/gallery`
+- Admin: `/admin/`, `/admin/settings.php`, `/admin/notices.php`, `/admin/hours.php`, `/admin/menu.php`, `/admin/lunch.php`, `/admin/events.php`, `/admin/gallery.php`
+
+Useful environment variables:
+
+- `SCREENSHOT_BASE_URL` to target a different local URL
+- `SCREENSHOT_OUTPUT_DIR` to change the output folder
+- `ADMIN_PASSWORD` to enable admin screenshots; if omitted, only public views are captured
+
 ## Notes
 
 - The `waves.svg` logo should be placed in `assets/files/waves.svg`

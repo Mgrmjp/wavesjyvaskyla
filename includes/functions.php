@@ -1,5 +1,17 @@
 <?php
 
+if (!defined('ROOT')) define('ROOT', dirname(__DIR__));
+if (!defined('DATA_DIR')) define('DATA_DIR', ROOT . '/data');
+if (!defined('INCLUDES_DIR')) define('INCLUDES_DIR', ROOT . '/includes');
+if (!defined('TEMPLATES_DIR')) define('TEMPLATES_DIR', ROOT . '/templates');
+if (!defined('ADMIN_DIR')) define('ADMIN_DIR', ROOT . '/admin');
+
+function ensureSessionStarted(): void {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+}
+
 class DataStore {
     private static function path(string $name): string {
         return DATA_DIR . '/' . $name . '.json';
@@ -202,6 +214,15 @@ function asset(string $path): string {
     return '/assets/' . ltrim($path, '/');
 }
 
+function ensureUploadDirectory(): bool {
+    $dir = ROOT . '/uploads';
+    if (!is_dir($dir) && !mkdir($dir, 0775, true)) {
+        return false;
+    }
+
+    return is_writable($dir);
+}
+
 function settings(): array {
     return DataStore::ensure('settings', defaultSettings());
 }
@@ -304,6 +325,7 @@ function generateId(): string {
 }
 
 function csrf(): string {
+    ensureSessionStarted();
     if (empty($_SESSION['csrf'])) {
         $_SESSION['csrf'] = bin2hex(random_bytes(32));
     }
@@ -311,6 +333,7 @@ function csrf(): string {
 }
 
 function checkCsrf(): void {
+    ensureSessionStarted();
     $token = $_POST['csrf'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
     if (!hash_equals($_SESSION['csrf'] ?? '', $token)) {
         http_response_code(403);
@@ -319,6 +342,7 @@ function checkCsrf(): void {
 }
 
 function adminAuth(): void {
+    ensureSessionStarted();
     if (empty($_SESSION['admin'])) {
         header('Location: /admin/login.php');
         exit;
@@ -326,6 +350,7 @@ function adminAuth(): void {
 }
 
 function adminCheck(): bool {
+    ensureSessionStarted();
     return !empty($_SESSION['admin']);
 }
 

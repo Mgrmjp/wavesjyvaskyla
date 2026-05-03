@@ -7,6 +7,7 @@ define('INCLUDES_DIR', ROOT . '/includes');
 define('TEMPLATES_DIR', ROOT . '/templates');
 define('ADMIN_DIR', ROOT . '/admin');
 
+require_once INCLUDES_DIR . '/bootstrap.php';
 require_once INCLUDES_DIR . '/functions.php';
 
 $router = new Router();
