@@ -74,9 +74,7 @@ include __DIR__ . '/includes/header.php';
 <div class="dashboard-grid">
     <div class="health-grid">
     <div class="health-card">
-        <div class="health-card__icon health-card__icon--<?= $isOpen ? 'success' : 'danger' ?>">
-            <?= $isOpen ? '◷' : '●' ?>
-        </div>
+        <div class="health-card__icon health-card__icon--<?= $isOpen ? 'success' : 'danger' ?>"></div>
         <div class="health-card__body">
             <strong>Tänään <?= $openStr ?></strong>
             <?php if ($kitchenCloses): ?>
@@ -87,9 +85,7 @@ include __DIR__ . '/includes/header.php';
     </div>
 
     <a href="/admin/menu.php" class="health-card">
-        <div class="health-card__icon health-card__icon--<?= $menuWithoutEn > 0 || $menuWithoutImage > 0 ? 'warning' : 'success' ?>">
-            ☰
-        </div>
+        <div class="health-card__icon health-card__icon--<?= $menuWithoutEn > 0 || $menuWithoutImage > 0 ? 'warning' : 'success' ?>"></div>
         <div class="health-card__body">
             <strong>Menu: <?= $menuVisible ?> näkyvissä</strong>
             <p>
@@ -101,9 +97,7 @@ include __DIR__ . '/includes/header.php';
     </a>
 
     <a href="/admin/events.php" class="health-card">
-        <div class="health-card__icon health-card__icon--<?= $eventsUpcoming > 0 ? 'success' : 'default' ?>">
-            ●
-        </div>
+        <div class="health-card__icon health-card__icon--<?= $eventsUpcoming > 0 ? 'success' : 'default' ?>"></div>
         <div class="health-card__body">
             <strong><?= $eventsUpcoming ?> tulevaa tapahtumaa</strong>
             <p><?= $eventsToday > 0 ? $eventsToday . ' tänään' : 'Ei tapahtumia tänään' ?> · <?= $eventCount ?> yhteensä</p>
@@ -111,9 +105,7 @@ include __DIR__ . '/includes/header.php';
     </a>
 
     <a href="/admin/notices.php" class="health-card">
-        <div class="health-card__icon health-card__icon--<?= $expiredNotices > 0 ? 'danger' : ($activeNotices > 0 ? 'success' : 'default') ?>">
-            ⓘ
-        </div>
+        <div class="health-card__icon health-card__icon--<?= $expiredNotices > 0 ? 'danger' : ($activeNotices > 0 ? 'success' : 'default') ?>"></div>
         <div class="health-card__body">
             <strong><?= $activeNotices ?> aktiivista ilmoitusta</strong>
             <p><?= $expiredNotices > 0 ? $expiredNotices . ' vanhentunutta' : 'Ei vanhentuneita' ?></p>
@@ -121,7 +113,7 @@ include __DIR__ . '/includes/header.php';
     </a>
 
     <a href="/admin/gallery.php" class="health-card">
-        <div class="health-card__icon health-card__icon--default">▢</div>
+        <div class="health-card__icon health-card__icon--default"></div>
         <div class="health-card__body">
             <strong><?= $galleryVisible ?> kuvaa näkyvissä</strong>
             <p><?= $galleryCount ?> yhteensä galleriassa</p>
@@ -130,7 +122,7 @@ include __DIR__ . '/includes/header.php';
 
     <?php if ($seoMissing): ?>
     <a href="/admin/settings.php#section-seo" class="health-card">
-        <div class="health-card__icon health-card__icon--warning">⚙</div>
+        <div class="health-card__icon health-card__icon--warning"></div>
         <div class="health-card__body">
             <strong>SEO puutteellinen</strong>
             <p>Täytä SEO-otsikot ja -kuvaukset molemmille kielille</p>
