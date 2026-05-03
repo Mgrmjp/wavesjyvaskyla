@@ -351,16 +351,76 @@ function adminAuth(): void {
 
 function adminCheck(): bool {
     ensureSessionStarted();
-    return !empty($_SESSION['admin']);
+    return !empty($_SESSION['admin_username']);
 }
 
-function adminHash(): string {
-    $admin = DataStore::ensure('admin', ['password_hash' => '']);
-    return $admin['password_hash'] ?? '';
+function adminUsers(): array {
+    $data = DataStore::load('admin');
+    return $data['users'] ?? [];
 }
 
-function adminSetPassword(string $plain): void {
-    DataStore::save('admin', ['password_hash' => password_hash($plain, PASSWORD_BCRYPT)]);
+function adminFindUser(string $username): ?array {
+    foreach (adminUsers() as $user) {
+        if ($user['username'] === $username) {
+            return $user;
+        }
+    }
+    return null;
+}
+
+function adminAuthenticate(string $username, string $password): bool {
+    $user = adminFindUser($username);
+    if (!$user || empty($user['password_hash'])) {
+        return false;
+    }
+    return password_verify($password, $user['password_hash']);
+}
+
+function adminSetPassword(string $username, string $plain): void {
+    $data = DataStore::load('admin');
+    $users = $data['users'] ?? [];
+    $found = false;
+    foreach ($users as &$user) {
+        if ($user['username'] === $username) {
+            $user['password_hash'] = password_hash($plain, PASSWORD_BCRYPT);
+            $found = true;
+            break;
+        }
+    }
+    unset($user);
+    if (!$found) {
+        $users[] = [
+            'username' => $username,
+            'password_hash' => password_hash($plain, PASSWORD_BCRYPT),
+            'created_at' => date('c'),
+        ];
+    }
+    $data['users'] = $users;
+    DataStore::save('admin', $data);
+}
+
+function adminAddUser(string $username, string $plain): bool {
+    if (adminFindUser($username) !== null) {
+        return false;
+    }
+    adminSetPassword($username, $plain);
+    return true;
+}
+
+function adminDeleteUser(string $username): bool {
+    $data = DataStore::load('admin');
+    $users = $data['users'] ?? [];
+    $users = array_values(array_filter($users, fn($u) => $u['username'] !== $username));
+    if (count($users) === count($data['users'] ?? [])) {
+        return false;
+    }
+    $data['users'] = $users;
+    DataStore::save('admin', $data);
+    return true;
+}
+
+function adminListUsernames(): array {
+    return array_map(fn($u) => $u['username'], adminUsers());
 }
 
 function defaultMenuCategories(): array {

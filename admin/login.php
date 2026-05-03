@@ -9,20 +9,17 @@ if (adminCheck()) {
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
     $pass = $_POST['password'] ?? '';
-    $hash = adminHash();
-    if (empty($hash)) {
-        adminSetPassword($pass);
-        $_SESSION['admin'] = true;
+    if (empty($username) || empty($pass)) {
+        $error = 'Syötä käyttäjätunnus ja salasana / Enter username and password';
+    } elseif (adminAuthenticate($username, $pass)) {
+        $_SESSION['admin_username'] = $username;
         header('Location: /admin/');
         exit;
+    } else {
+        $error = 'Väärä käyttäjätunnus tai salasana / Wrong username or password';
     }
-    if (password_verify($pass, $hash)) {
-        $_SESSION['admin'] = true;
-        header('Location: /admin/');
-        exit;
-    }
-    $error = 'Väärä salasana / Wrong password';
 }
 ?>
 <!DOCTYPE html>
@@ -48,11 +45,12 @@ p.note{font-size:0.8rem;color:#666;margin-top:1rem}
     <h1>Waves Admin</h1>
     <?php if ($error): ?><div class="error"><?= esc($error) ?></div><?php endif; ?>
     <form method="post">
-        <input type="password" name="password" placeholder="Salasana / Password" required autofocus>
+        <input type="text" name="username" placeholder="Käyttäjätunnus / Username" required autofocus>
+        <input type="password" name="password" placeholder="Salasana / Password" required>
         <button type="submit">Kirjaudu / Login</button>
     </form>
-    <?php if (empty(adminHash())): ?>
-    <p class="note">Aseta salasana ensimmäisellä kirjautumisella.<br>Set password on first login.</p>
+    <?php if (empty(adminListUsernames())): ?>
+    <p class="note">Ei käyttäjiä. Luo ensimmäinen käyttäjä komentoriviltä.<br>No users. Create the first user from command line.</p>
     <?php endif; ?>
 </div>
 </body>

@@ -26,6 +26,7 @@ $navGroups = [
     'Asetukset' => [
         ['href' => '/admin/settings.php', 'label' => 'Asetukset'],
         ['href' => '/admin/revisions.php', 'label' => 'Revisiot'],
+        ['href' => '/admin/users.php', 'label' => 'Käyttäjät'],
     ],
 ];
 
@@ -56,7 +57,7 @@ $isNavActive = static function (string $href) use ($requestPath): bool {
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/admin/assets/admin.css">
+<link rel="stylesheet" href="/admin/assets/admin.css?v=9">
 </head>
 <body>
 <div class="admin-layout">
@@ -99,7 +100,7 @@ $isNavActive = static function (string $href) use ($requestPath): bool {
             </div>
             <div class="admin-topbar__end">
                 <span class="admin-topbar__pill"><?= esc($s['title_fi'] ?? 'Waves') ?></span>
-                <a href="/" class="admin-topbar__pill" target="_blank">Esikatselu</a>
+                <a href="/" class="admin-topbar__pill" target="_blank">Sivusto</a>
                 <div class="admin-topbar__status">
                     <span class="admin-topbar__status-dot"></span>
                     <span>Live</span>
