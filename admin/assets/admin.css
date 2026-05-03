@@ -525,7 +525,16 @@ input[type="file"] { padding: 6px 8px; background: var(--admin-surface); }
     color: var(--admin-text-muted); font-size: 13px;
     max-width: 48ch; line-height: 1.4;
 }
-.admin-sticky-save button { min-height: 44px; min-width: 120px; }
+.admin-sticky-save button {
+    min-height: 44px; min-width: 120px;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 8px 14px; border-radius: var(--admin-radius-ctrl);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    border: 1px solid var(--admin-primary); background: var(--admin-primary);
+    color: #fff; font-family: var(--admin-font);
+    transition: background .12s, border-color .12s;
+}
+.admin-sticky-save button:hover { background: var(--admin-primary-hover); }
 
 /* ===== BACK TO TOP ===== */
 .back-to-top {
