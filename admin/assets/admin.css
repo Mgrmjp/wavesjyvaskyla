@@ -560,6 +560,8 @@ input[type="file"] { padding: 6px 8px; background: var(--admin-surface); }
 .empty-state__text { margin: 0; font-size: 13px; max-width: 40ch; line-height: 1.5; color: var(--admin-text-muted); }
 .empty-state a { color: var(--admin-primary); text-decoration: none; font-weight: 700; }
 .empty-state a:hover { text-decoration: underline; }
+.empty-state .btn { color: inherit; }
+.empty-state .btn--primary { color: #fff; }
 
 /* ===== DAY CARD (for lunch/hours) ===== */
 .day-card {
