@@ -25,6 +25,7 @@ $navGroups = [
     ],
     'Asetukset' => [
         ['href' => '/admin/settings.php', 'label' => 'Asetukset'],
+        ['href' => '/admin/revisions.php', 'label' => 'Revisiot'],
     ],
 ];
 

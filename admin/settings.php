@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/bootstrap.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/RevisionLog.php';
 require_once __DIR__ . '/includes/helpers.php';
 adminAuth();
+
+RevisionLog::init(DATA_DIR);
 
 $s = settings();
 $pwSaved = false;
@@ -17,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         elseif ($pw1 !== $pw2) $pwError = 'Salasanat eivät täsmää.';
         else { adminSetPassword($pw1); $pwSaved = true; }
     } else {
+        $before = $s;
         $s['title_fi'] = $_POST['title_fi'] ?? '';
         $s['title_en'] = $_POST['title_en'] ?? '';
         $s['hero_text_fi'] = $_POST['hero_text_fi'] ?? '';
@@ -37,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($p) && !empty($urls[$i])) $s['social_links'][] = ['platform' => $p, 'url' => $urls[$i]];
         }
         DataStore::save('settings', $s);
+        RevisionLog::log('settings', 'updated', $s, $before);
         $saved = true;
     }
 }

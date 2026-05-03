@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/bootstrap.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/RevisionLog.php';
 require_once __DIR__ . '/includes/helpers.php';
 adminAuth();
+
+RevisionLog::init(DATA_DIR);
 
 $data = DataStore::ensure('menu', ['categories' => defaultMenuCategories(), 'items' => defaultMenuItems()]);
 $uploadImages = array_values(array_filter(array_map(
@@ -187,18 +190,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'create_item') {
         $nameFi = trim($_POST['new_name_fi'] ?? '');
         if ($nameFi !== '') {
-            $data['items'][] = [
+            $before = $data;
+            $newItem = [
                 'id' => generateId(), 'name_fi' => $nameFi, 'name_en' => $_POST['new_name_en'] ?? '',
                 'description_fi' => $_POST['new_desc_fi'] ?? '', 'description_en' => $_POST['new_desc_en'] ?? '',
                 'price' => (float)($_POST['new_price'] ?? 0), 'category' => $_POST['new_category'] ?? '',
                 'dietary_tags' => $_POST['new_tags'] ?? '', 'visible' => !empty($_POST['new_visible']),
                 'image' => $_POST['new_image'] ?? '', 'updated_at' => date('c'),
             ];
+            $data['items'][] = $newItem;
             DataStore::save('menu', $data);
+            RevisionLog::log('menu', 'created', $data, $before);
             header('Location: /admin/menu.php?status=item-created#existing-menu-items'); exit;
         }
         header('Location: /admin/menu.php?status=item-missing-title#new-menu-item'); exit;
     } elseif ($action === 'save_existing') {
+        $before = $data;
         $data['categories'] = [];
         $catSlugs = $_POST['cat_slug'] ?? [];
         foreach ($catSlugs as $i => $slug) {
@@ -218,6 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
         }
         DataStore::save('menu', $data);
+        RevisionLog::log('menu', 'updated', $data, $before);
         header('Location: /admin/menu.php?status=items-saved#existing-menu-items'); exit;
     }
 }
