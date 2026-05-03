@@ -78,7 +78,12 @@ $isNavActive = static function (string $href) use ($requestPath): bool {
         </nav>
         <div class="admin-sidebar__footer">
             <span><?= esc($s['title_fi'] ?? 'Waves') ?></span>
-            <a href="/admin/logout.php">Kirjaudu ulos</a>
+            <a href="/admin/logout.php" title="Kirjaudu ulos" aria-label="Kirjaudu ulos">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 2.5V1.5C10 1.22386 9.77614 1 9.5 1H2.5C2.22386 1 2 1.22386 2 1.5V14.5C2 14.7761 2.22386 15 2.5 15H9.5C9.77614 15 10 14.7761 10 14.5V13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M6 8H14M14 8L11 5M14 8L11 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
         </div>
     </aside>
 
