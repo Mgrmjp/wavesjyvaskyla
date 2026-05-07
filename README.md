@@ -1,11 +1,11 @@
 # Konttiravintola Waves — Custom CMS
 
-Flat-file JSON CMS for the Waves restaurant website. No database, no external dependencies.
+Custom PHP CMS for the Waves restaurant website. Content and admin users are stored in SQLite; contact submissions and revision history remain in JSON files.
 
 ## Tech Stack
 
 - **Backend**: PHP 8.3+
-- **Storage**: JSON files (`data/`)
+- **Storage**: SQLite for content and admin users, JSON for contact submissions and revisions
 - **CSS**: Tailwind CSS v4 (pre-compiled to `assets/css/index.css`)
 - **Frontend**: Vanilla JS
 - **Admin**: Simple password-protected PHP forms
@@ -18,7 +18,6 @@ open http://localhost:8080
 ```
 
 **Admin**: http://localhost:8080/admin/
-- First login: set any password (stored as bcrypt hash)
 
 ## File Structure
 
@@ -48,13 +47,11 @@ wavesjkl/
 │   ├── menu.php          # Menu categories & items
 │   ├── lunch.php         # Weekly lunch
 │   └── events.php        # Events
-├── data/                 # JSON data (protected by .htaccess)
-│   ├── settings.json
-│   ├── notices.json
-│   ├── menu.json
-│   ├── lunch.json
-│   ├── events.json
-│   └── admin.json        # Password hash
+├── data/                 # Remaining JSON files (protected by .htaccess)
+│   ├── messages.json
+│   └── revisions.json
+├── scripts/
+│   └── migrate-json-to-sqlite.php
 └── assets/
     ├── css/index.css     # Compiled Tailwind
     ├── js/app.js         # Mobile nav, notice dismiss
@@ -63,15 +60,14 @@ wavesjkl/
 
 ## Data Architecture
 
-All content is stored in JSON files under `data/`:
+Primary content and admin users are stored in SQLite. The default database path is `data/waves.sqlite` under the repo root, or override it with `APP_DB_PATH`.
+
+Remaining JSON files under `data/`:
 
 | File | Content |
 |------|---------|
-| `settings.json` | Contact info, opening hours, social links, SEO |
-| `notices.json` | Temporary banners ("closed today", "private event") |
-| `menu.json` | Categories and menu items with prices, dietary tags |
-| `lunch.json` | Weekly lunch items (Mon–Fri) |
-| `events.json` | Events with dates, descriptions |
+| `messages.json` | Contact form submissions |
+| `revisions.json` | Revision history for selected admin edits |
 
 ## Bilingual URLs
 
@@ -92,12 +88,15 @@ All content is stored in JSON files under `data/`:
 - **Lunch**: Weekly lunch list (Mon–Fri)
 - **Events**: Event listings with date, time, descriptions
 
-## Security
+## Storage Migration
 
-- Admin password stored as bcrypt hash in `data/admin.json`
-- CSRF tokens on all admin forms
-- `data/` directory blocked by `.htaccess` (Deny from all)
-- JSON files written with `LOCK_EX` to prevent corruption
+Enable the `pdo_sqlite` PHP extension in the target runtime, then run:
+
+```bash
+php scripts/migrate-json-to-sqlite.php
+```
+
+This imports existing JSON-backed content and admin users into SQLite.
 
 ## Deployment (Hetzner Ubuntu + Nginx)
 

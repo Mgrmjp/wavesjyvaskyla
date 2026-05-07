@@ -12,21 +12,25 @@ function renderEventFields(array $event, string $key): void {
         <input type="hidden" name="event_id[<?= esc($key) ?>]" value="<?= esc((string) ($event['id'] ?? '')) ?>">
         <section class="editor-item-panel">
             <div class="editor-item-panel__head"><h5>Perustiedot</h5></div>
+            <div class="editor-item-panel__body">
             <div class="editor-item-grid">
-                <div class="form-group span-4"><label>Otsikko FI</label><input type="text" name="title_fi[<?= esc($key) ?>]" value="<?= esc((string) ($event['title_fi'] ?? '')) ?>" placeholder="Esim. Kesäilta satamassa"></div>
-                <div class="form-group span-4"><label>Otsikko EN</label><input type="text" name="title_en[<?= esc($key) ?>]" value="<?= esc((string) ($event['title_en'] ?? '')) ?>" placeholder="English title"></div>
+                <div class="form-group form-group--fi span-4"><label><?= flagSvg('fi') ?> Otsikko</label><input type="text" name="title_fi[<?= esc($key) ?>]" value="<?= esc((string) ($event['title_fi'] ?? '')) ?>" placeholder="Esim. Kesäilta satamassa"></div>
+                <div class="form-group form-group--en span-4"><label><?= flagSvg('gb') ?> Title</label><input type="text" name="title_en[<?= esc($key) ?>]" value="<?= esc((string) ($event['title_en'] ?? '')) ?>" placeholder="English title"></div>
                 <div class="form-group span-2"><label>Päivä</label><input class="input-compact" type="date" name="date[<?= esc($key) ?>]" value="<?= esc((string) ($event['date'] ?? '')) ?>"></div>
                 <div class="form-group span-1"><label>Alku</label><input class="input-compact" type="time" name="start_time[<?= esc($key) ?>]" value="<?= esc((string) ($event['start_time'] ?? '')) ?>"></div>
                 <div class="form-group span-1"><label>Loppu</label><input class="input-compact" type="time" name="end_time[<?= esc($key) ?>]" value="<?= esc((string) ($event['end_time'] ?? '')) ?>"></div>
                 <div class="form-group span-4"><label>Linkki/liput</label><input type="url" name="event_link[<?= esc($key) ?>]" value="<?= esc((string) ($event['link'] ?? '')) ?>" placeholder="https://..."></div>
                 <div class="form-group span-2"><label>Sijainti</label><input type="text" name="event_location[<?= esc($key) ?>]" value="<?= esc((string) ($event['location'] ?? '')) ?>" placeholder="Waves satama"></div>
             </div>
+            </div>
         </section>
         <section class="editor-item-panel">
             <div class="editor-item-panel__head"><h5>Kuvaukset</h5></div>
+            <div class="editor-item-panel__body">
             <div class="editor-item-grid">
-                <div class="form-group span-6"><label>Kuvaus FI</label><textarea name="desc_fi[<?= esc($key) ?>]" placeholder="Lyhyt kuvaus tapahtumasta suomeksi"><?= esc((string) ($event['description_fi'] ?? '')) ?></textarea></div>
-                <div class="form-group span-6"><label>Kuvaus EN</label><textarea name="desc_en[<?= esc($key) ?>]" placeholder="Short English event description"><?= esc((string) ($event['description_en'] ?? '')) ?></textarea></div>
+                <div class="form-group form-group--fi span-6"><label><?= flagSvg('fi') ?> Kuvaus</label><textarea name="desc_fi[<?= esc($key) ?>]" placeholder="Lyhyt kuvaus tapahtumasta suomeksi"><?= esc((string) ($event['description_fi'] ?? '')) ?></textarea></div>
+                <div class="form-group form-group--en span-6"><label><?= flagSvg('gb') ?> Description</label><textarea name="desc_en[<?= esc($key) ?>]" placeholder="Short English event description"><?= esc((string) ($event['description_en'] ?? '')) ?></textarea></div>
+            </div>
             </div>
         </section>
     </div>
@@ -169,12 +173,14 @@ if (isset($flashMessages[$flash])): ?><div class="alert"><?= esc($flashMessages[
             <div class="editor-item-panels">
                 <section class="editor-item-panel">
                     <div class="editor-item-panel__head"><h5>Perustiedot</h5></div>
+                    <div class="editor-item-panel__body">
                     <div class="editor-item-grid">
-                        <div class="form-group span-4"><label>Otsikko FI</label><input type="text" name="new_title_fi" placeholder="Esim. DJ-ilta Wavesissa"></div>
-                        <div class="form-group span-4"><label>Otsikko EN</label><input type="text" name="new_title_en" placeholder="English title"></div>
+                        <div class="form-group form-group--fi span-4"><label><?= flagSvg('fi') ?> Otsikko</label><input type="text" name="new_title_fi" placeholder="Esim. DJ-ilta Wavesissa"></div>
+                        <div class="form-group form-group--en span-4"><label><?= flagSvg('gb') ?> Title</label><input type="text" name="new_title_en" placeholder="English title"></div>
                         <div class="form-group span-2"><label>Päivä</label><input class="input-compact" type="date" name="new_date"></div>
                         <div class="form-group span-1"><label>Alku</label><input class="input-compact" type="time" name="new_start_time"></div>
                         <div class="form-group span-1"><label>Loppu</label><input class="input-compact" type="time" name="new_end_time"></div>
+                    </div>
                     </div>
                 </section>
             </div>
@@ -218,7 +224,7 @@ if (isset($flashMessages[$flash])): ?><div class="alert"><?= esc($flashMessages[
         <input type="hidden" name="action" value="save_events">
         <div class="editor-items-stack">
             <?php if (empty($filtered)): ?>
-                <?php renderEmptyState('●', 'Ei tapahtumia', 'Luo ensimmäinen tapahtuma yllä olevasta lomakkeesta.', '#new-event', 'Luo tapahtuma'); ?>
+                <?php renderEmptyState('●', 'Ei tapahtumia', 'Luo ensimmäinen tapahtuma yllä olevasta lomakkeesta.', '', 'Luo tapahtuma', 'new-event'); ?>
             <?php else: ?>
                 <?php foreach ($filtered as $i => $event): ?>
                     <?php renderEventListEntry($event, (string) $i); ?>

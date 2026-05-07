@@ -8,7 +8,6 @@ adminAuth();
 RevisionLog::init(DATA_DIR);
 
 $s = settings();
-$pwSaved = false;
 $pwError = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pw2 = $_POST['admin_password_confirm'] ?? '';
         if ($pw1 === '') $pwError = 'Anna salasana.';
         elseif ($pw1 !== $pw2) $pwError = 'Salasanat eivät täsmää.';
-        else { adminSetPassword($pw1); $pwSaved = true; }
+        else { adminSetPassword((string) ($_SESSION['admin_username'] ?? ''), $pw1); header('Location: settings.php?tab=security&pw=1'); exit; }
     } else {
         $before = $s;
         $s['title_fi'] = $_POST['title_fi'] ?? '';
@@ -42,7 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         DataStore::save('settings', $s);
         RevisionLog::log('settings', 'updated', $s, $before);
-        $saved = true;
+        $tab = $_GET['tab'] ?? 'identity';
+        header('Location: settings.php?tab=' . urlencode($tab) . '&saved=1');
+        exit;
     }
 }
 
@@ -52,8 +53,8 @@ $title = 'Asetukset';
 include __DIR__ . '/includes/header.php';
 ?>
 
-<?php if (!empty($saved)): ?><div class="alert">Tallennettu!</div><?php endif; ?>
-<?php if ($pwSaved): ?><div class="alert">Salasana vaihdettu!</div><?php endif; ?>
+<?php if (isset($_GET['saved'])): ?><div class="alert">Tallennettu!</div><?php endif; ?>
+<?php if (isset($_GET['pw'])): ?><div class="alert">Salasana vaihdettu!</div><?php endif; ?>
 <?php if ($pwError): ?><div class="alert alert--error"><?= esc($pwError) ?></div><?php endif; ?>
 
 <nav class="tab-bar" id="settings-tabs">
@@ -71,16 +72,16 @@ include __DIR__ . '/includes/header.php';
         <h2>Perustiedot</h2>
         <p class="text-sm text-gray">Päivitä sivuston pääotsikko, hero-tekstit ja esittelysisältö.</p>
         <div class="grid-2">
-            <div class="form-group"><label>Otsikko (FI)</label><input type="text" name="title_fi" value="<?= esc($s['title_fi'] ?? '') ?>"></div>
-            <div class="form-group"><label>Otsikko (EN)</label><input type="text" name="title_en" value="<?= esc($s['title_en'] ?? '') ?>"></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> Otsikko</label><input type="text" name="title_fi" value="<?= esc($s['title_fi'] ?? '') ?>"></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> Title</label><input type="text" name="title_en" value="<?= esc($s['title_en'] ?? '') ?>"></div>
         </div>
         <div class="grid-2">
-            <div class="form-group"><label>Hero-teksti (FI)</label><input type="text" name="hero_text_fi" value="<?= esc($s['hero_text_fi'] ?? '') ?>"></div>
-            <div class="form-group"><label>Hero-teksti (EN)</label><input type="text" name="hero_text_en" value="<?= esc($s['hero_text_en'] ?? '') ?>"></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> Hero-teksti</label><input type="text" name="hero_text_fi" value="<?= esc($s['hero_text_fi'] ?? '') ?>"></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> Hero text</label><input type="text" name="hero_text_en" value="<?= esc($s['hero_text_en'] ?? '') ?>"></div>
         </div>
         <div class="grid-2">
-            <div class="form-group"><label>Esittely (FI)</label><textarea name="intro_fi"><?= esc($s['intro_fi'] ?? '') ?></textarea></div>
-            <div class="form-group"><label>Esittely (EN)</label><textarea name="intro_en"><?= esc($s['intro_en'] ?? '') ?></textarea></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> Esittely</label><textarea name="intro_fi"><?= esc($s['intro_fi'] ?? '') ?></textarea></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> Intro</label><textarea name="intro_en"><?= esc($s['intro_en'] ?? '') ?></textarea></div>
         </div>
     </div>
 
@@ -118,12 +119,12 @@ include __DIR__ . '/includes/header.php';
         <h2>SEO</h2>
         <p class="text-sm text-gray">Kirjoita hakukoneille tiiviit otsikot ja kuvaukset.</p>
         <div class="grid-2">
-            <div class="form-group"><label>SEO-otsikko (FI)</label><input type="text" name="seo_title_fi" value="<?= esc($s['seo_title_fi'] ?? '') ?>"></div>
-            <div class="form-group"><label>SEO-otsikko (EN)</label><input type="text" name="seo_title_en" value="<?= esc($s['seo_title_en'] ?? '') ?>"></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> SEO-otsikko</label><input type="text" name="seo_title_fi" value="<?= esc($s['seo_title_fi'] ?? '') ?>"></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> SEO title</label><input type="text" name="seo_title_en" value="<?= esc($s['seo_title_en'] ?? '') ?>"></div>
         </div>
         <div class="grid-2">
-            <div class="form-group"><label>SEO-kuvaus (FI)</label><textarea name="seo_description_fi"><?= esc($s['seo_description_fi'] ?? '') ?></textarea></div>
-            <div class="form-group"><label>SEO-kuvaus (EN)</label><textarea name="seo_description_en"><?= esc($s['seo_description_en'] ?? '') ?></textarea></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> SEO-kuvaus</label><textarea name="seo_description_fi"><?= esc($s['seo_description_fi'] ?? '') ?></textarea></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> SEO description</label><textarea name="seo_description_en"><?= esc($s['seo_description_en'] ?? '') ?></textarea></div>
         </div>
     </div>
 

@@ -98,10 +98,10 @@ include __DIR__ . '/includes/header.php';
             <div class="admin-dropzone__preview" style="display:none"></div>
         </div>
         <div class="grid-2 mt-4">
-            <div class="form-group"><label>Kuvateksti (FI)</label><input type="text" name="caption_fi"></div>
-            <div class="form-group"><label>Kuvateksti (EN)</label><input type="text" name="caption_en"></div>
-            <div class="form-group"><label>ALT-teksti (FI)</label><input type="text" name="alt_fi" placeholder="Kuvaileva teksti näkövammaisille"></div>
-            <div class="form-group"><label>ALT-teksti (EN)</label><input type="text" name="alt_en" placeholder="Descriptive text for accessibility"></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> Kuvateksti</label><input type="text" name="caption_fi"></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> Caption</label><input type="text" name="caption_en"></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> ALT-teksti</label><input type="text" name="alt_fi" placeholder="Kuvaileva teksti näkövammaisille"></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> ALT text</label><input type="text" name="alt_en" placeholder="Descriptive text for accessibility"></div>
         </div>
         <button type="submit" class="btn btn--primary mt-4">Lähetä</button>
     </form>
@@ -148,10 +148,10 @@ include __DIR__ . '/includes/header.php';
                             <input type="hidden" name="csrf" value="<?= csrf() ?>">
                             <input type="hidden" name="action" value="edit">
                             <input type="hidden" name="id" value="<?= esc($img['id'] ?? '') ?>">
-                            <div class="form-group" style="margin-bottom:0.5rem"><label style="font-size:0.7rem">Kuvateksti FI</label><input type="text" name="caption_fi" value="<?= esc($img['caption_fi'] ?? '') ?>"></div>
-                            <div class="form-group" style="margin-bottom:0.5rem"><label style="font-size:0.7rem">Kuvateksti EN</label><input type="text" name="caption_en" value="<?= esc($img['caption_en'] ?? '') ?>"></div>
-                            <div class="form-group" style="margin-bottom:0.5rem"><label style="font-size:0.7rem">ALT FI</label><input type="text" name="alt_fi" value="<?= esc($img['alt_fi'] ?? '') ?>"></div>
-                            <div class="form-group" style="margin-bottom:0.5rem"><label style="font-size:0.7rem">ALT EN</label><input type="text" name="alt_en" value="<?= esc($img['alt_en'] ?? '') ?>"></div>
+                            <div class="form-group form-group--fi" style="margin-bottom:0.5rem"><label style="font-size:0.7rem"><?= flagSvg('fi') ?> Kuvateksti</label><input type="text" name="caption_fi" value="<?= esc($img['caption_fi'] ?? '') ?>"></div>
+                            <div class="form-group form-group--en" style="margin-bottom:0.5rem"><label style="font-size:0.7rem"><?= flagSvg('gb') ?> Caption</label><input type="text" name="caption_en" value="<?= esc($img['caption_en'] ?? '') ?>"></div>
+                            <div class="form-group form-group--fi" style="margin-bottom:0.5rem"><label style="font-size:0.7rem"><?= flagSvg('fi') ?> ALT-teksti</label><input type="text" name="alt_fi" value="<?= esc($img['alt_fi'] ?? '') ?>"></div>
+                            <div class="form-group form-group--en" style="margin-bottom:0.5rem"><label style="font-size:0.7rem"><?= flagSvg('gb') ?> ALT text</label><input type="text" name="alt_en" value="<?= esc($img['alt_en'] ?? '') ?>"></div>
                             <button type="submit" class="btn btn--secondary btn--sm">Tallenna</button>
                         </form>
                     </div>

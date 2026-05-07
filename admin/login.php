@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($username) || empty($pass)) {
         $error = 'Syötä käyttäjätunnus ja salasana / Enter username and password';
     } elseif (adminAuthenticate($username, $pass)) {
+        session_regenerate_id(true);
         $_SESSION['admin_username'] = $username;
         header('Location: /admin/');
         exit;

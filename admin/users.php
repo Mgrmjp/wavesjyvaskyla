@@ -10,6 +10,7 @@ $message = '';
 $messageType = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    checkCsrf();
     $action = $_POST['action'] ?? '';
     $username = trim($_POST['username'] ?? '');
 
@@ -77,6 +78,7 @@ require_once __DIR__ . '/includes/header.php';
 <section class="admin-card">
     <h2>Lisää käyttäjä</h2>
     <form method="post" class="form-inline">
+        <input type="hidden" name="csrf" value="<?= csrf() ?>">
         <input type="hidden" name="action" value="add">
         <input type="text" name="username" placeholder="Käyttäjätunnus" required>
         <input type="password" name="password" placeholder="Salasana" required>
@@ -109,6 +111,7 @@ require_once __DIR__ . '/includes/header.php';
                     <button class="btn btn-sm btn-secondary" onclick="togglePasswordForm('<?= esc($user['username']) ?>')">Vaihda salasana</button>
                     <?php if ($user['username'] !== $currentUsername): ?>
                     <form method="post" class="inline-form" onsubmit="return confirm('Poista käyttäjä <?= esc($user['username']) ?>?')">
+                        <input type="hidden" name="csrf" value="<?= csrf() ?>">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="username" value="<?= esc($user['username']) ?>">
                         <button type="submit" class="btn btn-sm btn-danger">Poista</button>
@@ -116,6 +119,7 @@ require_once __DIR__ . '/includes/header.php';
                     <?php endif; ?>
                     <div id="password-form-<?= esc($user['username']) ?>" class="password-form" style="display:none;">
                         <form method="post">
+                            <input type="hidden" name="csrf" value="<?= csrf() ?>">
                             <input type="hidden" name="action" value="change_password">
                             <input type="hidden" name="username" value="<?= esc($user['username']) ?>">
                             <input type="password" name="password" placeholder="Uusi salasana" required>

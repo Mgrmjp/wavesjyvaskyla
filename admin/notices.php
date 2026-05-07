@@ -46,7 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
     }
     DataStore::save('notices', $data);
-    $saved = true;
+    header('Location: notices.php?saved=1');
+    exit;
 }
 
 $today = date('Y-m-d');
@@ -80,7 +81,7 @@ $title = 'Ilmoitukset';
 include __DIR__ . '/includes/header.php';
 ?>
 
-<?php if (!empty($saved)): ?><div class="alert">Tallennettu!</div><?php endif; ?>
+<?php if (isset($_GET['saved'])): ?><div class="alert">Tallennettu!</div><?php endif; ?>
 <?php if ($flash === 'deleted'): ?><div class="alert alert--error">Ilmoitus poistettiin.</div><?php endif; ?>
 
 <?php
@@ -128,12 +129,12 @@ $allNotices = $data['notices'];
                     <?php if ($status === 'expired'): ?><span style="color:var(--danger);font-weight:700">VANHENTUNUT</span><?php endif; ?>
                 </div>
                 <div class="notice-card__langs" style="margin-top:0.35rem">
-                    <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px">
-                        <label style="font-size:0.7rem">Teksti FI</label>
+                    <div class="form-group form-group--fi" style="margin-bottom:0;flex:1;min-width:140px">
+                        <label style="font-size:0.7rem"><?= flagSvg('fi') ?> Teksti</label>
                         <input type="text" name="text_fi[<?= $i ?>]" value="<?= esc($n['text_fi'] ?? '') ?>" placeholder="Ilmoitus suomeksi">
                     </div>
-                    <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px">
-                        <label style="font-size:0.7rem">Teksti EN</label>
+                    <div class="form-group form-group--en" style="margin-bottom:0;flex:1;min-width:140px">
+                        <label style="font-size:0.7rem"><?= flagSvg('gb') ?> Text</label>
                         <input type="text" name="text_en[<?= $i ?>]" value="<?= esc($n['text_en'] ?? '') ?>" placeholder="Notice in English">
                     </div>
                 </div>
@@ -173,12 +174,12 @@ $allNotices = $data['notices'];
             <div class="notice-card__body">
                 <h4>Uusi ilmoitus</h4>
                 <div class="notice-card__langs">
-                    <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px">
-                        <label style="font-size:0.7rem">Teksti FI</label>
+                    <div class="form-group form-group--fi" style="margin-bottom:0;flex:1;min-width:140px">
+                        <label style="font-size:0.7rem"><?= flagSvg('fi') ?> Teksti</label>
                         <input type="text" name="text_fi[]" placeholder="Ilmoitus suomeksi">
                     </div>
-                    <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px">
-                        <label style="font-size:0.7rem">Teksti EN</label>
+                    <div class="form-group form-group--en" style="margin-bottom:0;flex:1;min-width:140px">
+                        <label style="font-size:0.7rem"><?= flagSvg('gb') ?> Text</label>
                         <input type="text" name="text_en[]" placeholder="Notice in English">
                     </div>
                 </div>

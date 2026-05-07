@@ -6,6 +6,8 @@ if (!defined('INCLUDES_DIR')) define('INCLUDES_DIR', ROOT . '/includes');
 if (!defined('TEMPLATES_DIR')) define('TEMPLATES_DIR', ROOT . '/templates');
 if (!defined('ADMIN_DIR')) define('ADMIN_DIR', ROOT . '/admin');
 
+require_once INCLUDES_DIR . '/storage.php';
+
 function ensureSessionStarted(): void {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -18,6 +20,9 @@ class DataStore {
     }
 
     public static function load(string $name): array {
+        if (AppStore::isMigrated($name)) {
+            return AppStore::load($name);
+        }
         $path = self::path($name);
         if (!file_exists($path)) return [];
         $json = file_get_contents($path);
@@ -25,6 +30,10 @@ class DataStore {
     }
 
     public static function save(string $name, array $data): void {
+        if (AppStore::isMigrated($name)) {
+            AppStore::save($name, $data);
+            return;
+        }
         $path = self::path($name);
         $dir = dirname($path);
         if (!is_dir($dir)) mkdir($dir, 0775, true);
@@ -32,6 +41,14 @@ class DataStore {
     }
 
     public static function ensure(string $name, array $default): array {
+        if (AppStore::isMigrated($name)) {
+            $data = AppStore::load($name);
+            if (empty($data)) {
+                AppStore::save($name, $default);
+                return $default;
+            }
+            return $data;
+        }
         $data = self::load($name);
         if (empty($data)) {
             self::save($name, $default);
@@ -343,7 +360,7 @@ function checkCsrf(): void {
 
 function adminAuth(): void {
     ensureSessionStarted();
-    if (empty($_SESSION['admin'])) {
+    if (empty($_SESSION['admin_username'])) {
         header('Location: /admin/login.php');
         exit;
     }

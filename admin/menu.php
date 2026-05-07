@@ -81,19 +81,23 @@ function renderMenuItemFields(array $item, string $key, array $categories, array
         <input type="hidden" name="item_id[<?= esc($key) ?>]" value="<?= esc((string) ($item['id'] ?? '')) ?>">
         <section class="editor-item-panel">
             <div class="editor-item-panel__head"><h5>Perustiedot</h5></div>
+            <div class="editor-item-panel__body">
             <div class="editor-item-grid">
-                <div class="form-group span-3"><label>Nimi FI</label><input type="text" name="item_name_fi[<?= esc($key) ?>]" value="<?= esc((string) ($item['name_fi'] ?? '')) ?>" placeholder="Esim. Smash Burger"></div>
-                <div class="form-group span-3"><label>Nimi EN</label><input type="text" name="item_name_en[<?= esc($key) ?>]" value="<?= esc((string) ($item['name_en'] ?? '')) ?>" placeholder="English name"></div>
+                <div class="form-group form-group--fi span-3"><label><?= flagSvg('fi') ?> Nimi</label><input type="text" name="item_name_fi[<?= esc($key) ?>]" value="<?= esc((string) ($item['name_fi'] ?? '')) ?>" placeholder="Esim. Smash Burger"></div>
+                <div class="form-group form-group--en span-3"><label><?= flagSvg('gb') ?> Name</label><input type="text" name="item_name_en[<?= esc($key) ?>]" value="<?= esc((string) ($item['name_en'] ?? '')) ?>" placeholder="English name"></div>
                 <div class="form-group span-2"><label>Hinta</label><input class="input-compact" type="number" step="0.01" name="item_price[<?= esc($key) ?>]" value="<?= esc((string) ($item['price'] ?? '')) ?>" placeholder="18.50"></div>
                 <div class="form-group span-2"><label>Kategoria</label><select class="input-compact" name="item_category[<?= esc($key) ?>]"><?php foreach ($categories as $cat): ?><option value="<?= esc((string) ($cat['slug'] ?? '')) ?>" <?= ($item['category'] ?? '') === ($cat['slug'] ?? '') ? 'selected' : '' ?>><?= esc((string) ($cat['title_fi'] ?? '')) ?></option><?php endforeach; ?></select></div>
                 <div class="form-group span-2"><label>Tagit</label><input class="input-compact" type="text" name="item_tags[<?= esc($key) ?>]" value="<?= esc((string) ($item['dietary_tags'] ?? '')) ?>" placeholder="L, G, V"></div>
             </div>
+            </div>
         </section>
         <section class="editor-item-panel">
             <div class="editor-item-panel__head"><h5>Kuvaukset</h5></div>
+            <div class="editor-item-panel__body">
             <div class="editor-item-grid">
-                <div class="form-group span-6"><label>Kuvaus FI</label><textarea name="item_desc_fi[<?= esc($key) ?>]" placeholder="Lyhyt kuvaus suomeksi"><?= esc((string) ($item['description_fi'] ?? '')) ?></textarea></div>
-                <div class="form-group span-6"><label>Kuvaus EN</label><textarea name="item_desc_en[<?= esc($key) ?>]" placeholder="Short English description"><?= esc((string) ($item['description_en'] ?? '')) ?></textarea></div>
+                <div class="form-group form-group--fi span-6"><label><?= flagSvg('fi') ?> Kuvaus</label><textarea name="item_desc_fi[<?= esc($key) ?>]" placeholder="Lyhyt kuvaus suomeksi"><?= esc((string) ($item['description_fi'] ?? '')) ?></textarea></div>
+                <div class="form-group form-group--en span-6"><label><?= flagSvg('gb') ?> Description</label><textarea name="item_desc_en[<?= esc($key) ?>]" placeholder="Short English description"><?= esc((string) ($item['description_en'] ?? '')) ?></textarea></div>
+            </div>
             </div>
         </section>
         <section class="editor-item-panel editor-item-panel--media">
@@ -269,12 +273,14 @@ if (isset($flashMessages[$flash])): ?><div class="alert"><?= esc($flashMessages[
             <div class="editor-item-panels">
                 <section class="editor-item-panel">
                     <div class="editor-item-panel__head"><h5>Perustiedot</h5></div>
+                    <div class="editor-item-panel__body">
                     <div class="editor-item-grid">
-                        <div class="form-group span-3"><label>Nimi FI</label><input type="text" name="new_name_fi" placeholder="Esim. Smash Burger"></div>
-                        <div class="form-group span-3"><label>Nimi EN</label><input type="text" name="new_name_en" placeholder="English name"></div>
+                        <div class="form-group form-group--fi span-3"><label><?= flagSvg('fi') ?> Nimi</label><input type="text" name="new_name_fi" placeholder="Esim. Smash Burger"></div>
+                        <div class="form-group form-group--en span-3"><label><?= flagSvg('gb') ?> Name</label><input type="text" name="new_name_en" placeholder="English name"></div>
                         <div class="form-group span-2"><label>Hinta</label><input class="input-compact" type="number" step="0.01" name="new_price" placeholder="18.50"></div>
                         <div class="form-group span-2"><label>Kategoria</label><select class="input-compact" name="new_category"><?php foreach ($data['categories'] as $category): ?><option value="<?= esc((string) ($category['slug'] ?? '')) ?>"><?= esc((string) ($category['title_fi'] ?? '')) ?></option><?php endforeach; ?></select></div>
                         <div class="form-group span-2"><label>Tagit</label><input class="input-compact" type="text" name="new_tags" placeholder="L, G, V"></div>
+                    </div>
                     </div>
                 </section>
             </div>
@@ -297,7 +303,7 @@ if (isset($flashMessages[$flash])): ?><div class="alert"><?= esc($flashMessages[
         <input type="hidden" name="action" value="save_existing">
         <div class="editor-items-stack">
             <?php if (empty($data['items'])): ?>
-                <?php renderEmptyState('☰', 'Ei annoksia vielä', 'Aloita luomalla ensimmäinen annos yllä olevasta lomakkeesta.', '#new-menu-item', 'Luo annos'); ?>
+                <?php renderEmptyState('☰', 'Ei annoksia vielä', 'Aloita luomalla ensimmäinen annos yllä olevasta lomakkeesta.', '', 'Luo annos', 'new-menu-item'); ?>
             <?php else:
                 $itemsByCategory = [];
                 foreach ($data['items'] as $i => $item) {

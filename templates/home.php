@@ -32,7 +32,7 @@ include INCLUDES_DIR . '/header.php';
         <div>
             <p class="label mb-4"><?= t('Tietoa', 'About') ?></p>
             <div class="prose text-muted max-w-prose">
-                <?= $s['intro_' . lang()] ?? '' ?>
+                <?= nl2br(esc($s['intro_' . lang()] ?? '')) ?>
             </div>
         </div>
         <div class="hours-card">

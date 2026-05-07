@@ -25,14 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
     }
     DataStore::save('lunch', $data);
-    $saved = true;
+    header('Location: lunch.php?saved=1');
+    exit;
 }
 
 $title = 'Lounas';
 include __DIR__ . '/includes/header.php';
 ?>
 
-<?php if (!empty($saved)): ?><div class="alert">Tallennettu!</div><?php endif; ?>
+<?php if (isset($_GET['saved'])): ?><div class="alert">Tallennettu!</div><?php endif; ?>
 
 <?php
 $days = ['mon' => 'Maanantai', 'tue' => 'Tiistai', 'wed' => 'Keskiviikko', 'thu' => 'Torstai', 'fri' => 'Perjantai'];
@@ -89,20 +90,20 @@ $visibleItems = count(array_filter($data['items'], fn($i) => !empty($i['visible'
                             </label>
                         </div>
                         <div class="lunch-entry__fields">
-                            <div class="form-group">
-                                <label>Nimi FI</label>
+                            <div class="form-group form-group--fi">
+                                <label><?= flagSvg('fi') ?> Nimi</label>
                                 <input type="text" name="name_fi[<?= $idx ?>]" value="<?= esc($item['name_fi'] ?? '') ?>" placeholder="Lounas FI">
                             </div>
-                            <div class="form-group">
-                                <label>Nimi EN</label>
+                            <div class="form-group form-group--en">
+                                <label><?= flagSvg('gb') ?> Name</label>
                                 <input type="text" name="name_en[<?= $idx ?>]" value="<?= esc($item['name_en'] ?? '') ?>" placeholder="Lunch EN">
                             </div>
-                            <div class="form-group">
-                                <label>Kuvaus FI</label>
+                            <div class="form-group form-group--fi">
+                                <label><?= flagSvg('fi') ?> Kuvaus</label>
                                 <input type="text" name="desc_fi[<?= $idx ?>]" value="<?= esc($item['description_fi'] ?? '') ?>" placeholder="Kuvaus suomeksi">
                             </div>
-                            <div class="form-group">
-                                <label>Kuvaus EN</label>
+                            <div class="form-group form-group--en">
+                                <label><?= flagSvg('gb') ?> Description</label>
                                 <input type="text" name="desc_en[<?= $idx ?>]" value="<?= esc($item['description_en'] ?? '') ?>" placeholder="Description">
                             </div>
                             <div class="form-group">
@@ -123,20 +124,20 @@ $visibleItems = count(array_filter($data['items'], fn($i) => !empty($i['visible'
                             <span class="text-xs text-gray" style="font-weight:700;letter-spacing:.05em;text-transform:uppercase">Uusi annos</span>
                         </div>
                         <div class="lunch-entry__fields">
-                            <div class="form-group">
-                                <label>Nimi FI</label>
+                            <div class="form-group form-group--fi">
+                                <label><?= flagSvg('fi') ?> Nimi</label>
                                 <input type="text" name="name_fi[<?= $idx ?>]" placeholder="Lounas FI">
                             </div>
-                            <div class="form-group">
-                                <label>Nimi EN</label>
+                            <div class="form-group form-group--en">
+                                <label><?= flagSvg('gb') ?> Name</label>
                                 <input type="text" name="name_en[<?= $idx ?>]" placeholder="Lunch EN">
                             </div>
-                            <div class="form-group">
-                                <label>Kuvaus FI</label>
+                            <div class="form-group form-group--fi">
+                                <label><?= flagSvg('fi') ?> Kuvaus</label>
                                 <input type="text" name="desc_fi[<?= $idx ?>]" placeholder="Kuvaus suomeksi">
                             </div>
-                            <div class="form-group">
-                                <label>Kuvaus EN</label>
+                            <div class="form-group form-group--en">
+                                <label><?= flagSvg('gb') ?> Description</label>
                                 <input type="text" name="desc_en[<?= $idx ?>]" placeholder="Description">
                             </div>
                             <div class="form-group">

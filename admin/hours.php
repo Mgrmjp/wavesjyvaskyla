@@ -58,7 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     DataStore::save('settings', $s);
-    $saved = true;
+    header('Location: hours.php?saved=1');
+    exit;
 }
 
 $todayPreview = '';
@@ -98,7 +99,7 @@ $title = 'Aukioloajat';
 include __DIR__ . '/includes/header.php';
 ?>
 
-<?php if (!empty($saved)): ?><div class="alert">Tallennettu!</div><?php endif; ?>
+<?php if (isset($_GET['saved'])): ?><div class="alert">Tallennettu!</div><?php endif; ?>
 <?php $flashMsgs = ['added' => 'Poikkeus lisättiin.', 'missing-date' => 'Valitse päivämäärä poikkeukselle.']; ?>
 <?php if (isset($flashMsgs[$flash])): ?><div class="alert"><?= esc($flashMsgs[$flash]) ?></div><?php endif; ?>
 
@@ -189,12 +190,12 @@ include __DIR__ . '/includes/header.php';
                             <label>Sulkeutuu</label>
                             <input type="time" name="exc_close[<?= $i ?>]" value="<?= esc($e['close'] ?? '') ?>">
                         </div>
-                        <div class="form-group" style="margin-bottom:0">
-                            <label>Huom. FI</label>
+                        <div class="form-group form-group--fi" style="margin-bottom:0">
+                            <label><?= flagSvg('fi') ?> Huom.</label>
                             <input type="text" name="exc_note_fi[<?= $i ?>]" value="<?= esc($e['note_fi'] ?? '') ?>" placeholder="Syy suomeksi">
                         </div>
-                        <div class="form-group" style="margin-bottom:0">
-                            <label>Huom. EN</label>
+                        <div class="form-group form-group--en" style="margin-bottom:0">
+                            <label><?= flagSvg('gb') ?> Note</label>
                             <input type="text" name="exc_note_en[<?= $i ?>]" value="<?= esc($e['note_en'] ?? '') ?>" placeholder="Reason in English">
                         </div>
                     </div>
@@ -228,12 +229,12 @@ include __DIR__ . '/includes/header.php';
                         <label>Sulkeutuu</label>
                         <input type="time" name="exc_close">
                     </div>
-                    <div class="form-group" style="margin-bottom:0">
-                        <label>Huom. FI</label>
+                    <div class="form-group form-group--fi" style="margin-bottom:0">
+                        <label><?= flagSvg('fi') ?> Huom.</label>
                         <input type="text" name="exc_note_fi" placeholder="Syy">
                     </div>
-                    <div class="form-group" style="margin-bottom:0">
-                        <label>Huom. EN</label>
+                    <div class="form-group form-group--en" style="margin-bottom:0">
+                        <label><?= flagSvg('gb') ?> Note</label>
                         <input type="text" name="exc_note_en" placeholder="Reason">
                     </div>
                 </div>
