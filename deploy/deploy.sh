@@ -10,7 +10,16 @@ REMOTE_DIR="${REMOTE_DIR:-/var/www/wavesjyvaskyla}"
 echo "Target: ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}"
 
 # 1. Deploy files
-rsync -avz --exclude='.git' --exclude='docker*' --exclude='Dockerfile' --exclude='README.md' \
+rsync -avz \
+    --exclude='.git' \
+    --exclude='node_modules' \
+    --exclude='screenshots' \
+    --exclude='src' \
+    --exclude='.agents' \
+    --exclude='.codex' \
+    --exclude='docker*' \
+    --exclude='Dockerfile' \
+    --exclude='README.md' \
     ./ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/
 
 # 2. Fix permissions
