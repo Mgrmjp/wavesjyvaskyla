@@ -1,8 +1,7 @@
 node_modules/
 screenshots/
 assets/css/index.css
-.htaccess
-deploy/
-docker/
-docker-compose.yml
-Dockerfile
+/data/*.json
+/data/*.sqlite
+/data/*.db
+!/data/.gitkeep

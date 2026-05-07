@@ -51,7 +51,7 @@ p.note{font-size:0.8rem;color:#666;margin-top:1rem}
         <button type="submit">Kirjaudu / Login</button>
     </form>
     <?php if (empty(adminListUsernames())): ?>
-    <p class="note">Ei käyttäjiä. Luo ensimmäinen käyttäjä komentoriviltä.<br>No users. Create the first user from command line.</p>
+    <p class="note">Ei käyttäjiä. Luo ensimmäinen käyttäjä komennolla <code>php scripts/create-admin-user.php admin salasana</code>.<br>No users. Create the first user with <code>php scripts/create-admin-user.php admin password</code>.</p>
     <?php endif; ?>
 </div>
 </body>

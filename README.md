@@ -62,6 +62,8 @@ wavesjkl/
 
 Primary content and admin users are stored in SQLite. The default database path is `data/waves.sqlite` under the repo root, or override it with `APP_DB_PATH`.
 
+Runtime data under `data/` is intentionally not tracked in git. The app creates the SQLite database, revision log, and contact-message storage on demand.
+
 Remaining JSON files under `data/`:
 
 | File | Content |
@@ -97,6 +99,14 @@ php scripts/migrate-json-to-sqlite.php
 ```
 
 This imports existing JSON-backed content and admin users into SQLite.
+
+## First Admin User
+
+Create the first admin user from the command line:
+
+```bash
+php scripts/create-admin-user.php admin your-password
+```
 
 ## Deployment (Hetzner Ubuntu + Nginx)
 
