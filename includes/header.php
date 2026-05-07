@@ -15,11 +15,12 @@ $isOpen = isOpenNow();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 <link rel="canonical" href="https://wavesjyvaskyla.fi<?= url($page['slug'] ?? '') ?>">
-<link rel="icon" href="/favicon.ico" sizes="48x48">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="<?= publicAsset('/favicon.ico') ?>" sizes="48x48">
+<link rel="icon" href="<?= publicAsset('/favicon.svg') ?>" type="image/svg+xml">
+<link rel="apple-touch-icon" href="<?= publicAsset('/apple-touch-icon.png') ?>">
+<link rel="manifest" href="<?= publicAsset('/site.webmanifest') ?>">
 <meta name="theme-color" content="#003561">
 <?php
 $slugFi = Router::slugForLang($page['slug'] ?? '', 'fi');

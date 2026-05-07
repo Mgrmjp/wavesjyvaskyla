@@ -228,7 +228,18 @@ function url(string $path = ''): string {
 }
 
 function asset(string $path): string {
-    return '/assets/' . ltrim($path, '/');
+    return publicAsset('/assets/' . ltrim($path, '/'));
+}
+
+function publicAsset(string $path): string {
+    $publicPath = '/' . ltrim($path, '/');
+    $filePath = ROOT . $publicPath;
+
+    if (!is_file($filePath)) {
+        return $publicPath;
+    }
+
+    return $publicPath . '?v=' . filemtime($filePath);
 }
 
 function ensureUploadDirectory(): bool {
