@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "theme",
+          "source",
+          "plugin",
+          "tailwind",
+          "apply",
+          "layer",
+          "config",
+          "screen"
+        ]
+      }
+    ],
+    "block-no-empty": true,
+    "color-no-invalid-hex": true,
+    "declaration-block-no-duplicate-properties": null,
+    "font-family-no-duplicate-names": true,
+    "function-calc-no-unspaced-operator": true,
+    "property-no-unknown": true,
+    "selector-pseudo-class-no-unknown": true,
+    "selector-pseudo-element-no-unknown": true,
+    "unit-no-unknown": true,
+    "no-duplicate-selectors": null,
+    "no-empty-source": null
+  }
+}

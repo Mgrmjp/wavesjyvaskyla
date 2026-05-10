@@ -43,11 +43,7 @@ function routeSlug(route) {
     return 'home';
   }
 
-  return route
-    .replace(/^\/+/, '')
-    .replace(/\/+$/, '')
-    .replace(/[/.]+/g, '-')
-    .replace(/^-|-$/g, '');
+  return route.replace(/^\/+/, '').replace(/\/+$/, '').replace(/[/.]+/g, '-').replace(/^-|-$/g, '');
 }
 
 async function loadPlaywright() {
@@ -74,7 +70,9 @@ async function isReachable(url) {
 
 function canAutoStartPhpServer(url) {
   const { protocol, hostname, port } = new URL(url);
-  return protocol === 'http:' && (hostname === '127.0.0.1' || hostname === 'localhost') && port !== '';
+  return (
+    protocol === 'http:' && (hostname === '127.0.0.1' || hostname === 'localhost') && port !== ''
+  );
 }
 
 async function waitForServer(url, attempts = 20) {

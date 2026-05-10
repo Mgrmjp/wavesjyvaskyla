@@ -131,8 +131,12 @@
       container.querySelectorAll('[data-sort-item]').forEach(function (item) {
         var handle = item.querySelector('.editor-drag-handle');
         if (!handle) return;
-        handle.addEventListener('mousedown', function () { item.setAttribute('draggable', 'true'); });
-        handle.addEventListener('mouseup', function () { item.setAttribute('draggable', 'false'); });
+        handle.addEventListener('mousedown', function () {
+          item.setAttribute('draggable', 'true');
+        });
+        handle.addEventListener('mouseup', function () {
+          item.setAttribute('draggable', 'false');
+        });
         item.addEventListener('dragstart', function (e) {
           draggedItem = item;
           item.classList.add('dragging');
@@ -143,7 +147,9 @@
           item.classList.remove('dragging');
           item.setAttribute('draggable', 'false');
           draggedItem = null;
-          container.querySelectorAll('.editor-list-item').forEach(function (i) { i.classList.remove('drag-over'); });
+          container.querySelectorAll('.editor-list-item').forEach(function (i) {
+            i.classList.remove('drag-over');
+          });
           updateSortState(container);
           var newCategorySlug = item.closest('[data-category-slug]')?.dataset.categorySlug;
           if (newCategorySlug) {
@@ -159,7 +165,9 @@
           e.dataTransfer.dropEffect = 'move';
           if (item !== draggedItem) item.classList.add('drag-over');
         });
-        item.addEventListener('dragleave', function () { item.classList.remove('drag-over'); });
+        item.addEventListener('dragleave', function () {
+          item.classList.remove('drag-over');
+        });
         item.addEventListener('drop', function (e) {
           e.preventDefault();
           item.classList.remove('drag-over');
@@ -187,7 +195,10 @@
       var clone = template.cloneNode(true);
       clone.removeAttribute('data-template');
       clone.removeAttribute('hidden');
-      clone.querySelectorAll('input, select').forEach(function (el) { el.value = ''; el.selectedIndex = 0; });
+      clone.querySelectorAll('input, select').forEach(function (el) {
+        el.value = '';
+        el.selectedIndex = 0;
+      });
       container.appendChild(clone);
       bindRemoveButtons();
     });
@@ -207,21 +218,37 @@
       var input = zone.querySelector('input[type="file"]');
       var preview = zone.querySelector('.admin-dropzone__preview');
       if (!input) return;
-      zone.addEventListener('click', function (e) { if (e.target !== input) input.click(); });
-      zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('drag-active'); });
-      zone.addEventListener('dragleave', function () { zone.classList.remove('drag-active'); });
+      zone.addEventListener('click', function (e) {
+        if (e.target !== input) input.click();
+      });
+      zone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        zone.classList.add('drag-active');
+      });
+      zone.addEventListener('dragleave', function () {
+        zone.classList.remove('drag-active');
+      });
       zone.addEventListener('drop', function (e) {
         e.preventDefault();
         zone.classList.remove('drag-active');
-        if (e.dataTransfer.files.length) { input.files = e.dataTransfer.files; updatePreview(input.files[0]); }
+        if (e.dataTransfer.files.length) {
+          input.files = e.dataTransfer.files;
+          updatePreview(input.files[0]);
+        }
       });
-      input.addEventListener('change', function () { if (input.files.length) updatePreview(input.files[0]); });
+      input.addEventListener('change', function () {
+        if (input.files.length) updatePreview(input.files[0]);
+      });
       function updatePreview(file) {
         if (!preview) return;
         var reader = new FileReader();
         reader.onload = function (e) {
           var isImage = file.type.startsWith('image/');
-          preview.innerHTML = (isImage ? '<img src="' + e.target.result + '" alt="">' : '') + '<span class="admin-dropzone__preview-name">' + escapeHtml(file.name) + '</span>';
+          preview.innerHTML =
+            (isImage ? '<img src="' + e.target.result + '" alt="">' : '') +
+            '<span class="admin-dropzone__preview-name">' +
+            escapeHtml(file.name) +
+            '</span>';
           preview.style.display = 'flex';
         };
         reader.readAsDataURL(file);
@@ -229,7 +256,11 @@
     });
   }
 
-  function escapeHtml(text) { var d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+  function escapeHtml(text) {
+    var d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
 
   function initPasswordValidation() {
     var form = document.querySelector('.password-section form') || document.querySelector('form');
@@ -251,7 +282,11 @@
     pw1.addEventListener('input', checkMatch);
     pw2.addEventListener('input', checkMatch);
     form.addEventListener('submit', function (e) {
-      if (pw1.value !== pw2.value) { e.preventDefault(); checkMatch(); pw2.focus(); }
+      if (pw1.value !== pw2.value) {
+        e.preventDefault();
+        checkMatch();
+        pw2.focus();
+      }
     });
   }
 
@@ -283,9 +318,13 @@
     });
 
     /* === Hours Closed Toggle === */
-    document.querySelectorAll('.day-card input[type="checkbox"][name^="oh_closed"]').forEach(function (cb) {
-      cb.closest('.day-card').querySelector('.hours-fields').classList.toggle('is-disabled', cb.checked);
-    });
+    document
+      .querySelectorAll('.day-card input[type="checkbox"][name^="oh_closed"]')
+      .forEach(function (cb) {
+        cb.closest('.day-card')
+          .querySelector('.hours-fields')
+          .classList.toggle('is-disabled', cb.checked);
+      });
 
     var backLink = document.querySelector('.back-to-top');
     if (backLink) {

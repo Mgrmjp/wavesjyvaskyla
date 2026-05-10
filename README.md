@@ -66,19 +66,19 @@ Runtime data under `data/` is intentionally not tracked in git. The app creates 
 
 Remaining JSON files under `data/`:
 
-| File | Content |
-|------|---------|
-| `messages.json` | Contact form submissions |
+| File             | Content                                   |
+| ---------------- | ----------------------------------------- |
+| `messages.json`  | Contact form submissions                  |
 | `revisions.json` | Revision history for selected admin edits |
 
 ## Bilingual URLs
 
-| Finnish | English |
-|---------|---------|
-| `/` | `/en/` |
-| `/menu` | `/en/menu` |
-| `/lounas` | `/en/lunch` |
-| `/tapahtumat` | `/en/events` |
+| Finnish         | English       |
+| --------------- | ------------- |
+| `/`             | `/en/`        |
+| `/menu`         | `/en/menu`    |
+| `/lounas`       | `/en/lunch`   |
+| `/tapahtumat`   | `/en/events`  |
 | `/yhteystiedot` | `/en/contact` |
 
 ## Admin Features
@@ -113,7 +113,7 @@ php scripts/create-admin-user.php admin your-password
 ```bash
 # 1. On server: install PHP-FPM and Nginx
 sudo apt update
-sudo apt install -y php8.3-fpm php8.3-gd php8.3-mbstring nginx certbot
+sudo apt install -y php8.3-fpm php8.3-gd php8.3-mbstring php8.3-sqlite3 nginx certbot
 
 # 2. Deploy files (from local)
 ./deploy/deploy.sh

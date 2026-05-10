@@ -1,10 +1,23 @@
 {
   "scripts": {
-    "screenshots": "node scripts/capture-views.mjs"
+    "css:build": "tailwindcss -i src/css/main.css -o assets/css/index.css --minify",
+    "screenshots": "node scripts/capture-views.mjs",
+    "lint": "npm run lint:js && npm run lint:css",
+    "check": "npm run lint && npm run format:check",
+    "lint:js": "eslint \"assets/js/**/*.js\" \"admin/assets/**/*.js\"",
+    "lint:css": "stylelint \"src/css/**/*.css\" \"admin/assets/**/*.css\"",
+    "format": "prettier --write \"**/*.{css,js,mjs,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{css,js,mjs,json,md,yml,yaml}\""
   },
   "devDependencies": {
+    "@eslint/js": "^9.27.0",
     "@tailwindcss/cli": "^4.2.4",
+    "eslint": "^9.27.0",
+    "globals": "^16.0.0",
     "playwright": "^1.59.1",
+    "prettier": "^3.5.3",
+    "stylelint": "^16.19.1",
+    "stylelint-config-standard": "^38.0.0",
     "tailwindcss": "^4.2.4"
   },
   "dependencies": {

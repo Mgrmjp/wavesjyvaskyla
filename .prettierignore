@@ -1,0 +1,12 @@
+node_modules/
+assets/css/index.css
+screenshots/
+uploads/
+assets/files/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.avif
+*.ico
+*.svg
