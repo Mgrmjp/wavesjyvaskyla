@@ -54,6 +54,13 @@ $slugEn = Router::slugForLang($page['slug'] ?? '', 'en');
 </head>
 <body class="min-h-screen flex flex-col">
 
+<div id="demo-disclaimer" class="demo-disclaimer" role="status" aria-live="polite">
+    <p class="demo-disclaimer__text">
+        <?= t('Huom: sivuston tiedot voivat olla osittain keskeneräisiä demovaiheen vuoksi.', 'Note: some site information may be incomplete or inaccurate during this demo phase.') ?>
+    </p>
+    <button type="button" class="demo-disclaimer__close" aria-label="<?= t('Sulje ilmoitus', 'Dismiss notice') ?>">×</button>
+</div>
+
 <?php if (count($notices)): ?>
 <div class="max-w-5xl mx-auto px-5 pt-4">
     <?php foreach ($notices as $n): ?>

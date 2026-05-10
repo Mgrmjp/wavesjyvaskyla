@@ -120,4 +120,26 @@
       observer.observe(el);
     });
   }
+
+  /* ─── Demo disclaimer dismissal ─── */
+  var demoDisclaimer = document.getElementById('demo-disclaimer');
+  if (demoDisclaimer) {
+    var demoClose = demoDisclaimer.querySelector('.demo-disclaimer__close');
+    var hideDemoDisclaimer = function () {
+      demoDisclaimer.style.display = 'none';
+    };
+    try {
+      if (localStorage.getItem('waves_demo_disclaimer') === 'dismissed') {
+        hideDemoDisclaimer();
+      }
+    } catch (e) {}
+    if (demoClose) {
+      demoClose.addEventListener('click', function () {
+        hideDemoDisclaimer();
+        try {
+          localStorage.setItem('waves_demo_disclaimer', 'dismissed');
+        } catch (e) {}
+      });
+    }
+  }
 })();
