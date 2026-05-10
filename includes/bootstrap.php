@@ -67,7 +67,7 @@ function appRenderErrorPage(string $title, string $summary, array $details = [])
     echo '.shell{width:min(760px,100%);background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.08);border-radius:28px;box-shadow:0 24px 80px rgba(15,23,42,.14);overflow:hidden;}';
     echo '.top{padding:28px 32px 20px;background:linear-gradient(135deg,#004b7c 0,#0ea5c6 100%);color:#f8fafc;}';
     echo '.eyebrow{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;letter-spacing:.08em;text-transform:uppercase;}';
-    echo 'h1{margin:18px 0 8px;font-size:clamp(32px,5vw,48px);line-height:1.02;letter-spacing:-.04em;}';
+    echo 'h1{margin:18px 0 8px;font-size:42px;line-height:1.02;letter-spacing:0;}';
     echo '.summary{margin:0;max-width:54ch;font-size:16px;line-height:1.6;color:rgba(248,250,252,.88);}';
     echo '.body{padding:28px 32px 32px;}';
     echo '.details{display:grid;gap:12px;margin:0 0 24px;padding:0;list-style:none;}';

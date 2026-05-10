@@ -4,7 +4,20 @@
     <div class="max-w-5xl mx-auto px-5 py-12">
         <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
             <div>
-                <p class="text-xl font-extrabold mb-2" style="letter-spacing:-0.03em">WAVES</p>
+                <?php
+                $svgPath = __DIR__ . '/../assets/files/waves.svg';
+                $svg = file_exists($svgPath) ? file_get_contents($svgPath) : '';
+                if ($svg) {
+                    $svg = preg_replace('/<\?xml[^?]*\?>\s*/', '', $svg);
+                    $svg = preg_replace('/<!DOCTYPE[^>]*>\s*/', '', $svg);
+                    $svg = preg_replace('/\s*width="[^"]*"/', '', $svg);
+                    $svg = preg_replace('/\s*height="[^"]*"/', '', $svg);
+                    $svg = preg_replace('/<svg\s/', '<svg fill="#f4ead7" style="width:120px;height:auto;display:block;margin-bottom:0.75rem;" ', $svg, 1);
+                    echo $svg;
+                } else {
+                    echo '<p class="text-xl font-extrabold mb-2" style="letter-spacing:0">WAVES</p>';
+                }
+                ?>
                 <p class="text-muted text-sm max-w-xs"><?= t('Konttiravintola Jyväskylän satamassa. Ei pöytävarauksia.', 'Container restaurant at Jyväskylä harbor. No reservations.') ?></p>
             </div>
                 <?php if (!empty($s['social_links'])): ?>
@@ -38,7 +51,7 @@ if (document.getElementById('map')) {
   }).addTo(map);
   var pinIcon = L.divIcon({
     className: '',
-    html: '<div style="width:32px;height:42px;position:relative;"><svg viewBox="0 0 24 36" width="32" height="42"><path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z" fill="#7ba8ff"/><circle cx="12" cy="12" r="5" fill="#0b111c"/></svg></div>',
+    html: '<div style="width:32px;height:42px;position:relative;"><svg viewBox="0 0 24 36" width="32" height="42"><path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z" fill="#c8d86b"/><circle cx="12" cy="12" r="5" fill="#07110f"/></svg></div>',
     iconSize: [32, 42],
     iconAnchor: [16, 42],
     popupAnchor: [0, -42]

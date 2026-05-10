@@ -332,12 +332,12 @@ function defaultSettings(): array {
             ['platform' => 'x', 'url' => 'https://x.com/wavesjyvaskyla'],
         ],
         'opening_hours' => [
-            ['day' => 'mon', 'open' => '11:00', 'close' => '22:00', 'kitchen_closes' => '21:00', 'closed' => false, 'note' => ''],
-            ['day' => 'tue', 'open' => '11:00', 'close' => '22:00', 'kitchen_closes' => '21:00', 'closed' => false, 'note' => ''],
-            ['day' => 'wed', 'open' => '11:00', 'close' => '22:00', 'kitchen_closes' => '21:00', 'closed' => false, 'note' => ''],
-            ['day' => 'thu', 'open' => '11:00', 'close' => '23:00', 'kitchen_closes' => '22:00', 'closed' => false, 'note' => ''],
-            ['day' => 'fri', 'open' => '11:00', 'close' => '23:00', 'kitchen_closes' => '22:00', 'closed' => false, 'note' => ''],
-            ['day' => 'sat', 'open' => '12:00', 'close' => '23:00', 'kitchen_closes' => '22:00', 'closed' => false, 'note' => ''],
+            ['day' => 'mon', 'open' => '', 'close' => '', 'kitchen_closes' => '', 'closed' => true, 'note' => ''],
+            ['day' => 'tue', 'open' => '', 'close' => '', 'kitchen_closes' => '', 'closed' => true, 'note' => ''],
+            ['day' => 'wed', 'open' => '', 'close' => '', 'kitchen_closes' => '', 'closed' => true, 'note' => ''],
+            ['day' => 'thu', 'open' => '', 'close' => '', 'kitchen_closes' => '', 'closed' => true, 'note' => ''],
+            ['day' => 'fri', 'open' => '14:00', 'close' => '19:00', 'kitchen_closes' => '20:00', 'closed' => false, 'note' => ''],
+            ['day' => 'sat', 'open' => '12:00', 'close' => '19:00', 'kitchen_closes' => '20:00', 'closed' => false, 'note' => ''],
             ['day' => 'sun', 'open' => '', 'close' => '', 'kitchen_closes' => '', 'closed' => true, 'note' => ''],
         ],
         'opening_exceptions' => [],
@@ -453,37 +453,123 @@ function adminListUsernames(): array {
 
 function defaultMenuCategories(): array {
     return [
-        ['id'=>'c1','title_fi'=>'Summer Tacos','title_en'=>'Summer Tacos','slug'=>'summer-tacos','sort_order'=>1],
-        ['id'=>'c2','title_fi'=>'Burgers','title_en'=>'Burgers','slug'=>'burgers','sort_order'=>2],
-        ['id'=>'c3','title_fi'=>'Saldet','title_en'=>'Salads','slug'=>'saldet','sort_order'=>3],
-        ['id'=>'c4','title_fi'=>'Kids','title_en'=>'Kids','slug'=>'kids','sort_order'=>4],
-        ['id'=>'c5','title_fi'=>'Ranut','title_en'=>'Fries','slug'=>'ranut','sort_order'=>5],
-        ['id'=>'c6','title_fi'=>'Dipit','title_en'=>'Dips','slug'=>'dipit','sort_order'=>6],
+        ['id' => 'c1', 'title_fi' => 'Summer Tacos', 'title_en' => 'Summer Tacos', 'slug' => 'summer-tacos', 'sort_order' => 1],
+        ['id' => 'c2', 'title_fi' => 'Burgers with Fries', 'title_en' => 'Burgers with Fries', 'slug' => 'burgers-with-fries', 'sort_order' => 2],
+        ['id' => 'c3', 'title_fi' => 'Salads', 'title_en' => 'Salads', 'slug' => 'salads', 'sort_order' => 3],
+        ['id' => 'c4', 'title_fi' => 'Snacks', 'title_en' => 'Snacks', 'slug' => 'snacks', 'sort_order' => 4],
+        ['id' => 'c5', 'title_fi' => 'Kids', 'title_en' => 'Kids', 'slug' => 'kids', 'sort_order' => 5],
+        ['id' => 'c6', 'title_fi' => 'Dips 2 €', 'title_en' => 'Dips 2 €', 'slug' => 'dips', 'sort_order' => 6],
     ];
 }
 
 function defaultMenuItems(): array {
     return [
-        ['id'=>'m1','name_fi'=>'KUHATAKU','name_en'=>'KUHATAKU','description_fi'=>'Rapea kuha ja lime-korianterimajo','description_en'=>'Crispy zander and lime-cilantro mayo','price'=>18,'category'=>'summer-tacos','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m2','name_fi'=>'KANA','name_en'=>'CHICKEN','description_fi'=>'Rapea kana ja paprikamajo','description_en'=>'Crispy chicken and pepper mayo','price'=>18,'category'=>'summer-tacos','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m3','name_fi'=>'HALLOUMI','name_en'=>'HALLOUMI','description_fi'=>'Rapea halloumi ja sweet & chili -majo','description_en'=>'Crispy halloumi and sweet & chili mayo','price'=>18,'category'=>'summer-tacos','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m4','name_fi'=>'TOFU','name_en'=>'TOFU','description_fi'=>'Spicy garlic tofu ja sweet & chili -majo','description_en'=>'Spicy garlic tofu and sweet & chili mayo','price'=>18,'category'=>'summer-tacos','dietary_tags'=>'V','visible'=>true],
-        ['id'=>'m5','name_fi'=>'PORK O\'CLOCK','name_en'=>'PORK O\'CLOCK','description_fi'=>'Possun kylkeä, BBQ-kastike ja aioli','description_en'=>'Pork belly, BBQ sauce and aioli','price'=>18,'category'=>'summer-tacos','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m6','name_fi'=>'SMASH Single','name_en'=>'SMASH Single','description_fi'=>'80g rapea pihvi, salde, pikkelisipuli, myrttinen, Juukolan cheddar ja paprikamajo','description_en'=>'80g crispy patty, salad, pickled onion, myrtle, Juukola cheddar and pepper mayo','price'=>14,'category'=>'burgers','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m7','name_fi'=>'SMASH Double','name_en'=>'SMASH Double','description_fi'=>'2 x 80g rapea pihvi, salde, pikkelisipuli, myrttinen, Juukolan cheddar ja paprikamajo','description_en'=>'2 x 80g crispy patty, salad, pickled onion, myrtle, Juukola cheddar and pepper mayo','price'=>18.50,'category'=>'burgers','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m8','name_fi'=>'Hangover','name_en'=>'Hangover','description_fi'=>'2 pihviä + pekoni, pikkelijalaopeno ja auramajo','description_en'=>'2 patties + bacon, pickled jalapeño and blue cheese mayo','price'=>20,'category'=>'burgers','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m9','name_fi'=>'VEGGIE CLASH','name_en'=>'VEGGIE CLASH','description_fi'=>'Beyond meat -pihvi, Juukolan cheddar ja sweet & chili -majo','description_en'=>'Beyond meat patty, Juukola cheddar and sweet & chili mayo','price'=>18.50,'category'=>'burgers','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m10','name_fi'=>'FISHERMAN','name_en'=>'FISHERMAN','description_fi'=>'Sandwich kuhafile, pikkelikaali ja sipuli, salde, myrttinen ja lime-korianterimajo','description_en'=>'Sandwich zander fillet, pickled cabbage and onion, salad, myrtle and lime-cilantro mayo','price'=>18.50,'category'=>'burgers','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m11','name_fi'=>'KANA-VUOHENJUUSTO','name_en'=>'CHICKEN-GOAT CHEESE','description_fi'=>'Lemon vinaigrette ja jalapenohillo','description_en'=>'Lemon vinaigrette and jalapeño jam','price'=>18,'category'=>'saldet','dietary_tags'=>'VL,G','visible'=>true],
-        ['id'=>'m12','name_fi'=>'SPICY GARLIC TOFU','name_en'=>'SPICY GARLIC TOFU','description_fi'=>'Lemon vinaigrette, balsamico ja paahdettu saksanpähkinä','description_en'=>'Lemon vinaigrette, balsamic and roasted walnut','price'=>18,'category'=>'saldet','dietary_tags'=>'V,G','visible'=>true],
-        ['id'=>'m13','name_fi'=>'SMASH Kids','name_en'=>'SMASH Kids','description_fi'=>'1 rapea 80g pihvi, Juukolan cheddar, paprikamajo, ketsuppi ja salde. Ranut.','description_en'=>'1 crispy 80g patty, Juukola cheddar, pepper mayo, ketchup and salad. Fries.','price'=>10,'category'=>'kids','dietary_tags'=>'L','visible'=>true],
-        ['id'=>'m14','name_fi'=>'RANUT + DIPPI','name_en'=>'FRIES + DIP','description_fi'=>'','description_en'=>'','price'=>6,'category'=>'kids','dietary_tags'=>'G,L,V','visible'=>true],
-        ['id'=>'m15','name_fi'=>'PARMESAANIRANUT','name_en'=>'PARMESAN FRIES','description_fi'=>'Sisältää dipin','description_en'=>'Includes dip','price'=>8,'category'=>'ranut','dietary_tags'=>'','visible'=>true],
-        ['id'=>'m16','name_fi'=>'TUUNATUT RANUT','name_en'=>'LOADED FRIES','description_fi'=>'Aurajuusto, pikkelijalaopeno ja sipuli, paprikamajo sekä kuivattu sipuli','description_en'=>'Blue cheese, pickled jalapeño and onion, pepper mayo and dried onion','price'=>10,'category'=>'ranut','dietary_tags'=>'G,L','visible'=>true],
-        ['id'=>'m17','name_fi'=>'DIPIT','name_en'=>'DIPS','description_fi'=>'Korianteri-limemajo, Sweet & chili -majo, Paprikamajo, Auramajo, BBQ-sauce, Aioli','description_en'=>'Cilantro-lime mayo, Sweet & chili mayo, Pepper mayo, Blue cheese mayo, BBQ sauce, Aioli','price'=>2,'category'=>'dipit','dietary_tags'=>'','visible'=>true],
+        ['id' => 'm0', 'name_fi' => 'Kaikki tacot sisältävät', 'name_en' => 'All tacos include', 'description_fi' => '2 kevätsipulilettua, salaattia, chiliä, pikkelikaalia ja -sipulia, korianteria, kurkkua ja kuivattua sipulia.', 'description_en' => '2 spring onion pancakes, salad, chili, pickled cabbage and onion, coriander, cucumber and crispy onion.', 'price' => 0, 'category' => 'summer-tacos', 'dietary_tags' => '', 'visible' => true],
+        ['id' => 'm1', 'name_fi' => 'KUHATAKUU', 'name_en' => 'KUHATAKUU', 'description_fi' => 'Rapeaa kuhaa, lime-korianterimajoneesia.', 'description_en' => 'Crispy pike perch, lime coriander mayo.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm2', 'name_fi' => 'KANA', 'name_en' => 'CHICKEN', 'description_fi' => 'Rapeaa kanaa, yrttistä ranch-majoneesia.', 'description_en' => 'Crispy chicken, herby ranch mayo.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm3', 'name_fi' => 'HALLOUMI', 'name_en' => 'HALLOUMI', 'description_fi' => 'Rapeaa halloumia, Louisiana-majoneesia.', 'description_en' => 'Crispy halloumi, Louisiana mayo.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'VL', 'visible' => true],
+        ['id' => 'm4', 'name_fi' => 'TOFU', 'name_en' => 'TOFU', 'description_fi' => 'Spicy garlic -tofua, sweet chili -majoneesia.', 'description_en' => 'Spicy garlic tofu, sweet chili mayo.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'V', 'visible' => true],
+        ['id' => 'm5', 'name_fi' => 'PORK O\'CLOCK', 'name_en' => 'PORK O\'CLOCK', 'description_fi' => 'Paahdettua possunkylkeä, savuista BBQ-kastiketta ja aiolia.', 'description_en' => 'Roasted pork belly, smoky BBQ sauce and aioli.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
+
+        ['id' => 'm5b', 'name_fi' => 'Smash-burgerien pohja', 'name_en' => 'Smash burger base', 'description_fi' => '80 g rapea pihvi, salaattia, pikkelöityä sipulia, Myrttistä ja Jukolan cheddaria.', 'description_en' => '80 g crisp patty, salad, pickled onion, Myrttinen relish and Jukola cheddar.', 'price' => 0, 'category' => 'burgers-with-fries', 'dietary_tags' => '', 'visible' => true],
+        ['id' => 'm6', 'name_fi' => 'SINGLE', 'name_en' => 'SINGLE', 'description_fi' => '1 pihvi, Louisiana-majoneesia.', 'description_en' => '1 patty, Louisiana mayo.', 'price' => 14.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'VL', 'visible' => true],
+        ['id' => 'm7', 'name_fi' => 'DOUBLE', 'name_en' => 'DOUBLE', 'description_fi' => '2 pihviä, Louisiana-majoneesia.', 'description_en' => '2 patties, Louisiana mayo.', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'VL', 'visible' => true],
+        ['id' => 'm8', 'name_fi' => 'CHORIZO', 'name_en' => 'CHORIZO', 'description_fi' => '2 pihviä, chorizoa ja ranch-majoneesia.', 'description_en' => '2 patties, chorizo and ranch mayo.', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm9', 'name_fi' => 'HANGOVER', 'name_en' => 'HANGOVER', 'description_fi' => '2 pihviä, pekonia, pikkelöityä jalapenoa, Auraa ja ranch-majoneesia.', 'description_en' => '2 patties, bacon, pickled jalapeno, Aura blue cheese and ranch mayo.', 'price' => 20, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm10', 'name_fi' => 'VEGGIE CLASH', 'name_en' => 'VEGGIE CLASH', 'description_fi' => 'Beyond Meat -pihvi, Jukolan cheddar ja sweet chili -majoneesi. Saatavilla myös vegaanisena.', 'description_en' => 'Beyond Meat patty, Jukola cheddar and sweet chili mayo. Also available vegan.', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm11', 'name_fi' => 'FISHERMAN', 'name_en' => 'FISHERMAN', 'description_fi' => 'Paneroitu kuhafilee, pikkelikaalia ja -sipulia, salaattia, Myrttistä ja ranch-majoneesia.', 'description_en' => 'Breaded pike perch fillet, pickled cabbage and onion, salad, Myrttinen relish and ranch mayo.', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
+
+        ['id' => 'm12', 'name_fi' => 'KANA TAI SAVULOHI', 'name_en' => 'CHICKEN OR SMOKED SALMON', 'description_fi' => 'Vinaigrettea, tomaattia, mummonkurkkua, pikkelöityä punasipulia ja punakaalia, guacamolea ja ranch-majoneesia.', 'description_en' => 'Vinaigrette, tomato, cucumber pickles, pickled red onion and cabbage, guacamole and ranch mayo.', 'price' => 18, 'category' => 'salads', 'dietary_tags' => 'L,G', 'visible' => true],
+
+        ['id' => 'm13', 'name_fi' => 'PARMESAN FRIES + DIPPI', 'name_en' => 'PARMESAN FRIES + DIP', 'description_fi' => '', 'description_en' => '', 'price' => 8, 'category' => 'snacks', 'dietary_tags' => '', 'visible' => true],
+        ['id' => 'm14', 'name_fi' => 'FLIPPED FRIES', 'name_en' => 'FLIPPED FRIES', 'description_fi' => 'Tomaattia, Auraa, pikkelöityä punasipulia, chiliä ja Louisiana-majoneesia.', 'description_en' => 'Tomato, Aura blue cheese, pickled red onion, chili and Louisiana mayo.', 'price' => 10, 'category' => 'snacks', 'dietary_tags' => 'VL,G', 'visible' => true],
+        ['id' => 'm15', 'name_fi' => 'FLIPPED NACHOS', 'name_en' => 'FLIPPED NACHOS', 'description_fi' => 'Cheddar-kastiketta, pikkelöityä punasipulia ja jalapenoa, tomaattia, guacamolea ja ranch-majoneesia.', 'description_en' => 'Cheddar sauce, pickled red onion and jalapeno, tomato, guacamole and ranch mayo.', 'price' => 10, 'category' => 'snacks', 'dietary_tags' => 'L,G', 'visible' => true],
+
+        ['id' => 'm16', 'name_fi' => 'SMASH + FRIES', 'name_en' => 'SMASH + FRIES', 'description_fi' => '1 rapea 80 g pihvi, Jukolan cheddar, ranch-majoneesi, ketsuppi ja salaatti.', 'description_en' => '1 crisp 80 g patty, Jukola cheddar, ranch mayo, ketchup and salad.', 'price' => 10, 'category' => 'kids', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm17', 'name_fi' => 'RANUT + DIPPI', 'name_en' => 'FRIES + DIP', 'description_fi' => '', 'description_en' => '', 'price' => 6, 'category' => 'kids', 'dietary_tags' => 'G,L,V', 'visible' => true],
+        ['id' => 'm18', 'name_fi' => 'FISH & CHIPS', 'name_en' => 'FISH & CHIPS', 'description_fi' => 'Rapeaa kuhaa, ranskalaisia ja ranch-majoneesia.', 'description_en' => 'Crispy pike perch, fries and ranch mayo.', 'price' => 10, 'category' => 'kids', 'dietary_tags' => 'L', 'visible' => true],
+
+        ['id' => 'm19', 'name_fi' => 'Korianteri-lime', 'name_en' => 'Coriander lime', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'L,G', 'visible' => true],
+        ['id' => 'm20', 'name_fi' => 'Sweet chili', 'name_en' => 'Sweet chili', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'V,G', 'visible' => true],
+        ['id' => 'm21', 'name_fi' => 'Louisiana', 'name_en' => 'Louisiana', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'VL,G', 'visible' => true],
+        ['id' => 'm22', 'name_fi' => 'Aioli', 'name_en' => 'Aioli', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'L,G', 'visible' => true],
+        ['id' => 'm23', 'name_fi' => 'Ranch', 'name_en' => 'Ranch', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'L,G', 'visible' => true],
     ];
+}
+
+function optimizeImage(string $srcPath, string $destPath, int $maxDim = 2560, int $quality = 80): bool {
+    if (!file_exists($srcPath)) return false;
+
+    $info = getimagesize($srcPath);
+    if ($info === false) return false;
+
+    $mime = $info['mime'];
+    $src = null;
+
+    switch ($mime) {
+        case 'image/jpeg':
+            $src = imagecreatefromjpeg($srcPath);
+            break;
+        case 'image/png':
+            $src = imagecreatefrompng($srcPath);
+            break;
+        case 'image/webp':
+            $src = imagecreatefromwebp($srcPath);
+            break;
+        case 'image/avif':
+            $src = imagecreatefromavif($srcPath);
+            break;
+        case 'image/gif':
+            $src = imagecreatefromgif($srcPath);
+            break;
+        default:
+            return false;
+    }
+
+    if ($src === false) return false;
+
+    $origW = imagesx($src);
+    $origH = imagesy($src);
+
+    if ($origW <= $maxDim && $origH <= $maxDim) {
+        $newW = $origW;
+        $newH = $origH;
+    } else {
+        $ratio = min($maxDim / $origW, $maxDim / $origH);
+        $newW = (int) round($origW * $ratio);
+        $newH = (int) round($origH * $ratio);
+    }
+
+    $dest = imagecreatetruecolor($newW, $newH);
+
+    if ($mime === 'image/png' || $mime === 'image/gif') {
+        imagealphablending($dest, false);
+        imagesavealpha($dest, true);
+        $transparent = imagecolorallocatealpha($dest, 0, 0, 0, 127);
+        imagefill($dest, 0, 0, $transparent);
+    }
+
+    imagecopyresampled($dest, $src, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+
+    $result = imageavif($dest, $destPath, $quality);
+
+    imagedestroy($src);
+    imagedestroy($dest);
+
+    return $result !== false;
 }
 
 function esc(string $text): string {
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+}
+
+function dietaryLabel(string $tag): string {
+    $map = [
+        'G' => t('Gluteeniton', 'Gluten-free'),
+        'L' => t('Laktoositon', 'Lactose-free'),
+        'VL' => t('Vähälaktoottinen', 'Low-lactose'),
+        'V' => t('Vegaaninen', 'Vegan'),
+        'M' => t('Maidoton', 'Dairy-free'),
+    ];
+    return $map[$tag] ?? $tag;
 }

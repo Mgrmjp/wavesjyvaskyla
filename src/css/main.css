@@ -1407,3 +1407,94 @@
 .dot-restaurant {
   background: #9333ea;
 }
+
+.home-hero-wrap {
+  position: relative;
+  overflow: clip;
+}
+
+.home-hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 85% 8%, rgb(200 216 107 / 8%) 0%, rgb(200 216 107 / 0%) 60%),
+    radial-gradient(80% 90% at 12% 30%, rgb(24 92 79 / 35%) 0%, rgb(24 92 79 / 0%) 65%);
+  z-index: 0;
+}
+
+.home-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.home-display {
+  text-wrap: balance;
+  text-shadow: 0 8px 28px rgb(7 17 15 / 35%);
+}
+
+.home-meta {
+  line-height: 1.65;
+}
+
+.home-cta-row .btn {
+  min-width: 140px;
+  justify-content: center;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+  padding: 0.15rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgb(244 234 215 / 14%);
+  background: rgb(244 234 215 / 4%);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-chip.is-open {
+  color: var(--color-accent);
+  border-color: rgb(200 216 107 / 34%);
+  background: rgb(200 216 107 / 10%);
+}
+
+.status-chip.is-closed {
+  color: var(--color-muted);
+}
+
+.hours-card {
+  backdrop-filter: blur(3px);
+  box-shadow: 0 16px 36px rgb(2 9 8 / 35%);
+}
+
+.hours-card .flex.justify-between.py-1 {
+  border-bottom: 1px solid rgb(244 234 215 / 7%);
+}
+
+.hours-card .flex.justify-between.py-1:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .home-hero-content {
+    padding-top: 1.25rem;
+    padding-bottom: 3rem;
+  }
+
+  .home-display {
+    font-size: 4.3rem;
+  }
+
+  .home-meta {
+    font-size: 0.875rem;
+  }
+
+  .home-cta-row .btn {
+    width: 100%;
+  }
+}

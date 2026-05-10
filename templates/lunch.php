@@ -23,7 +23,7 @@ include INCLUDES_DIR . '/header.php';
 
     <?php foreach ($days as $day): ?>
     <div class="mb-12">
-        <h2 class="text-2xl font-bold tracking-tight mb-1" style="letter-spacing:-0.03em"><?= dayLabel($day) ?></h2>
+        <h2 class="text-2xl font-bold mb-1" style="letter-spacing:0"><?= dayLabel($day) ?></h2>
         <hr class="rule mb-4">
         <?php if (!empty($grouped[$day])): ?>
             <?php foreach ($grouped[$day] as $item): ?>
@@ -33,7 +33,7 @@ include INCLUDES_DIR . '/header.php';
                         <?= esc($item['name_' . lang()] ?? $item['name_fi'] ?? '') ?>
                         <?php if (!empty($item['dietary_tags'])): ?>
                             <?php foreach (explode(',', $item['dietary_tags']) as $tag): ?>
-                            <span class="dietary-tag"><?= esc(trim($tag)) ?></span>
+                            <span class="dietary-tag" data-label="<?= esc(dietaryLabel(trim($tag))) ?>"><?= esc(trim($tag)) ?></span>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>

@@ -5,39 +5,42 @@ $isOpen = isOpenNow();
 include INCLUDES_DIR . '/header.php';
 ?>
 
-<section class="max-w-5xl mx-auto px-5 pt-4 pb-16">
-    <div class="mb-3">
-        <?php if ($isOpen): ?>
-        <span class="text-sm font-semibold"><span class="open-dot on"></span><?= t('Avoinna', 'Open now') ?></span>
-        <?php else: ?>
-        <span class="text-sm font-semibold text-muted"><span class="open-dot off"></span><?= t('Suljettu', 'Closed') ?></span>
-        <?php endif; ?>
-    </div>
-    <h1 class="display text-accent mb-5" style="margin-left:-0.03em">Waves</h1>
-    <div class="flex items-center gap-3 mb-5">
-        <div class="hero-rule"></div>
-        <p class="lead max-w-2xl">
-            <?= esc($s['hero_text_' . lang()] ?? '') ?>
-        </p>
-    </div>
-    <p class="text-sm text-muted max-w-xl mb-8">
-        <?= t('Satamakatu 2 B, Jyväskylä &nbsp;·&nbsp; Kesäterassi &nbsp;·&nbsp; Lounas ma–pe &nbsp;·&nbsp; Tapahtumia läpi kesän', 'Satamakatu 2 B, Jyväskylä &nbsp;·&nbsp; Summer terrace &nbsp;·&nbsp; Lunch Mon–Fri &nbsp;·&nbsp; Events all summer') ?>
-    </p>
-    <div class="flex flex-wrap gap-3 mb-12">
-        <a href="<?= url('menu') ?>" class="btn"><?= t('Menu', 'Menu') ?><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <a href="<?= url('yhteystiedot') ?>" class="btn btn-outline"><?= t('Yhteystiedot', 'Contact') ?></a>
-    </div>
-    <div class="rule-accent mb-10"></div>
-    <div class="grid-asymmetric">
-        <div>
-            <p class="label mb-4"><?= t('Tietoa', 'About') ?></p>
-            <div class="prose text-muted max-w-prose">
-                <?= nl2br(esc($s['intro_' . lang()] ?? '')) ?>
-            </div>
+<section class="home-hero-wrap">
+    <div class="home-hero-bg"></div>
+    <div class="max-w-5xl mx-auto px-5 pt-4 pb-16 home-hero-content">
+        <div class="mb-3">
+            <?php if ($isOpen): ?>
+            <span class="status-chip is-open"><span class="open-dot on"></span><?= t('Avoinna nyt', 'Open now') ?></span>
+            <?php else: ?>
+            <span class="status-chip is-closed"><span class="open-dot off"></span><?= t('Suljettu', 'Closed') ?></span>
+            <?php endif; ?>
         </div>
-        <div class="hours-card">
-            <p class="label"><?= t('Aukioloajat', 'Opening Hours') ?></p>
-            <?php include INCLUDES_DIR . '/opening-hours.php'; ?>
+        <h1 class="display text-accent mb-5 home-display" style="margin-left:-0.03em">Waves</h1>
+        <div class="flex items-center gap-3 mb-5">
+            <div class="hero-rule"></div>
+            <p class="lead max-w-2xl">
+                <?= esc($s['hero_text_' . lang()] ?? '') ?>
+            </p>
+        </div>
+        <p class="text-sm text-muted max-w-xl mb-8 home-meta">
+            <?= t('Satamakatu 2 B, Jyväskylä &nbsp;·&nbsp; Kesäterassi &nbsp;·&nbsp; Lounas ma–pe &nbsp;·&nbsp; Tapahtumia läpi kesän', 'Satamakatu 2 B, Jyväskylä &nbsp;·&nbsp; Summer terrace &nbsp;·&nbsp; Lunch Mon–Fri &nbsp;·&nbsp; Events all summer') ?>
+        </p>
+        <div class="flex flex-wrap gap-3 mb-12 home-cta-row">
+            <a href="<?= url('menu') ?>" class="btn"><?= t('Menu', 'Menu') ?><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <a href="<?= url('yhteystiedot') ?>" class="btn btn-outline"><?= t('Yhteystiedot', 'Contact') ?></a>
+        </div>
+        <div class="rule-accent mb-10"></div>
+        <div class="grid-asymmetric">
+            <div>
+                <p class="label mb-4"><?= t('Tietoa', 'About') ?></p>
+                <div class="prose text-muted max-w-prose">
+                    <?= $s['intro_' . lang()] ?? '' ?>
+                </div>
+            </div>
+            <div class="hours-card">
+                <p class="label"><?= t('Aukioloajat', 'Opening Hours') ?></p>
+                <?php include INCLUDES_DIR . '/opening-hours.php'; ?>
+            </div>
         </div>
     </div>
 </section>

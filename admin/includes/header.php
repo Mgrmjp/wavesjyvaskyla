@@ -22,6 +22,7 @@ $navGroups = [
     ],
     'Media' => [
         ['href' => '/admin/gallery.php', 'label' => 'Kuvagalleria'],
+        ['href' => '/admin/optimize.php', 'label' => 'Optimointi'],
     ],
     'Asetukset' => [
         ['href' => '/admin/settings.php', 'label' => 'Asetukset'],

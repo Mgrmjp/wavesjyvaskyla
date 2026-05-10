@@ -54,17 +54,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!in_array($ext, $allowed)) $error = 'Ei tuettu tiedostomuoto. Sallitut: jpg, png, webp, avif';
             elseif ($file['size'] > 10 * 1024 * 1024) $error = 'Tiedosto on liian suuri (max 10 MB)';
             else {
-                $filename = generateId() . '.' . $ext;
-                if (move_uploaded_file($file['tmp_name'], ROOT . '/uploads/' . $filename)) {
+                $tmpDest = ROOT . '/uploads/tmp_' . generateId() . '.' . $ext;
+                $avifFilename = generateId() . '.avif';
+                $avifDest = ROOT . '/uploads/' . $avifFilename;
+                if (move_uploaded_file($file['tmp_name'], $tmpDest) && optimizeImage($tmpDest, $avifDest)) {
+                    @unlink($tmpDest);
                     $gallery[] = [
-                        'id' => generateId(), 'filename' => $filename,
+                        'id' => generateId(), 'filename' => $avifFilename,
                         'caption_fi' => $_POST['caption_fi'] ?? '', 'caption_en' => $_POST['caption_en'] ?? '',
                         'alt_fi' => $_POST['alt_fi'] ?? '', 'alt_en' => $_POST['alt_en'] ?? '',
                         'visible' => true, 'added' => date('Y-m-d'),
                     ];
                     DataStore::save('gallery', $gallery);
                     header('Location: /admin/gallery.php'); exit;
-                } else $error = 'Tiedoston tallennus epäonnistui.';
+                } else {
+                    @unlink($tmpDest);
+                    $error = 'Kuvan optimointi epäonnistui.';
+                }
             }
         }
     }

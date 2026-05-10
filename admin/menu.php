@@ -183,13 +183,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (in_array($uploadError, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) { header('Location: /admin/menu.php?status=upload-too-large#menu-upload'); exit; }
         if ($uploadError !== UPLOAD_ERR_OK || empty($file['tmp_name'])) { header('Location: /admin/menu.php?status=upload-failed#menu-upload'); exit; }
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
         if (!in_array($ext, $allowed)) { header('Location: /admin/menu.php?status=upload-error#menu-upload'); exit; }
         if ($file['size'] > 10 * 1024 * 1024) { header('Location: /admin/menu.php?status=upload-too-large#menu-upload'); exit; }
-        $filename = 'menu_' . generateId() . '.' . $ext;
-        if (move_uploaded_file($file['tmp_name'], ROOT . '/uploads/' . $filename)) {
+        $tmpDest = ROOT . '/uploads/tmp_' . generateId() . '.' . $ext;
+        $avifFilename = 'menu_' . generateId() . '.avif';
+        $avifDest = ROOT . '/uploads/' . $avifFilename;
+        if (move_uploaded_file($file['tmp_name'], $tmpDest) && optimizeImage($tmpDest, $avifDest)) {
+            @unlink($tmpDest);
             header('Location: /admin/menu.php?status=upload-success#menu-upload'); exit;
         }
+        @unlink($tmpDest);
         header('Location: /admin/menu.php?status=upload-failed#menu-upload'); exit;
     } elseif ($action === 'create_item') {
         $nameFi = trim($_POST['new_name_fi'] ?? '');
@@ -241,7 +245,7 @@ include __DIR__ . '/includes/header.php';
 <?php
 $flashMessages = [
     'upload-success' => 'Kuva ladattiin. Se on nyt valittavissa annosten mediavalitsimissa.',
-    'upload-error' => 'Ei tuettu tiedostomuoto. Sallitut: jpg, jpeg, png, webp.',
+    'upload-error' => 'Ei tuettu tiedostomuoto. Sallitut: jpg, jpeg, png, webp, avif.',
     'upload-too-large' => 'Tiedosto on liian suuri. Maksimikoko on 10 MB.',
     'upload-failed' => 'Kuvan tallennus epäonnistui.',
     'upload-missing' => 'Valitse ladattava kuva ensin.',
@@ -367,9 +371,9 @@ if (isset($flashMessages[$flash])): ?><div class="alert"><?= esc($flashMessages[
         <input type="hidden" name="action" value="upload">
         <input type="hidden" name="MAX_FILE_SIZE" value="10485760">
         <div class="admin-dropzone" id="menu-dropzone">
-            <input type="file" name="menu_image" id="menu-file" accept="image/jpeg,image/png,image/webp">
+            <input type="file" name="menu_image" id="menu-file" accept="image/jpeg,image/png,image/webp,image/avif">
             <div class="admin-dropzone__icon">▢</div>
-            <p class="admin-dropzone__text">Kuva (jpg, png, webp, max 10 MB)</p>
+            <p class="admin-dropzone__text">Kuva (jpg, png, webp, avif · max 10 MB)</p>
             <p class="admin-dropzone__hint">Raahaa kuva tähän tai klikkaa valitaksesi</p>
             <div class="admin-dropzone__preview" style="display:none"></div>
         </div>
