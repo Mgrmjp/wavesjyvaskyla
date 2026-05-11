@@ -22,6 +22,8 @@ $isOpen = isOpenNow();
 <link rel="icon" href="<?= publicAsset('/favicon.svg') ?>" type="image/svg+xml">
 <link rel="icon" href="<?= publicAsset('/favicon-16x16.png') ?>" sizes="16x16" type="image/png">
 <link rel="icon" href="<?= publicAsset('/favicon-32x32.png') ?>" sizes="32x32" type="image/png">
+<link rel="icon" href="<?= publicAsset('/android-chrome-192x192.png') ?>" sizes="192x192" type="image/png">
+<link rel="icon" href="<?= publicAsset('/android-chrome-512x512.png') ?>" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="<?= publicAsset('/apple-touch-icon.png') ?>">
 <link rel="manifest" href="<?= publicAsset('/site.webmanifest') ?>">
 <meta name="theme-color" content="#07110f">
@@ -58,7 +60,12 @@ $slugEn = Router::slugForLang($page['slug'] ?? '', 'en');
     <p class="demo-disclaimer__text">
         <?= t('Huom: sivuston tiedot voivat olla osittain keskeneräisiä demovaiheen vuoksi.', 'Note: some site information may be incomplete or inaccurate during this demo phase.') ?>
     </p>
-    <button type="button" class="demo-disclaimer__close" aria-label="<?= t('Sulje ilmoitus', 'Dismiss notice') ?>">×</button>
+    <button type="button" class="demo-disclaimer__close" aria-label="<?= t('Sulje ilmoitus', 'Dismiss notice') ?>">
+        <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+            <line x1="2" y1="2" x2="10" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="10" y1="2" x2="2" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+    </button>
 </div>
 
 <?php if (count($notices)): ?>
