@@ -1,5 +1,6 @@
 <?php
 $s = settings();
+$loadLeaflet = true;
 include INCLUDES_DIR . '/header.php';
 ?>
 

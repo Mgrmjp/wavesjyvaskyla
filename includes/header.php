@@ -13,9 +13,17 @@ $isOpen = isOpenNow();
 <link rel="stylesheet" href="<?= asset('css/index.css') ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap"></noscript>
+<link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap"></noscript>
+<?php if (!empty($loadLeaflet)): ?>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<?php endif; ?>
+<?php if (($page['slug'] ?? '') === ''): ?>
+<link rel="preload" as="image" href="/assets/files/frontpage-hero-upscaled.avif" fetchpriority="high">
+<?php endif; ?>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 <link rel="canonical" href="https://wavesjyvaskyla.fi<?= url($page['slug'] ?? '') ?>">
 <link rel="icon" href="<?= publicAsset('/favicon.ico') ?>">
