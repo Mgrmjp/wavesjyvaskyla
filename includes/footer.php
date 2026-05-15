@@ -1,8 +1,8 @@
 </main>
 
-<footer class="border-t border-editorial mt-16">
-    <div class="max-w-5xl mx-auto px-5 py-12">
-        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+<footer class="site-footer border-t border-editorial">
+    <div class="site-footer__inner max-w-5xl mx-auto px-5">
+        <div class="footer__top">
             <div>
                 <?php
                 $svgPath = __DIR__ . '/../assets/files/waves.svg';
@@ -30,11 +30,11 @@
             </div>
             <?php endif; ?>
         </div>
-        <div class="border-t border-editorial mt-8 pt-6 flex flex-col md:flex-row justify-between gap-2 text-xs text-muted">
+        <div class="footer__bottom border-t border-editorial text-xs text-muted">
             <p>&copy; <?= date('Y') ?> Konttiravintola Waves</p>
             <p><?= t('Satamakatu 2 B, 40100 Jyväskylä', 'Satamakatu 2 B, 40100 Jyväskylä') ?></p>
         </div>
-        <p class="text-xs text-muted mt-3 opacity-50">
+        <p class="footer__credit text-xs text-muted opacity-50">
             <?= t('Sivusto: ', 'Site by: ') ?><a href="https://www.linkedin.com/in/miikkamgr/" target="_blank" rel="noopener" class="hover:text-text transition-colors">Miikka</a>
         </p>
     </div>

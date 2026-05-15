@@ -7,41 +7,54 @@ include INCLUDES_DIR . '/header.php';
 
 <section class="home-hero-wrap">
     <div class="home-hero-bg"></div>
-    <div class="max-w-5xl mx-auto px-5 pt-4 pb-16 home-hero-content">
-        <div class="mb-3">
-            <?php if ($isOpen): ?>
-            <span class="status-chip is-open"><span class="open-dot on"></span><?= t('Avoinna nyt', 'Open now') ?></span>
-            <?php else: ?>
-            <span class="status-chip is-closed"><span class="open-dot off"></span><?= t('Suljettu', 'Closed') ?></span>
-            <?php endif; ?>
-        </div>
-        <h1 class="display text-accent mb-5 home-display" style="margin-left:-0.03em">Waves</h1>
-        <div class="flex items-center gap-3 mb-5">
-            <div class="hero-rule"></div>
-            <p class="lead max-w-2xl">
-                <?= esc($s['hero_text_' . lang()] ?? '') ?>
-            </p>
-        </div>
-        <p class="text-sm text-muted max-w-xl mb-8 home-meta">
-            <?= t('Satamakatu 2 B, Jyväskylä &nbsp;·&nbsp; Kesäterassi &nbsp;·&nbsp; Lounas ma–pe &nbsp;·&nbsp; Tapahtumia läpi kesän', 'Satamakatu 2 B, Jyväskylä &nbsp;·&nbsp; Summer terrace &nbsp;·&nbsp; Lunch Mon–Fri &nbsp;·&nbsp; Events all summer') ?>
-        </p>
-        <div class="flex flex-wrap gap-3 mb-12 home-cta-row">
-            <a href="<?= url('menu') ?>" class="btn"><?= t('Menu', 'Menu') ?><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-            <a href="<?= url('yhteystiedot') ?>" class="btn btn-outline"><?= t('Yhteystiedot', 'Contact') ?></a>
-        </div>
-        <div class="rule-accent mb-10"></div>
-        <div class="grid-asymmetric">
-            <div>
-                <p class="label mb-4"><?= t('Tietoa', 'About') ?></p>
-                <div class="prose text-muted max-w-prose">
-                    <?= $s['intro_' . lang()] ?? '' ?>
+    <div class="max-w-5xl mx-auto px-5 home-hero-content">
+        <div class="home-hero-inner">
+            <div class="home-hero-main">
+                <div class="home-hero-heading">
+                    <h1 class="display text-accent home-display" style="margin-left:-0.03em">Waves</h1>
+                    <?php if ($isOpen): ?>
+                    <span class="status-chip is-open"><span class="open-dot on"></span><?= t('Avoinna nyt', 'Open now') ?></span>
+                    <?php else: ?>
+                    <span class="status-chip is-closed"><span class="open-dot off"></span><?= t('Suljettu', 'Closed') ?></span>
+                    <?php endif; ?>
+                </div>
+                <div class="home-hero-subtitle">
+                    <div class="hero-rule"></div>
+                    <p class="lead">
+                        <?= esc($s['hero_text_' . lang()] ?? '') ?>
+                    </p>
+                </div>
+                <p class="text-sm text-muted home-meta">
+                    <span><?= t('Satamakatu 2 B, Jyväskylä', 'Satamakatu 2 B, Jyväskylä') ?></span>
+                    <span><?= t('Kesäterassi', 'Summer terrace') ?></span>
+                    <span><?= t('Lounas ma–pe', 'Lunch Mon–Fri') ?></span>
+                    <span><?= t('Tapahtumia läpi kesän', 'Events all summer') ?></span>
+                </p>
+                <div class="home-cta-row">
+                    <a href="<?= url('menu') ?>" class="btn"><?= t('Menu', 'Menu') ?><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <a href="<?= url('yhteystiedot') ?>" class="btn btn-outline"><?= t('Yhteystiedot', 'Contact') ?></a>
+                </div>
+                <div class="rule-accent home-divider"></div>
+                <div class="home-about-block">
+                    <p class="label"><?= t('Tietoa', 'About') ?></p>
+                    <div class="prose text-muted home-about-text">
+                        <?= $s['intro_' . lang()] ?? '' ?>
+                    </div>
                 </div>
             </div>
-            <div class="hours-card">
+            <aside class="hours-card home-opening-card">
                 <p class="label"><?= t('Aukioloajat', 'Opening Hours') ?></p>
                 <?php include INCLUDES_DIR . '/opening-hours.php'; ?>
-            </div>
+            </aside>
         </div>
+    </div>
+    <div class="wave-divider" aria-hidden="true">
+        <svg class="wave wave--back" viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path d="M0,76 C180,32 360,116 540,76 C720,32 900,116 1080,76 C1260,32 1350,56 1440,76 L1440,120 L0,120 Z"></path>
+        </svg>
+        <svg class="wave wave--front" viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path d="M0,64 C160,112 320,16 480,64 C640,112 800,16 960,64 C1120,112 1280,16 1440,64 L1440,120 L0,120 Z"></path>
+        </svg>
     </div>
 </section>
 
