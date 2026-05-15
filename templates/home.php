@@ -48,14 +48,31 @@ include INCLUDES_DIR . '/header.php';
             </aside>
         </div>
     </div>
-    <div class="wave-divider" aria-hidden="true">
-        <svg class="wave wave--back" viewBox="0 0 1440 120" preserveAspectRatio="none">
-            <path d="M0,76 C180,32 360,116 540,76 C720,32 900,116 1080,76 C1260,32 1350,56 1440,76 L1440,120 L0,120 Z"></path>
-        </svg>
-        <svg class="wave wave--front" viewBox="0 0 1440 120" preserveAspectRatio="none">
-            <path d="M0,64 C160,112 320,16 480,64 C640,112 800,16 960,64 C1120,112 1280,16 1440,64 L1440,120 L0,120 Z"></path>
-        </svg>
-    </div>
+<div class="wave-divider" aria-hidden="true">
+    <svg class="wave wave--back" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,76
+                 C180,54 360,96 540,76
+                 C720,56 900,96 1080,77
+                 C1260,56 1350,66 1440,76
+                 L1440,120 L0,120 Z"></path>
+    </svg>
+
+    <svg class="wave wave--mid" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,58
+                 C180,38 360,78 540,58
+                 C720,38 900,78 1080,58
+                 C1200,44 1320,50 1440,62
+                 L1440,120 L0,120 Z"></path>
+    </svg>
+
+    <svg class="wave wave--front" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,68
+                 C240,92 360,44 540,68
+                 C720,92 840,44 1020,68
+                 C1200,92 1320,46 1440,68
+                 L1440,120 L0,120 Z"></path>
+    </svg>
+</div>
 </section>
 
 <?php

@@ -495,6 +495,8 @@
     height: 28px;
     position: relative;
     z-index: 1;
+    animation: wave-pulse 4s ease-in-out infinite;
+    transform-origin: center center;
   }
 
   .menu-wave-divider path {
@@ -1581,6 +1583,12 @@
   margin-top: 0.75rem;
 }
 
+.site-footer svg {
+  /* Animation removed for simplicity */
+}
+
+
+
 @media (min-width: 768px) {
   .footer__top,
   .footer__bottom {
@@ -1608,15 +1616,26 @@
   }
 }
 
-@keyframes title-wave {
-  from {
-    background-position-x: 0;
-  }
-
-  to {
-    background-position-x: 200px;
-  }
+@keyframes wave-float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -2px; }
 }
+
+@keyframes wave-pulse {
+  0%, 100% { scale: 1; opacity: 0.35; }
+  50%      { scale: 1.02 1.06; opacity: 0.45; }
+}
+
+@keyframes title-wave {
+  from { background-position-x: 0; }
+  to   { background-position-x: 200px; }
+}
+
+@keyframes title-wave-reverse {
+  from { background-position-x: 200px; }
+  to   { background-position-x: 0; }
+}
+
 
 .home-hero-wrap {
   position: relative;
@@ -1687,18 +1706,31 @@
   text-shadow: 0 8px 28px rgb(7 17 15 / 35%);
 }
 
+.home-display::before,
 .home-display::after {
   content: '';
   position: absolute;
-  right: 0.05em;
-  bottom: -0.18em;
   left: 0.05em;
+  right: 0.05em;
+  pointer-events: none;
+}
+
+.home-display::before {
+  bottom: -0.28em;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,6 C9.1,6 15.9,10 25,10 C34.1,10 40.9,14 50,14 C59.1,14 65.9,10 75,10 C84.1,10 90.9,6 100,6 C109.1,6 115.9,10 125,10 C134.1,10 140.9,14 150,14 C159.1,14 165.9,10 175,10 C184.1,10 190.9,6 200,6' fill='none' stroke='%23d6ef62' stroke-width='2'/%3E%3C/svg%3E") repeat-x;
+  background-size: 200px 16px;
+  opacity: 0.2;
+  animation: title-wave-reverse 21s linear infinite;
+}
+
+.home-display::after {
+  bottom: -0.18em;
   height: 10px;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 C 25 0, 25 20, 50 10 S 75 0, 100 10 S 125 20, 150 10 S 175 0, 200 10' fill='none' stroke='%23d6ef62' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")
-    repeat-x;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,14 C9.1,14 15.9,10 25,10 C34.1,10 40.9,6 50,6 C59.1,6 65.9,10 75,10 C84.1,10 90.9,14 100,14 C109.1,14 115.9,10 125,10 C134.1,10 140.9,6 150,6 C159.1,6 165.9,10 175,10 C184.1,10 190.9,14 200,14' fill='none' stroke='%23d6ef62' stroke-width='2'/%3E%3C/svg%3E") repeat-x;
   background-size: 200px 20px;
   opacity: 0.55;
-  animation: title-wave 7s linear infinite;
+  animation: title-wave 14s linear infinite;
 }
 
 .home-meta {
@@ -1838,16 +1870,31 @@
 
 .wave--back {
   opacity: 0.28;
-  animation: wave-slide 22s linear infinite;
+  animation:
+    wave-slide 40s linear infinite,
+    wave-float 14s ease-in-out infinite;
+}
+
+.wave--mid {
+  opacity: 0.45;
+  animation:
+    wave-slide 32s linear infinite reverse,
+    wave-float 12s ease-in-out infinite reverse;
 }
 
 .wave--front {
   opacity: 0.9;
-  animation: wave-slide 13s linear infinite reverse;
+  animation:
+    wave-slide 26s linear infinite reverse,
+    wave-float 10s ease-in-out infinite;
 }
 
 .wave--back path {
   fill: #0b3328;
+}
+
+.wave--mid path {
+  fill: #14594a;
 }
 
 .wave--front path {
@@ -1884,7 +1931,13 @@
 
   .home-display::after {
     height: 7px;
-    background-size: 160px 16px;
+    background-size: 160px 14px;
+    bottom: -0.12em;
+  }
+  .home-display::before {
+    height: 8px;
+    background-size: 160px 12px;
+    bottom: -0.2em;
   }
 
   .home-meta {
@@ -1918,6 +1971,8 @@
   .wave,
   .wave-divider svg,
   .home-display::after,
+  .home-display::before,
+  .menu-wave-divider svg,
   .status-chip,
   .open-dot {
     animation: none !important;
