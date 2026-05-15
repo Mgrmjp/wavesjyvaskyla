@@ -5,7 +5,7 @@ $isOpen = isOpenNow();
 include INCLUDES_DIR . '/header.php';
 ?>
 
-<section class="home-hero-wrap">
+<section class="home-hero-wrap" style="--home-hero-image: url('<?= esc(publicAsset('/assets/files/frontpage-hero-upscaled.avif')) ?>');">
     <div class="home-hero-bg"></div>
     <div class="max-w-5xl mx-auto px-5 home-hero-content">
         <div class="home-hero-inner">

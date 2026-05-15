@@ -22,7 +22,7 @@ $isOpen = isOpenNow();
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <?php endif; ?>
 <?php if (($page['slug'] ?? '') === ''): ?>
-<link rel="preload" as="image" href="/assets/files/frontpage-hero-upscaled.avif" fetchpriority="high">
+<link rel="preload" as="image" href="<?= publicAsset('/assets/files/frontpage-hero-upscaled.avif') ?>" fetchpriority="high">
 <?php endif; ?>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 <link rel="canonical" href="https://wavesjyvaskyla.fi<?= url($page['slug'] ?? '') ?>">
