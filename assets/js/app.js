@@ -148,12 +148,12 @@
   if (wavePaths.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     var waveLayers = [];
     var configs = [
-      { freqs: [0.05, 0.1, 0.2], amps: [1, 0.6, 0.3], phaseMults: [0.8, 1.4, 0.3] },
-      { freqs: [0.05, 0.15, 0.25], amps: [0.7, 0.5, 0.3], phaseMults: [1.1, 0.7, 1.6] },
-      { freqs: [0.1, 0.15, 0.2], amps: [0.6, 0.4, 0.2], phaseMults: [0.5, 1.2, 0.9] }
+      { freqs: [0.05, 0.1, 0.2], amps: [1, 0.6, 0.3], phaseMults: [2, 4, 6] },
+      { freqs: [0.05, 0.15, 0.25], amps: [0.7, 0.5, 0.3], phaseMults: [4, 2, 8] },
+      { freqs: [0.1, 0.15, 0.2], amps: [0.6, 0.4, 0.2], phaseMults: [6, 4, 2] }
     ];
-    var surfIdxs = [1, 7, 13];
-    var cpIdxs = [3, 5, 9, 11, 15, 17];
+    var surfIdxs = [1, 7, 13, 19];
+    var cpIdxs = [3, 5, 9, 11, 15, 17, 21, 23];
 
     wavePaths.forEach(function (el, i) {
       var nums = el.getAttribute('d').match(/[\d.]+/g).map(Number);
@@ -182,12 +182,18 @@
 
         n[1] += offsetFor(1, n, f, a, p, t);
         surfIdxs.forEach(function (si) { n[si] += offsetFor(si, n, f, a, p, t); });
-        n[19] = n[1];
-
         cpIdxs.forEach(function (ci) { n[ci] += offsetFor(ci, n, f, a, p, t); });
 
+        n[13] = n[1];
+        n[15] = n[3];
+        n[17] = n[5];
+        n[19] = n[7];
+        n[21] = n[9];
+        n[23] = n[11];
+        n[25] = n[1];
+
         var d = 'M' + n[0].toFixed(1) + ',' + n[1].toFixed(1);
-        for (var j = 2; j < 20; j += 6) {
+        for (var j = 2; j < 26; j += 6) {
           d += 'C' + n[j].toFixed(1) + ',' + n[j + 1].toFixed(1) + ' ' +
                n[j + 2].toFixed(1) + ',' + n[j + 3].toFixed(1) + ' ' +
                n[j + 4].toFixed(1) + ',' + n[j + 5].toFixed(1);
