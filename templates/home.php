@@ -1,7 +1,6 @@
 <?php
 $s = settings();
 $notices = notices();
-$isOpen = isOpenNow();
 include INCLUDES_DIR . '/header.php';
 ?>
 
@@ -11,33 +10,25 @@ include INCLUDES_DIR . '/header.php';
         <div class="home-hero-inner">
             <div class="home-hero-main">
                 <div class="home-hero-heading">
-                    <h1 class="display text-accent home-display" style="margin-left:-0.03em">Waves</h1>
-                    <?php if ($isOpen): ?>
-                    <span class="status-chip is-open"><span class="open-dot on"></span><?= t('Avoinna nyt', 'Open now') ?></span>
-                    <?php else: ?>
-                    <span class="status-chip is-closed"><span class="open-dot off"></span><?= t('Suljettu', 'Closed') ?></span>
-                    <?php endif; ?>
+                    <h1 class="display text-accent home-display">Waves</h1>
                 </div>
-                <div class="home-hero-subtitle">
-                    <div class="hero-rule"></div>
-                    <p class="lead">
-                        <?= esc($s['hero_text_' . lang()] ?? '') ?>
-                    </p>
-                </div>
-                <p class="text-sm text-muted home-meta">
+                <p class="lead home-hero-subtitle">
+                    <?= esc($s['hero_text_' . lang()] ?? '') ?>
+                </p>
+                <p class="text-sm home-meta">
                     <span><?= t('Satamakatu 2 B, Jyväskylä', 'Satamakatu 2 B, Jyväskylä') ?></span>
-                    <span><?= t('Kesäterassi', 'Summer terrace') ?></span>
-                    <span><?= t('Lounas ma–pe', 'Lunch Mon–Fri') ?></span>
-                    <span><?= t('Tapahtumia läpi kesän', 'Events all summer') ?></span>
+                    <span><?= t('Sataman terassi', 'Harbor terrace') ?></span>
+                    <span><?= t('Tacot & burgerit', 'Tacos & burgers') ?></span>
+                    <span><?= t('Ei pöytävarauksia', 'No reservations') ?></span>
                 </p>
                 <div class="home-cta-row">
-                    <a href="<?= url('menu') ?>" class="btn"><?= t('Menu', 'Menu') ?><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-                    <a href="<?= url('yhteystiedot') ?>" class="btn btn-outline"><?= t('Yhteystiedot', 'Contact') ?></a>
+                    <a href="<?= url('menu') ?>" class="btn btn-primary"><?= t('Ruokalista', 'Menu') ?><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <a href="<?= url('yhteystiedot') ?>" class="btn btn-secondary"><?= t('Yhteystiedot', 'Contact') ?></a>
                 </div>
                 <div class="rule-accent home-divider"></div>
                 <div class="home-about-block">
                     <p class="label"><?= t('Tietoa', 'About') ?></p>
-                    <div class="prose text-muted home-about-text">
+                    <div class="prose home-about-text">
                         <?= $s['intro_' . lang()] ?? '' ?>
                     </div>
                 </div>
@@ -61,6 +52,26 @@ include INCLUDES_DIR . '/header.php';
         <path d="M0,68 C80,92 200,96 360,68 C520,40 640,44 720,68 C800,92 920,96 1080,68 C1240,40 1360,44 1440,68 L1440,120 L0,120 Z"></path>
     </svg>
 </div>
+</section>
+
+<section class="home-highlights">
+    <div class="max-w-5xl mx-auto px-5">
+        <p class="label home-highlights__label"><?= t('Kesä Wavesilla', 'Summer at Waves') ?></p>
+        <div class="highlight-grid">
+            <article class="highlight-card">
+                <h2><?= t('Kesän maut', 'Summer flavors') ?></h2>
+                <p><?= t('Rapeat tacot, smash-burgerit ja raikkaat juomat sataman äärellä.', 'Crisp tacos, smash burgers, and cold drinks by the harbor.') ?></p>
+            </article>
+            <article class="highlight-card">
+                <h2><?= t('Sataman terassi', 'Harbor terrace') ?></h2>
+                <p><?= t('Rento paikka aurinkoon, iltaan ja tapahtumien keskelle.', 'An easy place for sun, evenings, and the harbor buzz.') ?></p>
+            </article>
+            <article class="highlight-card">
+                <h2><?= t('Ei pöytävarauksia', 'No reservations') ?></h2>
+                <p><?= t('Tule paikalle, nappaa annos ja jää hetkeksi.', 'Walk in, grab something good, and stay a while.') ?></p>
+            </article>
+        </div>
+    </div>
 </section>
 
 <?php

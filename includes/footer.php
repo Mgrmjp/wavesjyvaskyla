@@ -1,9 +1,23 @@
 </main>
 
+<?php
+$footerHours = array_values(array_filter(
+    $s['opening_hours'] ?? [],
+    static fn(array $hour): bool => !($hour['closed'] ?? false)
+));
+$address = trim((string) ($s['address'] ?? ''));
+$addressParts = $address !== '' ? array_map('trim', explode(',', $address, 2)) : [];
+$socialLabels = [
+    'instagram' => 'Instagram',
+    'tiktok' => 'TikTok',
+    'facebook' => 'Facebook',
+    'x' => 'X',
+];
+?>
 <footer class="site-footer border-t border-editorial">
     <div class="site-footer__inner max-w-5xl mx-auto px-5">
-        <div class="footer__top">
-            <div>
+        <div class="footer-grid">
+            <div class="footer-column footer-column--brand">
                 <?php
                 $svgPath = __DIR__ . '/../assets/files/waves.svg';
                 $svg = file_exists($svgPath) ? file_get_contents($svgPath) : '';
@@ -18,21 +32,62 @@
                     echo '<p class="text-xl font-extrabold mb-2" style="letter-spacing:0">WAVES</p>';
                 }
                 ?>
-                <p class="text-muted text-sm max-w-xs"><?= t('Konttiravintola Jyväskylän satamassa. Ei pöytävarauksia.', 'Container restaurant at Jyväskylä harbor. No reservations.') ?></p>
+                <p class="footer-copy text-sm"><?= t('Konttiravintola Jyväskylän satamassa. Ei pöytävarauksia.', 'Container restaurant at Jyväskylä harbor. No reservations.') ?></p>
             </div>
-                <?php if (!empty($s['social_links'])): ?>
-            <div class="flex gap-4">
+
+            <div class="footer-column">
+                <p class="footer-heading"><?= t('Käy', 'Visit') ?></p>
+                <?php if ($addressParts !== []): ?>
+                <p class="footer-copy">
+                    <span><?= esc($addressParts[0] ?? '') ?></span>
+                    <?php if (!empty($addressParts[1])): ?>
+                    <span><?= esc($addressParts[1]) ?></span>
+                    <?php endif; ?>
+                </p>
+                <?php else: ?>
+                <p class="footer-copy">
+                    <span><?= t('Satamakatu 2 B', 'Satamakatu 2 B') ?></span>
+                    <span>40100 Jyväskylä</span>
+                </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="footer-column">
+                <p class="footer-heading"><?= t('Auki', 'Open') ?></p>
+                <?php if ($footerHours !== []): ?>
+                <div class="footer-hours">
+                    <?php foreach ($footerHours as $hour): ?>
+                    <p class="footer-hours-row">
+                        <span><?= dayLabel($hour['day'] ?? '') ?></span>
+                        <span><?= esc($hour['open'] ?? '') ?>–<?= esc($hour['close'] ?? '') ?></span>
+                    </p>
+                    <?php endforeach; ?>
+                </div>
+                <?php else: ?>
+                <p class="footer-copy">
+                    <span><?= t('Tarkista päivän', 'Check today') ?></span>
+                    <span><?= t('aukioloajat yllä.', 'hours above.') ?></span>
+                </p>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($s['social_links'])): ?>
+            <div class="footer-column">
+                <p class="footer-heading"><?= t('Seuraa', 'Follow') ?></p>
+                <div class="footer-socials">
                 <?php foreach ($s['social_links'] as $link): ?>
-                <a href="<?= esc($link['url'] ?? '') ?>" target="_blank" rel="noopener" class="text-muted hover:text-text transition-colors flex items-center" aria-label="<?= ucfirst($link['platform'] ?? '') ?>">
-                    <?= socialIcon($link['platform'] ?? '') ?>
+                <?php $platform = strtolower((string) ($link['platform'] ?? '')); ?>
+                <a href="<?= esc($link['url'] ?? '') ?>" target="_blank" rel="noopener" class="footer-link">
+                    <?= esc($socialLabels[$platform] ?? ucfirst($platform)) ?>
                 </a>
                 <?php endforeach; ?>
+                </div>
             </div>
             <?php endif; ?>
         </div>
         <div class="footer__bottom border-t border-editorial text-xs text-muted">
             <p>&copy; <?= date('Y') ?> Konttiravintola Waves</p>
-            <p><?= t('Satamakatu 2 B, 40100 Jyväskylä', 'Satamakatu 2 B, 40100 Jyväskylä') ?></p>
+            <p><?= esc($address !== '' ? $address : t('Satamakatu 2 B, 40100 Jyväskylä', 'Satamakatu 2 B, 40100 Jyväskylä')) ?></p>
         </div>
         <p class="footer__credit text-xs text-muted opacity-50">
             <?= t('Sivusto: ', 'Site by: ') ?><a href="https://www.linkedin.com/in/miikkamgr/" target="_blank" rel="noopener" class="hover:text-text transition-colors">Miikka</a>
