@@ -255,6 +255,183 @@ function settings(): array {
     return DataStore::ensure('settings', defaultSettings());
 }
 
+function siteBaseUrl(): string {
+    return 'https://wavesjyvaskyla.fi';
+}
+
+function seoPageKey(string $slug): string {
+    return match ($slug) {
+        '', 'home' => 'home',
+        'menu' => 'menu',
+        'lounas', 'lunch' => 'lunch',
+        'tapahtumat', 'events' => 'events',
+        'yhteystiedot', 'contact', 'contact-submit' => 'contact',
+        'tietosuoja', 'privacy' => 'privacy',
+        'kuvat', 'gallery' => 'gallery',
+        default => 'generic',
+    };
+}
+
+function seoPageDefaults(array $page = []): array {
+    $defaults = [
+        'fi' => [
+            'home' => [
+                'title' => 'Waves Jyväskylä | Ravintola Jyväskylän satamassa',
+                'description' => 'Waves on konttiravintola Jyväskylän satamassa. Katso ruokalista, lounas, tapahtumat, aukioloajat ja yhteystiedot.',
+            ],
+            'menu' => [
+                'title' => 'Ruokalista | Waves Jyväskylä',
+                'description' => 'Tutustu Wavesin ruokalistaan: tacot, burgerit, salaatit, snackit ja lasten annokset Jyväskylän satamassa.',
+            ],
+            'lunch' => [
+                'title' => 'Lounas | Waves Jyväskylä',
+                'description' => 'Katso Wavesin lounas Jyväskylässä ja tarkista viikon annokset, hinnat sekä mahdolliset erityisruokavaliot.',
+            ],
+            'events' => [
+                'title' => 'Tapahtumat | Waves Jyväskylä',
+                'description' => 'Katso Wavesin tulevat tapahtumat, keikat ja kesäillat Jyväskylän satamassa.',
+            ],
+            'contact' => [
+                'title' => 'Yhteystiedot | Waves Jyväskylä',
+                'description' => 'Löydä Wavesin osoite, kartta, puhelin ja yhteystiedot Jyväskylän satamasta.',
+            ],
+            'privacy' => [
+                'title' => 'Tietosuoja | Waves Jyväskylä',
+                'description' => 'Lue Wavesin tietosuojaseloste ja miten yhteydenottolomakkeen tietoja käsitellään.',
+            ],
+            'gallery' => [
+                'title' => 'Kuvat | Waves Jyväskylä',
+                'description' => 'Selaa kuvia Wavesin konttiravintolasta, kesäterassista ja satamatunnelmasta Jyväskylässä.',
+            ],
+        ],
+        'en' => [
+            'home' => [
+                'title' => 'Waves Jyväskylä | Restaurant at Jyväskylä Harbour',
+                'description' => 'Waves is a container restaurant at Jyväskylä harbour. View the menu, lunch, events, opening hours and contact details.',
+            ],
+            'menu' => [
+                'title' => 'Menu | Waves Jyväskylä',
+                'description' => 'Explore the Waves menu with tacos, burgers, salads, snacks and kids\' portions at Jyväskylä harbour.',
+            ],
+            'lunch' => [
+                'title' => 'Lunch | Waves Jyväskylä',
+                'description' => 'Check the Waves lunch menu in Jyväskylä, including weekday dishes, prices and dietary options.',
+            ],
+            'events' => [
+                'title' => 'Events | Waves Jyväskylä',
+                'description' => 'See upcoming Waves events, live music and summer evenings at Jyväskylä harbour.',
+            ],
+            'contact' => [
+                'title' => 'Contact | Waves Jyväskylä',
+                'description' => 'Find the Waves address, map, phone number and contact details at Jyväskylä harbour.',
+            ],
+            'privacy' => [
+                'title' => 'Privacy Policy | Waves Jyväskylä',
+                'description' => 'Read the Waves privacy policy and how contact form data is processed.',
+            ],
+            'gallery' => [
+                'title' => 'Gallery | Waves Jyväskylä',
+                'description' => 'Browse photos from Waves container restaurant, the summer terrace and the harbour atmosphere in Jyväskylä.',
+            ],
+        ],
+    ];
+
+    $langDefaults = $defaults[lang()] ?? $defaults['fi'];
+    $pageKey = seoPageKey((string) ($page['slug'] ?? ''));
+
+    if (isset($langDefaults[$pageKey])) {
+        return $langDefaults[$pageKey];
+    }
+
+    $pageTitle = trim((string) ($page['title'] ?? ''));
+    $homeDefaults = $langDefaults['home'];
+
+    return [
+        'title' => $pageTitle !== '' ? $pageTitle . ' | Waves Jyväskylä' : $homeDefaults['title'],
+        'description' => $homeDefaults['description'],
+    ];
+}
+
+function seoTitle(array $settings, array $page = []): string {
+    $pageOverride = trim((string) ($page['seo_title'] ?? ''));
+    if ($pageOverride !== '') {
+        return $pageOverride;
+    }
+
+    $customHomeTitle = trim((string) ($settings['seo_title_' . lang()] ?? ''));
+    if (seoPageKey((string) ($page['slug'] ?? '')) === 'home' && $customHomeTitle !== '') {
+        return $customHomeTitle;
+    }
+
+    return seoPageDefaults($page)['title'];
+}
+
+function seoDescription(array $settings, array $page = []): string {
+    $pageOverride = trim((string) ($page['seo_description'] ?? ''));
+    if ($pageOverride !== '') {
+        return $pageOverride;
+    }
+
+    $customHomeDescription = trim((string) ($settings['seo_description_' . lang()] ?? ''));
+    if (seoPageKey((string) ($page['slug'] ?? '')) === 'home' && $customHomeDescription !== '') {
+        return $customHomeDescription;
+    }
+
+    return seoPageDefaults($page)['description'];
+}
+
+function seoCanonicalUrl(array $page = []): string {
+    return siteBaseUrl() . url((string) ($page['slug'] ?? ''));
+}
+
+function seoImageUrl(): string {
+    return siteBaseUrl() . publicAsset('/assets/files/frontpage-hero-upscaled.png');
+}
+
+function seoImageAlt(): string {
+    return t(
+        'Konttiravintola Waves Jyväskylän satamassa',
+        'Waves container restaurant at Jyväskylä harbour'
+    );
+}
+
+function restaurantSchema(array $settings): array {
+    $sameAs = array_values(array_filter(array_map(
+        static fn(array $link): string => trim((string) ($link['url'] ?? '')),
+        $settings['social_links'] ?? []
+    )));
+
+    $schema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Restaurant',
+        '@id' => siteBaseUrl() . '/#restaurant',
+        'name' => trim((string) (($settings['title_' . lang()] ?? '') ?: t('Konttiravintola Waves', 'Container Restaurant Waves'))),
+        'url' => siteBaseUrl(),
+        'image' => seoImageUrl(),
+        'description' => seoDescription($settings, []),
+        'menu' => siteBaseUrl() . '/menu',
+        'telephone' => trim((string) ($settings['phone'] ?? '')),
+        'priceRange' => 'EUR 10-25',
+        'servesCuisine' => ['Street Food', 'Burgers', 'Tacos'],
+        'acceptsReservations' => false,
+        'sameAs' => $sameAs,
+        'address' => [
+            '@type' => 'PostalAddress',
+            'streetAddress' => 'Satamakatu 2 B',
+            'addressLocality' => 'Jyväskylä',
+            'postalCode' => '40100',
+            'addressCountry' => 'FI',
+        ],
+        'geo' => [
+            '@type' => 'GeoCoordinates',
+            'latitude' => 62.2386,
+            'longitude' => 25.7531,
+        ],
+    ];
+
+    return array_filter($schema, static fn($value): bool => $value !== '' && $value !== [] && $value !== null);
+}
+
 function notices(): array {
     $data = DataStore::load('notices');
     $out = [];

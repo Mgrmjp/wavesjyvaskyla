@@ -117,14 +117,14 @@ include __DIR__ . '/includes/header.php';
 
     <div class="card" id="section-seo" <?= $activeTab !== 'seo' ? 'hidden' : '' ?>>
         <h2>SEO</h2>
-        <p class="text-sm text-gray">Kirjoita hakukoneille tiiviit otsikot ja kuvaukset.</p>
+        <p class="text-sm text-gray">Kirjoita etusivulle hakukoneita varten tiivis otsikko ja kuvaus. Alasivut saavat automaattisesti sivukohtaiset SEO-metat.</p>
         <div class="grid-2">
-            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> SEO-otsikko</label><input type="text" name="seo_title_fi" value="<?= esc($s['seo_title_fi'] ?? '') ?>"></div>
-            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> SEO title</label><input type="text" name="seo_title_en" value="<?= esc($s['seo_title_en'] ?? '') ?>"></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> Etusivun SEO-otsikko</label><input type="text" name="seo_title_fi" value="<?= esc($s['seo_title_fi'] ?? '') ?>" placeholder="Waves Jyväskylä | Ravintola Jyväskylän satamassa"></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> Homepage SEO title</label><input type="text" name="seo_title_en" value="<?= esc($s['seo_title_en'] ?? '') ?>" placeholder="Waves Jyväskylä | Restaurant at Jyväskylä Harbour"></div>
         </div>
         <div class="grid-2">
-            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> SEO-kuvaus</label><textarea name="seo_description_fi"><?= esc($s['seo_description_fi'] ?? '') ?></textarea></div>
-            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> SEO description</label><textarea name="seo_description_en"><?= esc($s['seo_description_en'] ?? '') ?></textarea></div>
+            <div class="form-group form-group--fi"><label><?= flagSvg('fi') ?> Etusivun SEO-kuvaus</label><textarea name="seo_description_fi" placeholder="Waves on konttiravintola Jyväskylän satamassa. Katso ruokalista, lounas, tapahtumat, aukioloajat ja yhteystiedot."><?= esc($s['seo_description_fi'] ?? '') ?></textarea></div>
+            <div class="form-group form-group--en"><label><?= flagSvg('gb') ?> Homepage SEO description</label><textarea name="seo_description_en" placeholder="Waves is a container restaurant at Jyväskylä harbour. View the menu, lunch, events, opening hours and contact details."><?= esc($s['seo_description_en'] ?? '') ?></textarea></div>
         </div>
     </div>
 

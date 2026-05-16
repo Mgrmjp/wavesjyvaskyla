@@ -1,6 +1,13 @@
 <?php
 http_response_code(404);
-$s = settings();
+$page = [
+    'slug' => '404',
+    'title' => t('Sivua ei löytynyt', 'Page not found'),
+    'seo_title' => t('Sivua ei löytynyt | Waves Jyväskylä', 'Page not found | Waves Jyväskylä'),
+    'seo_description' => t('Pyydettyä sivua ei löytynyt Wavesin sivustolta.', 'The requested page was not found on the Waves website.'),
+    'robots' => 'noindex, nofollow',
+    'canonical' => false,
+];
 include INCLUDES_DIR . '/header.php';
 ?>
 

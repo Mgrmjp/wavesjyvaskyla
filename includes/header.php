@@ -2,14 +2,32 @@
 $s = settings();
 $notices = notices();
 $isOpen = isOpenNow();
+$page = $page ?? [];
+$pageSlug = (string) ($page['slug'] ?? '');
+$seoTitle = seoTitle($s, $page);
+$seoDescription = seoDescription($s, $page);
+$canonicalEnabled = ($page['canonical'] ?? true) !== false;
+$canonicalUrl = '';
+if ($canonicalEnabled) {
+    $canonicalUrl = is_string($page['canonical'] ?? null) ? $page['canonical'] : seoCanonicalUrl($page);
+}
+$seoImage = seoImageUrl();
+$seoImageAlt = seoImageAlt();
+$siteName = trim((string) ($s['title_' . lang()] ?? ''));
+if ($siteName === '') {
+    $siteName = 'Waves';
+}
+$ogLocale = lang() === 'fi' ? 'fi_FI' : 'en_US';
+$ogAlternateLocale = lang() === 'fi' ? 'en_US' : 'fi_FI';
+$restaurantSchema = restaurantSchema($s);
 ?>
 <!DOCTYPE html>
 <html lang="<?= lang() ?>">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title><?= esc($s['seo_title_' . lang()] ?: $s['title_' . lang()] ?? 'Waves') ?><?php if (($page['slug'] ?? '') !== ''): ?> — <?= esc($page['title'] ?? '') ?><?php endif; ?></title>
-<meta name="description" content="<?= esc($s['seo_description_' . lang()] ?: t('Konttiravintola Waves Jyväskylän satamassa – kesäisiä makuja ja kylmiä juomia merellisessä miljöössä.', 'Container Restaurant Waves at Jyväskylä harbor – summer flavors, cold drinks and maritime atmosphere.')) ?>">
+<title><?= esc($seoTitle) ?></title>
+<meta name="description" content="<?= esc($seoDescription) ?>">
 <link rel="stylesheet" href="<?= asset('css/index.css') ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,11 +39,13 @@ $isOpen = isOpenNow();
 <?php if (!empty($loadLeaflet)): ?>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <?php endif; ?>
-<?php if (($page['slug'] ?? '') === ''): ?>
+<?php if ($pageSlug === ''): ?>
 <link rel="preload" as="image" href="<?= publicAsset('/assets/files/frontpage-hero-upscaled.avif') ?>" fetchpriority="high">
 <?php endif; ?>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-<link rel="canonical" href="https://wavesjyvaskyla.fi<?= url($page['slug'] ?? '') ?>">
+<?php if ($canonicalEnabled): ?>
+<link rel="canonical" href="<?= esc($canonicalUrl) ?>">
+<?php endif; ?>
 <link rel="icon" href="<?= publicAsset('/favicon.ico') ?>">
 <link rel="icon" href="<?= publicAsset('/favicon.svg') ?>" type="image/svg+xml">
 <link rel="icon" href="<?= publicAsset('/favicon-16x16.png') ?>" sizes="16x16" type="image/png">
@@ -38,29 +58,34 @@ $isOpen = isOpenNow();
 <meta name="msapplication-TileColor" content="#07110f">
 <meta name="msapplication-TileImage" content="<?= publicAsset('/mstile-150x150.png') ?>">
 <?php
-$slugFi = Router::slugForLang($page['slug'] ?? '', 'fi');
-$slugEn = Router::slugForLang($page['slug'] ?? '', 'en');
+$slugFi = Router::slugForLang($pageSlug, 'fi');
+$slugEn = Router::slugForLang($pageSlug, 'en');
 ?>
+<?php if ($canonicalEnabled): ?>
 <link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi<?= $slugFi ? '/' . $slugFi : '' ?>">
 <link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en<?= $slugEn ? '/' . $slugEn : '' ?>">
 <link rel="alternate" hreflang="x-default" href="https://wavesjyvaskyla.fi<?= $slugFi ? '/' . $slugFi : '' ?>">
-<meta property="og:title" content="<?= esc((($page['slug'] ?? '') !== '' ? ($page['title'] ?? '') . ' — ' : '') . ($s['title_' . lang()] ?? 'Waves')) ?>">
-<meta property="og:description" content="<?= esc($s['seo_description_' . lang()] ?? '') ?>">
+<?php endif; ?>
+<meta property="og:title" content="<?= esc($seoTitle) ?>">
+<meta property="og:description" content="<?= esc($seoDescription) ?>">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://wavesjyvaskyla.fi<?= url($page['slug'] ?? '') ?>">
-<meta property="og:locale" content="<?= lang() === 'fi' ? 'fi_FI' : 'en_US' ?>">
-<meta property="og:site_name" content="Waves">
+<?php if ($canonicalEnabled): ?>
+<meta property="og:url" content="<?= esc($canonicalUrl) ?>">
+<?php endif; ?>
+<meta property="og:locale" content="<?= esc($ogLocale) ?>">
+<meta property="og:locale:alternate" content="<?= esc($ogAlternateLocale) ?>">
+<meta property="og:site_name" content="<?= esc($siteName) ?>">
+<meta property="og:image" content="<?= esc($seoImage) ?>">
+<meta property="og:image:width" content="3072">
+<meta property="og:image:height" content="2048">
+<meta property="og:image:alt" content="<?= esc($seoImageAlt) ?>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?= esc($seoTitle) ?>">
+<meta name="twitter:description" content="<?= esc($seoDescription) ?>">
+<meta name="twitter:image" content="<?= esc($seoImage) ?>">
+<meta name="twitter:image:alt" content="<?= esc($seoImageAlt) ?>">
 <meta name="robots" content="<?= ($page['robots'] ?? 'index, follow') ?>">
-<script type="application/ld+json"><?= json_encode([
-    '@context' => 'https://schema.org',
-    '@type' => 'Restaurant',
-    'name' => 'Konttiravintola Waves',
-    'url' => 'https://wavesjyvaskyla.fi',
-    'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Satamakatu 2 B', 'addressLocality' => 'Jyväskylä', 'postalCode' => '40100', 'addressCountry' => 'FI'],
-    'servesCuisine' => ['Mexican', 'Burgers', 'Finnish'],
-    'priceRange' => '€€',
-    'telephone' => $s['phone'] ?? '',
-]) ?></script>
+<script type="application/ld+json"><?= json_encode($restaurantSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -122,26 +147,26 @@ $slugEn = Router::slugForLang($page['slug'] ?? '', 'en');
             ['slug' => 'yhteystiedot','fi'=>'Yhteystiedot','en'=>'Contact'],
         ];
         foreach ($nav as $item):
-            $active = ($page['slug'] ?? '') === $item['slug'];
+            $active = $pageSlug === $item['slug'];
             $href = $item['slug'] ? url($item['slug']) : url();
         ?>
         <a href="<?= $href ?>" class="nav-link <?= $active ? 'active' : '' ?>"><?= $item[lang()] ?></a>
         <?php endforeach; ?>
 <?php $alt = lang() === 'fi' ? 'en' : 'fi'; ?>
-        <a href="<?= $alt === 'en' ? '/en' . ($page['slug'] ? '/' . $page['slug'] : '') : '/' . ($page['slug'] ?? '') ?>" class="site-lang" aria-label="<?= strtoupper($alt) ?>"><?php if ($alt === 'fi'): ?><svg viewBox="0 0 1800 1100" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><rect width="1800" height="1100" fill="#fff"/><rect width="1800" height="300" y="400" fill="#003580"/><rect width="300" height="1100" x="500" fill="#003580"/></svg><?php else: ?><svg viewBox="0 0 60 30" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#s)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg><?php endif; ?></a>
+        <a href="<?= $alt === 'en' ? '/en' . ($slugEn ? '/' . $slugEn : '') : '/' . $slugFi ?>" class="site-lang" aria-label="<?= strtoupper($alt) ?>"><?php if ($alt === 'fi'): ?><svg viewBox="0 0 1800 1100" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><rect width="1800" height="1100" fill="#fff"/><rect width="1800" height="300" y="400" fill="#003580"/><rect width="300" height="1100" x="500" fill="#003580"/></svg><?php else: ?><svg viewBox="0 0 60 30" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#s)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg><?php endif; ?></a>
         </nav>
     </div>
 </header>
 <nav id="mobile-menu" class="site-mobile-menu hidden">
     <div class="site-mobile-menu__inner">
         <?php foreach ($nav as $item):
-            $active = ($page['slug'] ?? '') === $item['slug'];
+            $active = $pageSlug === $item['slug'];
             $href = $item['slug'] ? url($item['slug']) : url();
         ?>
         <a href="<?= $href ?>" class="nav-link <?= $active ? 'active' : '' ?>"><?= $item[lang()] ?></a>
         <?php endforeach; ?>
         <?php $alt = lang() === 'fi' ? 'en' : 'fi'; ?>
-        <a href="<?= $alt === 'en' ? '/en' . ($page['slug'] ? '/' . $page['slug'] : '') : '/' . ($page['slug'] ?? '') ?>" class="site-lang" aria-label="<?= strtoupper($alt) ?>"><?php if ($alt === 'fi'): ?><svg viewBox="0 0 1800 1100" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><rect width="1800" height="1100" fill="#fff"/><rect width="1800" height="300" y="400" fill="#003580"/><rect width="300" height="1100" x="500" fill="#003580"/></svg><?php else: ?><svg viewBox="0 0 60 30" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><clipPath id="s2"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="t2"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#s2)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t2)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg><?php endif; ?></a>
+        <a href="<?= $alt === 'en' ? '/en' . ($slugEn ? '/' . $slugEn : '') : '/' . $slugFi ?>" class="site-lang" aria-label="<?= strtoupper($alt) ?>"><?php if ($alt === 'fi'): ?><svg viewBox="0 0 1800 1100" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><rect width="1800" height="1100" fill="#fff"/><rect width="1800" height="300" y="400" fill="#003580"/><rect width="300" height="1100" x="500" fill="#003580"/></svg><?php else: ?><svg viewBox="0 0 60 30" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><clipPath id="s2"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="t2"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#s2)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t2)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg><?php endif; ?></a>
     </div>
 </nav>
 
