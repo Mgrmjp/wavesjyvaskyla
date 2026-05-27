@@ -29,7 +29,7 @@ include INCLUDES_DIR . '/header.php';
                 <div class="home-about-block">
                     <p class="label"><?= t('Tietoa', 'About') ?></p>
                     <div class="prose home-about-text">
-                        <?= $s['intro_' . lang()] ?? '' ?>
+                        <?= safeIntroHtml((string) ($s['intro_' . lang()] ?? '')) ?>
                     </div>
                 </div>
             </div>

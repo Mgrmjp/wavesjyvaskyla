@@ -9,12 +9,14 @@ if (adminCheck()) {
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    checkCsrf();
     $username = trim($_POST['username'] ?? '');
     $pass = $_POST['password'] ?? '';
     if (empty($username) || empty($pass)) {
         $error = 'Syötä käyttäjätunnus ja salasana / Enter username and password';
     } elseif (adminAuthenticate($username, $pass)) {
         session_regenerate_id(true);
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
         $_SESSION['admin_username'] = $username;
         header('Location: /admin/');
         exit;
@@ -46,6 +48,7 @@ p.note{font-size:0.8rem;color:#666;margin-top:1rem}
     <h1>Waves Admin</h1>
     <?php if ($error): ?><div class="error"><?= esc($error) ?></div><?php endif; ?>
     <form method="post">
+        <input type="hidden" name="csrf" value="<?= csrf() ?>">
         <input type="text" name="username" placeholder="Käyttäjätunnus / Username" required autofocus>
         <input type="password" name="password" placeholder="Salasana / Password" required>
         <button type="submit">Kirjaudu / Login</button>

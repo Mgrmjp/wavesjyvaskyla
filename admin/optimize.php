@@ -13,11 +13,13 @@ if (is_dir($uploadDir)) {
         if ($f === '.' || $f === '..') continue;
         $path = $uploadDir . '/' . $f;
         if (!is_file($path)) continue;
-        $ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
+        $filename = safeUploadFilename($f);
+        if ($filename === '') continue;
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if ($ext === 'avif') {
-            $avifImages[] = $f;
+            $avifImages[] = $filename;
         } elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
-            $legacyImages[] = ['filename' => $f, 'ext' => $ext, 'size' => filesize($path), 'path' => $path];
+            $legacyImages[] = ['filename' => $filename, 'ext' => $ext, 'size' => filesize($path), 'path' => $path];
         }
     }
 }

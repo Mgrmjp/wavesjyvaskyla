@@ -77,7 +77,8 @@ $socialLabels = [
                 <div class="footer-socials">
                 <?php foreach ($s['social_links'] as $link): ?>
                 <?php $platform = strtolower((string) ($link['platform'] ?? '')); ?>
-                <a href="<?= esc($link['url'] ?? '') ?>" target="_blank" rel="noopener" class="footer-link">
+                <?php $socialUrl = safeExternalUrl((string) ($link['url'] ?? '')); if ($socialUrl === '') continue; ?>
+                <a href="<?= esc($socialUrl) ?>" target="_blank" rel="noopener" class="footer-link">
                     <?= esc($socialLabels[$platform] ?? ucfirst($platform)) ?>
                 </a>
                 <?php endforeach; ?>

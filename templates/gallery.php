@@ -15,9 +15,10 @@ include INCLUDES_DIR . '/header.php';
     <?php else: ?>
     <div class="gallery-grid">
         <?php foreach ($images as $img): ?>
-        <a href="<?= asset('../../uploads/' . ($img['filename'] ?? '')) ?>" class="gallery-item" target="_blank" rel="noopener">
+        <?php $src = uploadAsset((string) ($img['filename'] ?? '')); if ($src === '') continue; ?>
+        <a href="<?= esc($src) ?>" class="gallery-item" target="_blank" rel="noopener">
             <div class="gallery-thumb">
-                <img src="<?= asset('../../uploads/' . ($img['filename'] ?? '')) ?>" alt="<?= esc($img['caption_' . lang()] ?? '') ?>" loading="lazy">
+                <img src="<?= esc($src) ?>" alt="<?= esc($img['caption_' . lang()] ?? '') ?>" loading="lazy">
             </div>
             <?php if (!empty($img['caption_' . lang()])): ?>
             <p class="gallery-caption"><?= esc($img['caption_' . lang()]) ?></p>

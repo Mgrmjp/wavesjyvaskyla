@@ -34,8 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imgId = $_POST['id'] ?? '';
         foreach ($gallery as $i => $img) {
             if (($img['id'] ?? '') === $imgId) {
-                $path = ROOT . '/uploads/' . ($img['filename'] ?? '');
-                if (file_exists($path)) unlink($path);
+                $filename = safeUploadFilename((string) ($img['filename'] ?? ''));
+                $path = $filename === '' ? '' : ROOT . '/uploads/' . $filename;
+                if ($path !== '' && file_exists($path)) unlink($path);
                 array_splice($gallery, $i, 1);
                 break;
             }
@@ -49,27 +50,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (in_array($uploadError, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) $error = 'Tiedosto on liian suuri (max 10 MB)';
         elseif ($uploadError !== UPLOAD_ERR_OK || empty($file['tmp_name'])) $error = 'Kuvan lataus epäonnistui.';
         else {
-            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $allowed = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
-            if (!in_array($ext, $allowed)) $error = 'Ei tuettu tiedostomuoto. Sallitut: jpg, png, webp, avif';
-            elseif ($file['size'] > 10 * 1024 * 1024) $error = 'Tiedosto on liian suuri (max 10 MB)';
+            if (($file['size'] ?? 0) > 10 * 1024 * 1024) $error = 'Tiedosto on liian suuri (max 10 MB)';
             else {
-                $tmpDest = ROOT . '/uploads/tmp_' . generateId() . '.' . $ext;
-                $avifFilename = generateId() . '.avif';
-                $avifDest = ROOT . '/uploads/' . $avifFilename;
-                if (move_uploaded_file($file['tmp_name'], $tmpDest) && optimizeImage($tmpDest, $avifDest)) {
-                    @unlink($tmpDest);
-                    $gallery[] = [
-                        'id' => generateId(), 'filename' => $avifFilename,
-                        'caption_fi' => $_POST['caption_fi'] ?? '', 'caption_en' => $_POST['caption_en'] ?? '',
-                        'alt_fi' => $_POST['alt_fi'] ?? '', 'alt_en' => $_POST['alt_en'] ?? '',
-                        'visible' => true, 'added' => date('Y-m-d'),
-                    ];
-                    DataStore::save('gallery', $gallery);
-                    header('Location: /admin/gallery.php'); exit;
+                $ext = uploadedImageExtension($file);
+                if ($ext === null) {
+                    $error = 'Ei tuettu tiedostomuoto. Sallitut: jpg, png, webp, avif';
                 } else {
-                    @unlink($tmpDest);
-                    $error = 'Kuvan optimointi epäonnistui.';
+                    $tmpDest = ROOT . '/uploads/tmp_' . generateId() . '.' . $ext;
+                    $avifFilename = generateId() . '.avif';
+                    $avifDest = ROOT . '/uploads/' . $avifFilename;
+                    if (move_uploaded_file($file['tmp_name'], $tmpDest) && optimizeImage($tmpDest, $avifDest)) {
+                        @unlink($tmpDest);
+                        $gallery[] = [
+                            'id' => generateId(), 'filename' => $avifFilename,
+                            'caption_fi' => $_POST['caption_fi'] ?? '', 'caption_en' => $_POST['caption_en'] ?? '',
+                            'alt_fi' => $_POST['alt_fi'] ?? '', 'alt_en' => $_POST['alt_en'] ?? '',
+                            'visible' => true, 'added' => date('Y-m-d'),
+                        ];
+                        DataStore::save('gallery', $gallery);
+                        header('Location: /admin/gallery.php'); exit;
+                    } else {
+                        @unlink($tmpDest);
+                        $error = 'Kuvan optimointi epäonnistui.';
+                    }
                 }
             }
         }
@@ -125,9 +128,10 @@ include __DIR__ . '/includes/header.php';
     <div class="gallery-grid">
         <?php foreach ($gallery as $img): ?>
         <?php
-        $src = '/uploads/' . ($img['filename'] ?? '');
-        $fileExists = file_exists(ROOT . '/uploads/' . ($img['filename'] ?? ''));
-        $usage = $menuImages[$img['filename'] ?? ''] ?? [];
+        $filename = safeUploadFilename((string) ($img['filename'] ?? ''));
+        $src = uploadAsset($filename);
+        $fileExists = $filename !== '' && file_exists(ROOT . '/uploads/' . $filename);
+        $usage = $menuImages[$filename] ?? [];
         ?>
         <div class="gallery-card">
             <div class="gallery-card__image">

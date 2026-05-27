@@ -16,6 +16,36 @@ function appIsAdminRequest(): bool {
     return str_starts_with($uri, '/admin') || str_contains($script, '/admin/');
 }
 
+function appDebugEnabled(): bool {
+    $value = strtolower(trim((string) getenv('APP_DEBUG')));
+    return in_array($value, ['1', 'true', 'yes', 'on'], true);
+}
+
+function appIsSecureRequest(): bool {
+    $https = $_SERVER['HTTPS'] ?? '';
+    if ($https !== '' && strtolower((string) $https) !== 'off') {
+        return true;
+    }
+
+    $forwardedProto = strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+    return $forwardedProto === 'https';
+}
+
+function appSendSecurityHeaders(): void {
+    if (PHP_SAPI === 'cli' || headers_sent()) {
+        return;
+    }
+
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()');
+
+    if (appIsSecureRequest()) {
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+    }
+}
+
 function appFriendlyErrorType(int $type): string {
     return match ($type) {
         E_ERROR => 'Fatal runtime error',
@@ -57,6 +87,10 @@ function appRenderErrorPage(string $title, string $summary, array $details = [])
     $backHref = $isAdmin ? '/admin/' : '/';
     $backLabel = $isAdmin ? 'Back to admin' : 'Back to home';
     $supportLabel = $isAdmin ? 'Admin request failed' : 'Page request failed';
+    $reloadHref = (string) ($_SERVER['REQUEST_URI'] ?? '');
+    if ($reloadHref === '' || !str_starts_with($reloadHref, '/') || str_starts_with($reloadHref, '//')) {
+        $reloadHref = $backHref;
+    }
 
     echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
@@ -100,13 +134,29 @@ function appRenderErrorPage(string $title, string $summary, array $details = [])
 
     echo '<div class="actions">';
     echo '<a class="btn btn-primary" href="' . appErrorEscape($backHref) . '">' . appErrorEscape($backLabel) . '</a>';
-    echo '<a class="btn btn-secondary" href="javascript:location.reload()">Reload page</a>';
+    echo '<a class="btn btn-secondary" href="' . appErrorEscape($reloadHref) . '">Reload page</a>';
     echo '</div>';
     echo '<p class="note">The request was interrupted before the page finished rendering. Check the application logs after you reproduce it.</p>';
     echo '</section></main></body></html>';
 }
 
 function appRenderThrowablePage(Throwable $throwable): void {
+    error_log(sprintf(
+        '[Waves] Unhandled exception: %s: %s in %s:%d',
+        $throwable::class,
+        $throwable->getMessage(),
+        $throwable->getFile(),
+        $throwable->getLine()
+    ));
+
+    if (PHP_SAPI !== 'cli' && !appDebugEnabled()) {
+        appRenderErrorPage(
+            'Request failed',
+            'The request could not be completed. The error has been logged for review.'
+        );
+        return;
+    }
+
     appRenderErrorPage(
         'Unhandled exception',
         $throwable->getMessage() !== '' ? $throwable->getMessage() : 'The request crashed before it could render normally.',
@@ -140,6 +190,21 @@ function appRegisterErrorHandlers(): void {
             return;
         }
 
+        error_log(sprintf(
+            '[Waves] Fatal error: %s in %s:%s',
+            (string) ($error['message'] ?? 'Unknown fatal error'),
+            (string) ($error['file'] ?? 'unknown file'),
+            isset($error['line']) ? (string) $error['line'] : 'unknown line'
+        ));
+
+        if (PHP_SAPI !== 'cli' && !appDebugEnabled()) {
+            appRenderErrorPage(
+                'Request failed',
+                'The request could not be completed. The error has been logged for review.'
+            );
+            return;
+        }
+
         appRenderErrorPage(
             'Fatal error',
             $error['message'] ?? 'The request crashed before it could render normally.',
@@ -153,3 +218,4 @@ function appRegisterErrorHandlers(): void {
 }
 
 appRegisterErrorHandlers();
+appSendSecurityHeaders();

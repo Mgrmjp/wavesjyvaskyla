@@ -8,10 +8,54 @@ if (!defined('ADMIN_DIR')) define('ADMIN_DIR', ROOT . '/admin');
 
 require_once INCLUDES_DIR . '/storage.php';
 
+function configureSessionSecurity(): void {
+    if (headers_sent()) {
+        return;
+    }
+
+    $secure = function_exists('appIsSecureRequest') && appIsSecureRequest();
+
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+    ini_set('session.cookie_secure', $secure ? '1' : '0');
+
+    $params = session_get_cookie_params();
+    session_set_cookie_params([
+        'lifetime' => (int) ($params['lifetime'] ?? 0),
+        'path' => (string) (($params['path'] ?? '') ?: '/'),
+        'domain' => (string) ($params['domain'] ?? ''),
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
 function ensureSessionStarted(): void {
     if (session_status() === PHP_SESSION_NONE) {
+        configureSessionSecurity();
         session_start();
     }
+}
+
+function destroyCurrentSession(): void {
+    ensureSessionStarted();
+    $_SESSION = [];
+
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', [
+            'expires' => time() - 42000,
+            'path' => (string) (($params['path'] ?? '') ?: '/'),
+            'domain' => (string) ($params['domain'] ?? ''),
+            'secure' => (bool) ($params['secure'] ?? false),
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+    }
+
+    session_destroy();
 }
 
 class DataStore {
@@ -397,7 +441,7 @@ function seoImageAlt(): string {
 
 function restaurantSchema(array $settings): array {
     $sameAs = array_values(array_filter(array_map(
-        static fn(array $link): string => trim((string) ($link['url'] ?? '')),
+        static fn(array $link): string => safeExternalUrl((string) ($link['url'] ?? '')),
         $settings['social_links'] ?? []
     )));
 
@@ -529,6 +573,87 @@ function generateId(): string {
     return bin2hex(random_bytes(4));
 }
 
+function safeExternalUrl(string $url): string {
+    $url = trim($url);
+    if ($url === '' || filter_var($url, FILTER_VALIDATE_URL) === false) {
+        return '';
+    }
+
+    $parts = parse_url($url);
+    if (!is_array($parts)) {
+        return '';
+    }
+
+    $scheme = strtolower((string) ($parts['scheme'] ?? ''));
+    if (!in_array($scheme, ['http', 'https'], true) || empty($parts['host'])) {
+        return '';
+    }
+
+    return $url;
+}
+
+function safeUploadFilename(string $filename): string {
+    $filename = basename(str_replace('\\', '/', $filename));
+    if ($filename === '' || $filename === '.' || $filename === '..' || str_starts_with($filename, '.') || !preg_match('/^[A-Za-z0-9._-]+$/', $filename)) {
+        return '';
+    }
+
+    return $filename;
+}
+
+function uploadAsset(string $filename): string {
+    $filename = safeUploadFilename($filename);
+    return $filename === '' ? '' : publicAsset('/uploads/' . $filename);
+}
+
+function uploadedImageExtension(array $file, int $maxPixels = 40000000): ?string {
+    $tmpName = $file['tmp_name'] ?? '';
+    if (!is_string($tmpName) || $tmpName === '' || !is_uploaded_file($tmpName)) {
+        return null;
+    }
+
+    $info = @getimagesize($tmpName);
+    if ($info === false) {
+        return null;
+    }
+
+    $width = (int) ($info[0] ?? 0);
+    $height = (int) ($info[1] ?? 0);
+    if ($width <= 0 || $height <= 0 || ($width * $height) > $maxPixels) {
+        return null;
+    }
+
+    $mime = strtolower((string) ($info['mime'] ?? ''));
+    return [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+        'image/avif' => 'avif',
+    ][$mime] ?? null;
+}
+
+function safeIntroHtml(string $html): string {
+    $normalized = preg_replace('/<\s*(script|style)\b[^>]*>.*?<\s*\/\s*\1\s*>/is', '', $html) ?? $html;
+    $normalized = preg_replace('/<\s*br\s*\/?>/i', "\n", $normalized) ?? $normalized;
+    $normalized = preg_replace('/<\s*\/p\s*>/i', "\n\n", $normalized) ?? $normalized;
+    $text = trim(html_entity_decode(strip_tags($normalized), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    if ($text === '') {
+        return '';
+    }
+
+    $paragraphs = preg_split('/\R{2,}/', $text) ?: [$text];
+    $out = [];
+    foreach ($paragraphs as $paragraph) {
+        $paragraph = trim($paragraph);
+        if ($paragraph === '') {
+            continue;
+        }
+        $out[] = '<p>' . nl2br(esc($paragraph), false) . '</p>';
+    }
+
+    return implode('', $out);
+}
+
 function csrf(): string {
     ensureSessionStarted();
     if (empty($_SESSION['csrf'])) {
@@ -540,7 +665,8 @@ function csrf(): string {
 function checkCsrf(): void {
     ensureSessionStarted();
     $token = $_POST['csrf'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-    if (!hash_equals($_SESSION['csrf'] ?? '', $token)) {
+    $sessionToken = $_SESSION['csrf'] ?? '';
+    if (!is_string($token) || !is_string($sessionToken) || $token === '' || $sessionToken === '' || !hash_equals($sessionToken, $token)) {
         http_response_code(403);
         die('CSRF token mismatch');
     }
@@ -681,6 +807,12 @@ function optimizeImage(string $srcPath, string $destPath, int $maxDim = 2560, in
     if ($info === false) return false;
 
     $mime = $info['mime'];
+    $origW = (int) ($info[0] ?? 0);
+    $origH = (int) ($info[1] ?? 0);
+    if ($origW <= 0 || $origH <= 0 || ($origW * $origH) > 40000000) {
+        return false;
+    }
+
     $src = null;
 
     switch ($mime) {
@@ -704,9 +836,6 @@ function optimizeImage(string $srcPath, string $destPath, int $maxDim = 2560, in
     }
 
     if ($src === false) return false;
-
-    $origW = imagesx($src);
-    $origH = imagesy($src);
 
     if ($origW <= $maxDim && $origH <= $maxDim) {
         $newW = $origW;

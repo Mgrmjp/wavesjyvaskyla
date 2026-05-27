@@ -11,10 +11,13 @@ $data = DataStore::ensure('menu', ['categories' => defaultMenuCategories(), 'ite
 $uploadImages = array_values(array_filter(array_map(
     static function (string $path): ?array {
         if (!is_file($path)) return null;
-        $filename = basename($path);
+        $filename = safeUploadFilename(basename($path));
+        if ($filename === '') return null;
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if (!in_array($ext, ['avif', 'jpg', 'jpeg', 'png', 'webp'], true)) return null;
         return [
             'filename' => $filename,
-            'src' => '/uploads/' . rawurlencode($filename),
+            'src' => uploadAsset($filename),
             'mtime' => filemtime($path) ?: 0,
         ];
     },
@@ -182,10 +185,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $uploadError = (int) ($file['error'] ?? UPLOAD_ERR_OK);
         if (in_array($uploadError, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) { header('Location: /admin/menu.php?status=upload-too-large#menu-upload'); exit; }
         if ($uploadError !== UPLOAD_ERR_OK || empty($file['tmp_name'])) { header('Location: /admin/menu.php?status=upload-failed#menu-upload'); exit; }
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
-        if (!in_array($ext, $allowed)) { header('Location: /admin/menu.php?status=upload-error#menu-upload'); exit; }
         if ($file['size'] > 10 * 1024 * 1024) { header('Location: /admin/menu.php?status=upload-too-large#menu-upload'); exit; }
+        $ext = uploadedImageExtension($file);
+        if ($ext === null) { header('Location: /admin/menu.php?status=upload-error#menu-upload'); exit; }
         $tmpDest = ROOT . '/uploads/tmp_' . generateId() . '.' . $ext;
         $avifFilename = 'menu_' . generateId() . '.avif';
         $avifDest = ROOT . '/uploads/' . $avifFilename;
@@ -204,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'description_fi' => $_POST['new_desc_fi'] ?? '', 'description_en' => $_POST['new_desc_en'] ?? '',
                 'price' => (float)($_POST['new_price'] ?? 0), 'category' => $_POST['new_category'] ?? '',
                 'dietary_tags' => $_POST['new_tags'] ?? '', 'visible' => !empty($_POST['new_visible']),
-                'image' => $_POST['new_image'] ?? '', 'updated_at' => date('c'),
+                'image' => safeUploadFilename((string) ($_POST['new_image'] ?? '')), 'updated_at' => date('c'),
             ];
             $data['items'][] = $newItem;
             DataStore::save('menu', $data);
@@ -229,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'description_fi' => $_POST['item_desc_fi'][$i] ?? '', 'description_en' => $_POST['item_desc_en'][$i] ?? '',
                 'price' => (float)($_POST['item_price'][$i] ?? 0), 'category' => $_POST['item_category'][$i] ?? '',
                 'dietary_tags' => $_POST['item_tags'][$i] ?? '', 'visible' => !empty($_POST['item_visible'][$i]),
-                'image' => $_POST['item_image'][$i] ?? '', 'updated_at' => date('c'),
+                'image' => safeUploadFilename((string) ($_POST['item_image'][$i] ?? '')), 'updated_at' => date('c'),
             ];
         }
         DataStore::save('menu', $data);

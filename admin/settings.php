@@ -36,18 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $s['social_links'] = [];
         $platforms = $_POST['social_platform'] ?? [];
         $urls = $_POST['social_url'] ?? [];
+        $allowedPlatforms = ['instagram', 'tiktok', 'facebook', 'x'];
         foreach ($platforms as $i => $p) {
-            if (!empty($p) && !empty($urls[$i])) $s['social_links'][] = ['platform' => $p, 'url' => $urls[$i]];
+            $platform = strtolower(trim((string) $p));
+            $url = safeExternalUrl((string) ($urls[$i] ?? ''));
+            if (in_array($platform, $allowedPlatforms, true) && $url !== '') {
+                $s['social_links'][] = ['platform' => $platform, 'url' => $url];
+            }
         }
         DataStore::save('settings', $s);
         RevisionLog::log('settings', 'updated', $s, $before);
-        $tab = $_GET['tab'] ?? 'identity';
+        $tab = in_array(($_GET['tab'] ?? 'identity'), ['identity', 'contact', 'social', 'seo', 'security'], true) ? $_GET['tab'] : 'identity';
         header('Location: settings.php?tab=' . urlencode($tab) . '&saved=1');
         exit;
     }
 }
 
-$activeTab = $_GET['tab'] ?? 'identity';
+$activeTab = in_array(($_GET['tab'] ?? 'identity'), ['identity', 'contact', 'social', 'seo', 'security'], true) ? $_GET['tab'] : 'identity';
 
 $title = 'Asetukset';
 include __DIR__ . '/includes/header.php';

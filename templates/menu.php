@@ -179,9 +179,10 @@ include INCLUDES_DIR . '/header.php';
                     <?php endif; ?>
                 </div>
 
-                <?php if (!empty($item['image'])): ?>
+                <?php $itemImage = uploadAsset((string) ($item['image'] ?? '')); ?>
+                <?php if ($itemImage !== ''): ?>
                 <div class="menu-item-img" aria-hidden="true">
-                    <img src="/uploads/<?= esc($item['image']) ?>" alt="" loading="lazy">
+                    <img src="<?= esc($itemImage) ?>" alt="" loading="lazy">
                 </div>
                 <?php endif; ?>
 

@@ -37,8 +37,10 @@ include INCLUDES_DIR . '/header.php';
                 <p class="label mb-3"><?= t('Sosiaalinen media', 'Social') ?></p>
                 <div class="flex gap-5">
                     <?php foreach ($s['social_links'] as $link): ?>
-                    <a href="<?= esc($link['url'] ?? '') ?>" target="_blank" rel="noopener" class="text-muted hover:text-text transition-colors" aria-label="<?= ucfirst($link['platform'] ?? '') ?>">
-                        <?= socialIcon($link['platform'] ?? '') ?>
+                    <?php $socialUrl = safeExternalUrl((string) ($link['url'] ?? '')); if ($socialUrl === '') continue; ?>
+                    <?php $platform = strtolower((string) ($link['platform'] ?? '')); ?>
+                    <a href="<?= esc($socialUrl) ?>" target="_blank" rel="noopener" class="text-muted hover:text-text transition-colors" aria-label="<?= esc(ucfirst($platform)) ?>">
+                        <?= socialIcon($platform) ?>
                     </a>
                     <?php endforeach; ?>
                 </div>
