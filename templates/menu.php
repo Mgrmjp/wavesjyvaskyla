@@ -17,11 +17,11 @@ usort($categories, fn($a, $b) => ($a['sort_order'] ?? 0) <=> ($b['sort_order'] ?
 $categoryMeta = [
     'summer-tacos' => [
         'eyebrow' => t('Limeä, korianteria, rapeutta', 'Lime, coriander, crisp texture'),
-        'intro' => t('Kaksi kevätsipulilettua, raikkaat kasvikset ja sataman iltaan sopiva täyte.', 'Two spring onion pancakes, crisp greens and a filling made for harbour evenings.'),
+        'intro' => t('Kaksi kevätsipulilettua, raikkaat kasvikset ja sataman iltaan sopiva täyte.', 'Two spring onion flatbreads, crisp greens and a filling made for harbour evenings.'),
     ],
     'burgers-with-fries' => [
         'eyebrow' => t('Smash-burgerit ja ranut', 'Smash burgers and fries'),
-        'intro' => t('Rapea 80 gramman pihvi, Jukolan cheddar ja talon majoneesit. Kaikki burgerit tarjoillaan ranskalaisten kanssa.', 'Crisp 80 g patty, Jukola cheddar and house mayos. Every burger is served with fries.'),
+        'intro' => t('Rapea smash-naudanpihvi, Jukolan cheddar ja talon majoneesit. Kaikki burgerit tarjoillaan ranskalaisten kanssa.', 'Crispy smashed beef patty, Jukola cheddar and house mayos. Every burger is served with fries.'),
     ],
     'salads' => [
         'eyebrow' => t('Raikas väliin', 'A fresher pause'),
@@ -76,7 +76,7 @@ include INCLUDES_DIR . '/header.php';
                 <?= t('Ruokalista', 'Menu') ?>
             </h1>
             <p class="menu-hero-copy">
-                <?= t('Rapeat tacot, smash-burgerit ja satamaillat Jyväskylässä.', 'Crisp tacos, smash burgers and harbour evenings in Jyväskylä.') ?>
+                <?= t('Uusi menu: rapeat tacot, smash-burgerit ja satamaillat Jyväskylässä.', 'Introducing our new menu: crisp tacos, smash burgers and harbour evenings in Jyväskylä.') ?>
             </p>
             <div class="menu-hero-meta" aria-label="<?= t('Ravintolan tiedot', 'Restaurant details') ?>">
                 <span><?= t('Jyväskylän satama', 'Jyväskylä harbour') ?></span>

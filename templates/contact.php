@@ -1,6 +1,9 @@
 <?php
 $s = settings();
 $loadLeaflet = true;
+$contactAddress = trim((string) ($s['address'] ?? ''));
+$mapAddress = $contactAddress !== '' ? $contactAddress : 'Satamakatu 2 B, 40100 Jyväskylä';
+$directionsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode($mapAddress);
 include INCLUDES_DIR . '/header.php';
 ?>
 
@@ -9,7 +12,7 @@ include INCLUDES_DIR . '/header.php';
     <p class="lead max-w-xl mb-12"><?= t('Tule käymään tai ota yhteyttä.', 'Drop by or get in touch.') ?></p>
     <div class="rule-accent mb-16"></div>
 
-    <div class="grid-asymmetric">
+    <div class="contact-layout">
         <div class="space-y-8">
             <?php if (!empty($s['address'])): ?>
             <div>
@@ -48,26 +51,21 @@ include INCLUDES_DIR . '/header.php';
             <?php endif; ?>
         </div>
 
-        <div>
+        <div class="contact-map-panel">
             <p class="label mb-4"><?= t('Kartta', 'Map') ?></p>
-            <div class="border border-editorial relative" style="overflow:hidden;">
-                <div id="map" style="width:100%; height:380px;"></div>
+            <div class="contact-map-frame">
+                <div id="map" class="contact-map" aria-label="<?= esc(t('Kartta osoitteeseen ' . $mapAddress, 'Map to ' . $mapAddress)) ?>"></div>
             </div>
-            <div class="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs text-muted">
-                <span class="flex items-center gap-1.5"><span class="legend-dot dot-landmark"></span><?= t('Maamerkki', 'Landmark') ?></span>
-                <span class="flex items-center gap-1.5"><span class="legend-dot dot-transit"></span><?= t('Liikenne', 'Transit') ?></span>
-                <span class="flex items-center gap-1.5"><span class="legend-dot dot-parking"></span><?= t('Pysäköinti', 'Parking') ?></span>
-                <span class="flex items-center gap-1.5"><span class="legend-dot dot-restaurant"></span><?= t('Ravintola', 'Restaurant') ?></span>
-            </div>
-            <p class="text-sm text-muted mt-2">
-                <a href="https://www.openstreetmap.org/?mlat=62.2386&mlon=25.7531#map=17/62.2386/25.7531" target="_blank" rel="noopener" class="text-accent hover:text-text transition-colors"><?= t('Avaa kartta', 'Open map') ?> &rarr;</a>
-            </p>
-            <p class="mt-1">
-                <a href="https://www.google.com/maps/dir/?api=1&destination=Satamakatu+2+B+40100+Jyv%C3%A4skyl%C3%A4" target="_blank" rel="noopener" class="btn" style="display:inline-flex;height:40px;line-height:40px;padding:0 20px;">
+            <div class="contact-map-actions">
+                <p class="contact-map-address"><?= esc($mapAddress) ?></p>
+                <div class="contact-map-links">
+                    <a href="https://www.openstreetmap.org/?mlat=62.2386&mlon=25.7531#map=17/62.2386/25.7531" target="_blank" rel="noopener" class="contact-map-link"><?= t('Avaa kartta', 'Open map') ?> &rarr;</a>
+                    <a href="<?= esc($directionsUrl) ?>" target="_blank" rel="noopener" class="btn contact-directions-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                     <?= t('Reittiohjeet', 'Directions') ?>
-                </a>
-            </p>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 

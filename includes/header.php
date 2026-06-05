@@ -142,8 +142,6 @@ $slugEn = Router::slugForLang($pageSlug, 'en');
             ['slug' => '',        'fi' => 'Etusivu',    'en' => 'Home'],
             ['slug' => 'menu',    'fi' => 'Menu',       'en' => 'Menu'],
             ['slug' => 'lounas',  'fi' => 'Lounas',     'en' => 'Lunch'],
-            ['slug' => 'tapahtumat','fi'=>'Tapahtumat', 'en' => 'Events'],
-            ['slug' => 'kuvat',   'fi' => 'Kuvat',      'en' => 'Gallery'],
             ['slug' => 'yhteystiedot','fi'=>'Yhteystiedot','en'=>'Contact'],
         ];
         foreach ($nav as $item):

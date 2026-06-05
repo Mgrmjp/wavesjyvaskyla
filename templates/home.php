@@ -64,7 +64,7 @@ include INCLUDES_DIR . '/header.php';
             </article>
             <article class="highlight-card">
                 <h2><?= t('Sataman terassi', 'Harbor terrace') ?></h2>
-                <p><?= t('Rento paikka aurinkoon, iltaan ja tapahtumien keskelle.', 'An easy place for sun, evenings, and the harbor buzz.') ?></p>
+                <p><?= t('Rento paikka aurinkoon, iltaan ja sataman tunnelmaan.', 'An easy place for sun, evenings, and the harbor atmosphere.') ?></p>
             </article>
             <article class="highlight-card">
                 <h2><?= t('Ei pöytävarauksia', 'No reservations') ?></h2>
@@ -73,36 +73,5 @@ include INCLUDES_DIR . '/header.php';
         </div>
     </div>
 </section>
-
-<?php
-$events = DataStore::load('events');
-$upcoming = [];
-foreach ($events['events'] ?? [] as $e) {
-    if (!($e['visible'] ?? false)) continue;
-    if (($e['date'] ?? '') >= date('Y-m-d')) $upcoming[] = $e;
-    if (count($upcoming) >= 3) break;
-}
-if (count($upcoming)):
-?>
-<section class="border-t border-editorial">
-    <div class="max-w-5xl mx-auto px-5 py-16">
-        <div class="flex items-baseline justify-between mb-8">
-            <h2 class="headline"><?= t('Tapahtumat', 'Events') ?></h2>
-            <a href="<?= url('tapahtumat') ?>" class="text-sm text-accent hover:text-text transition-colors"><?= t('Kaikki →', 'All →') ?></a>
-        </div>
-        <div class="space-y-0">
-            <?php foreach ($upcoming as $ev): ?>
-            <div class="border-t border-editorial py-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-1">
-                <div>
-                    <h3 class="text-lg font-semibold"><?= esc($ev['title_' . lang()] ?? $ev['title_fi'] ?? '') ?></h3>
-                    <p class="text-sm text-muted"><?= esc($ev['description_' . lang()] ?? $ev['description_fi'] ?? '') ?></p>
-                </div>
-                <span class="text-sm text-accent font-mono whitespace-nowrap"><?= date('d.m.', strtotime($ev['date'])) ?></span>
-            </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
 
 <?php include INCLUDES_DIR . '/footer.php'; ?>

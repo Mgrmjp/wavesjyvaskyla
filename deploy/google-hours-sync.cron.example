@@ -1,0 +1,9 @@
+# Example cron entry for syncing Waves opening hours from Google Places.
+# Copy to /etc/cron.d/waves-google-hours, set GOOGLE_PLACES_API_KEY, and
+# verify once with the same command without --apply before enabling.
+#
+# Runs daily at 06:10 server time and logs output under the app data directory.
+GOOGLE_PLACES_API_KEY=replace-with-google-places-api-key
+APP_DB_PATH=/var/www/wavesjyvaskyla/data/waves.sqlite
+
+10 6 * * * www-data cd /var/www/wavesjyvaskyla && /usr/bin/php scripts/sync-google-hours.php --apply >> /var/www/wavesjyvaskyla/data/google-hours-sync.log 2>&1

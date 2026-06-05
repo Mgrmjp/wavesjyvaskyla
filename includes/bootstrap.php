@@ -6,6 +6,8 @@ if (defined('APP_BOOTSTRAP_LOADED')) {
 
 define('APP_BOOTSTRAP_LOADED', true);
 
+date_default_timezone_set((string) (getenv('APP_TIMEZONE') ?: 'Europe/Helsinki'));
+
 function appErrorEscape(mixed $value): string {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }

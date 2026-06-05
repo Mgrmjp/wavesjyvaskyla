@@ -23,20 +23,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://wavesjyvaskyla.fi/tapahtumat</loc>
-    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/tapahtumat"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/events"/>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wavesjyvaskyla.fi/kuvat</loc>
-    <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/kuvat"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/gallery"/>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://wavesjyvaskyla.fi/yhteystiedot</loc>
     <xhtml:link rel="alternate" hreflang="fi" href="https://wavesjyvaskyla.fi/yhteystiedot"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wavesjyvaskyla.fi/en/contact"/>

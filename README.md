@@ -100,6 +100,25 @@ php scripts/migrate-json-to-sqlite.php
 
 This imports existing JSON-backed content and admin users into SQLite.
 
+## Google Hours Sync
+
+Opening hours can be synced from Google Places instead of copying hours manually from Google Search.
+
+1. Create a Google Places API key with access to Places API (New).
+2. Verify the parsed hours in dry-run mode:
+
+```bash
+GOOGLE_PLACES_API_KEY='your-api-key' php scripts/sync-google-hours.php --query='waves jkl'
+```
+
+3. Apply the update:
+
+```bash
+GOOGLE_PLACES_API_KEY='your-api-key' php scripts/sync-google-hours.php --apply --query='waves jkl'
+```
+
+For production automation, use `deploy/google-hours-sync.cron.example` as the starting point for `/etc/cron.d/waves-google-hours`.
+
 ## First Admin User
 
 Create the first admin user from the command line:

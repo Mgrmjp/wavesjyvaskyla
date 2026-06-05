@@ -60,6 +60,7 @@ if ($todayHours !== null && !($todayHours['closed'] ?? false)) {
 ?>
 <div class="hours-current">
     <p class="hours-current-value <?= $todayStateClass ?>"><?= esc($todayStatus) ?></p>
+    <p class="hours-current-time"><?= t('Kello nyt Jyväskylässä ', 'Current time in Jyväskylä ') ?><?= esc($currentTime) ?></p>
     <?php if ($todayException !== null): ?>
     <p class="hours-note"><?= t('Poikkeus aukioloajassa', 'Schedule exception today') ?></p>
     <?php endif; ?>

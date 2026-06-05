@@ -108,15 +108,11 @@ class DataStore {
         'menu'     => ['template' => 'menu',      'fi' => 'Menu',        'en' => 'Menu'],
         'lounas'   => ['template' => 'lunch',     'fi' => 'Lounas',      'en' => 'Lunch'],
         'lunch'    => ['template' => 'lunch',     'fi' => 'Lounas',      'en' => 'Lunch'],
-        'tapahtumat'=> ['template' => 'events',   'fi' => 'Tapahtumat',  'en' => 'Events'],
-        'events'   => ['template' => 'events',    'fi' => 'Tapahtumat',  'en' => 'Events'],
         'yhteystiedot'=> ['template' => 'contact','fi' => 'Yhteystiedot','en' => 'Contact'],
         'contact'  => ['template' => 'contact',   'fi' => 'Yhteystiedot','en' => 'Contact'],
         'contact-submit' => ['template' => 'contact', 'fi' => 'Yhteystiedot', 'en' => 'Contact'],
         'tietosuoja'=> ['template' => 'privacy',  'fi' => 'Tietosuoja',     'en' => 'Privacy'],
         'privacy'   => ['template' => 'privacy',   'fi' => 'Tietosuoja',     'en' => 'Privacy'],
-        'kuvat'     => ['template' => 'gallery',  'fi' => 'Kuvat',        'en' => 'Gallery'],
-        'gallery'   => ['template' => 'gallery',  'fi' => 'Kuvat',        'en' => 'Gallery'],
     ];
 
     private static array $pageMap = [
@@ -124,14 +120,10 @@ class DataStore {
         'menu'   => ['fi' => 'menu', 'en' => 'menu'],
         'lounas' => ['fi' => 'lounas', 'en' => 'lunch'],
         'lunch'  => ['fi' => 'lounas', 'en' => 'lunch'],
-        'tapahtumat' => ['fi' => 'tapahtumat', 'en' => 'events'],
-        'events' => ['fi' => 'tapahtumat', 'en' => 'events'],
         'yhteystiedot' => ['fi' => 'yhteystiedot', 'en' => 'contact'],
         'contact' => ['fi' => 'yhteystiedot', 'en' => 'contact'],
         'tietosuoja' => ['fi' => 'tietosuoja', 'en' => 'privacy'],
         'privacy' => ['fi' => 'tietosuoja', 'en' => 'privacy'],
-        'kuvat' => ['fi' => 'kuvat', 'en' => 'gallery'],
-        'gallery' => ['fi' => 'kuvat', 'en' => 'gallery'],
     ];
 
     public static function allPages(): array {
@@ -141,7 +133,6 @@ class DataStore {
             ['slug_fi' => '', 'slug_en' => '', 'template' => 'home'],
             ['slug_fi' => 'menu', 'slug_en' => 'menu', 'template' => 'menu'],
             ['slug_fi' => 'lounas', 'slug_en' => 'lunch', 'template' => 'lunch'],
-            ['slug_fi' => 'tapahtumat', 'slug_en' => 'events', 'template' => 'events'],
             ['slug_fi' => 'yhteystiedot', 'slug_en' => 'contact', 'template' => 'contact'],
             ['slug_fi' => 'tietosuoja', 'slug_en' => 'privacy', 'template' => 'privacy'],
         ];
@@ -308,10 +299,8 @@ function seoPageKey(string $slug): string {
         '', 'home' => 'home',
         'menu' => 'menu',
         'lounas', 'lunch' => 'lunch',
-        'tapahtumat', 'events' => 'events',
         'yhteystiedot', 'contact', 'contact-submit' => 'contact',
         'tietosuoja', 'privacy' => 'privacy',
-        'kuvat', 'gallery' => 'gallery',
         default => 'generic',
     };
 }
@@ -321,7 +310,7 @@ function seoPageDefaults(array $page = []): array {
         'fi' => [
             'home' => [
                 'title' => 'Waves Jyväskylä | Ravintola Jyväskylän satamassa',
-                'description' => 'Waves on konttiravintola Jyväskylän satamassa. Katso ruokalista, lounas, tapahtumat, aukioloajat ja yhteystiedot.',
+                'description' => 'Waves on konttiravintola Jyväskylän satamassa. Katso ruokalista, lounas, aukioloajat ja yhteystiedot.',
             ],
             'menu' => [
                 'title' => 'Ruokalista | Waves Jyväskylä',
@@ -331,10 +320,6 @@ function seoPageDefaults(array $page = []): array {
                 'title' => 'Lounas | Waves Jyväskylä',
                 'description' => 'Katso Wavesin lounas Jyväskylässä ja tarkista viikon annokset, hinnat sekä mahdolliset erityisruokavaliot.',
             ],
-            'events' => [
-                'title' => 'Tapahtumat | Waves Jyväskylä',
-                'description' => 'Katso Wavesin tulevat tapahtumat, keikat ja kesäillat Jyväskylän satamassa.',
-            ],
             'contact' => [
                 'title' => 'Yhteystiedot | Waves Jyväskylä',
                 'description' => 'Löydä Wavesin osoite, kartta, puhelin ja yhteystiedot Jyväskylän satamasta.',
@@ -343,15 +328,11 @@ function seoPageDefaults(array $page = []): array {
                 'title' => 'Tietosuoja | Waves Jyväskylä',
                 'description' => 'Lue Wavesin tietosuojaseloste ja miten yhteydenottolomakkeen tietoja käsitellään.',
             ],
-            'gallery' => [
-                'title' => 'Kuvat | Waves Jyväskylä',
-                'description' => 'Selaa kuvia Wavesin konttiravintolasta, kesäterassista ja satamatunnelmasta Jyväskylässä.',
-            ],
         ],
         'en' => [
             'home' => [
                 'title' => 'Waves Jyväskylä | Restaurant at Jyväskylä Harbour',
-                'description' => 'Waves is a container restaurant at Jyväskylä harbour. View the menu, lunch, events, opening hours and contact details.',
+                'description' => 'Waves is a container restaurant at Jyväskylä harbour. View the menu, lunch, opening hours and contact details.',
             ],
             'menu' => [
                 'title' => 'Menu | Waves Jyväskylä',
@@ -361,10 +342,6 @@ function seoPageDefaults(array $page = []): array {
                 'title' => 'Lunch | Waves Jyväskylä',
                 'description' => 'Check the Waves lunch menu in Jyväskylä, including weekday dishes, prices and dietary options.',
             ],
-            'events' => [
-                'title' => 'Events | Waves Jyväskylä',
-                'description' => 'See upcoming Waves events, live music and summer evenings at Jyväskylä harbour.',
-            ],
             'contact' => [
                 'title' => 'Contact | Waves Jyväskylä',
                 'description' => 'Find the Waves address, map, phone number and contact details at Jyväskylä harbour.',
@@ -372,10 +349,6 @@ function seoPageDefaults(array $page = []): array {
             'privacy' => [
                 'title' => 'Privacy Policy | Waves Jyväskylä',
                 'description' => 'Read the Waves privacy policy and how contact form data is processed.',
-            ],
-            'gallery' => [
-                'title' => 'Gallery | Waves Jyväskylä',
-                'description' => 'Browse photos from Waves container restaurant, the summer terrace and the harbour atmosphere in Jyväskylä.',
             ],
         ],
     ];
@@ -767,33 +740,33 @@ function defaultMenuCategories(): array {
 
 function defaultMenuItems(): array {
     return [
-        ['id' => 'm0', 'name_fi' => 'Kaikki tacot sisältävät', 'name_en' => 'All tacos include', 'description_fi' => '2 kevätsipulilettua, salaattia, chiliä, pikkelikaalia ja -sipulia, korianteria, kurkkua ja kuivattua sipulia.', 'description_en' => '2 spring onion pancakes, salad, chili, pickled cabbage and onion, coriander, cucumber and crispy onion.', 'price' => 0, 'category' => 'summer-tacos', 'dietary_tags' => '', 'visible' => true],
-        ['id' => 'm1', 'name_fi' => 'KUHATAKUU', 'name_en' => 'KUHATAKUU', 'description_fi' => 'Rapeaa kuhaa, lime-korianterimajoneesia.', 'description_en' => 'Crispy pike perch, lime coriander mayo.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
-        ['id' => 'm2', 'name_fi' => 'KANA', 'name_en' => 'CHICKEN', 'description_fi' => 'Rapeaa kanaa, yrttistä ranch-majoneesia.', 'description_en' => 'Crispy chicken, herby ranch mayo.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
-        ['id' => 'm3', 'name_fi' => 'HALLOUMI', 'name_en' => 'HALLOUMI', 'description_fi' => 'Rapeaa halloumia, Louisiana-majoneesia.', 'description_en' => 'Crispy halloumi, Louisiana mayo.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'VL', 'visible' => true],
-        ['id' => 'm4', 'name_fi' => 'TOFU', 'name_en' => 'TOFU', 'description_fi' => 'Spicy garlic -tofua, sweet chili -majoneesia.', 'description_en' => 'Spicy garlic tofu, sweet chili mayo.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'V', 'visible' => true],
-        ['id' => 'm5', 'name_fi' => 'PORK O\'CLOCK', 'name_en' => 'PORK O\'CLOCK', 'description_fi' => 'Paahdettua possunkylkeä, savuista BBQ-kastiketta ja aiolia.', 'description_en' => 'Roasted pork belly, smoky BBQ sauce and aioli.', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm0', 'name_fi' => 'SPRING ONION FLATBREAD', 'name_en' => 'SPRING ONION FLATBREAD', 'description_fi' => '2 kevätsipulilettua, salaattia, chiliä, pikkelöityä kaalia ja sipulia, korianteria, kurkkua ja rapeaksi friteerattua sipulia.', 'description_en' => '2 spring onion flatbreads, lettuce, chili, pickled cabbage and onion, cilantro, cucumber, and crispy fried onion.', 'price' => 0, 'category' => 'summer-tacos', 'dietary_tags' => '', 'visible' => true],
+        ['id' => 'm1', 'name_fi' => '#KUHATAKUU', 'name_en' => '#KUHATAKUU', 'description_fi' => 'Rapeaa kuhaa lime-korianterimajoneesilla', 'description_en' => 'Crispy pike-perch with lime-cilantro mayo', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm2', 'name_fi' => 'CHICKEN', 'name_en' => 'CHICKEN', 'description_fi' => 'Rapeaa kanaa ranch-majoneesilla', 'description_en' => 'Crispy chicken with ranch mayo', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm3', 'name_fi' => 'HALLOUMI', 'name_en' => 'HALLOUMI', 'description_fi' => 'Rapeaa halloumia Louisiana-majoneesilla', 'description_en' => 'Crispy halloumi with Louisiana mayo', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'VL', 'visible' => true],
+        ['id' => 'm4', 'name_fi' => 'TOFU', 'name_en' => 'TOFU', 'description_fi' => 'Spicy garlic -tofua sweet & chili -majoneesilla', 'description_en' => 'Spicy garlic tofu with sweet & chili mayo', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'V', 'visible' => true],
+        ['id' => 'm5', 'name_fi' => 'PORK O\' CLOCK', 'name_en' => 'PORK O\' CLOCK', 'description_fi' => 'Possunkylkeä BBQ-kastikkeella ja aiolilla', 'description_en' => 'Pork belly with BBQ sauce and aioli', 'price' => 18, 'category' => 'summer-tacos', 'dietary_tags' => 'L', 'visible' => true],
 
-        ['id' => 'm5b', 'name_fi' => 'Smash-burgerien pohja', 'name_en' => 'Smash burger base', 'description_fi' => '80 g rapea pihvi, salaattia, pikkelöityä sipulia, Myrttistä ja Jukolan cheddaria.', 'description_en' => '80 g crisp patty, salad, pickled onion, Myrttinen relish and Jukola cheddar.', 'price' => 0, 'category' => 'burgers-with-fries', 'dietary_tags' => '', 'visible' => true],
-        ['id' => 'm6', 'name_fi' => 'SINGLE', 'name_en' => 'SINGLE', 'description_fi' => '1 pihvi, Louisiana-majoneesia.', 'description_en' => '1 patty, Louisiana mayo.', 'price' => 14.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'VL', 'visible' => true],
-        ['id' => 'm7', 'name_fi' => 'DOUBLE', 'name_en' => 'DOUBLE', 'description_fi' => '2 pihviä, Louisiana-majoneesia.', 'description_en' => '2 patties, Louisiana mayo.', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'VL', 'visible' => true],
-        ['id' => 'm8', 'name_fi' => 'CHORIZO', 'name_en' => 'CHORIZO', 'description_fi' => '2 pihviä, chorizoa ja ranch-majoneesia.', 'description_en' => '2 patties, chorizo and ranch mayo.', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
-        ['id' => 'm9', 'name_fi' => 'HANGOVER', 'name_en' => 'HANGOVER', 'description_fi' => '2 pihviä, pekonia, pikkelöityä jalapenoa, Auraa ja ranch-majoneesia.', 'description_en' => '2 patties, bacon, pickled jalapeno, Aura blue cheese and ranch mayo.', 'price' => 20, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
-        ['id' => 'm10', 'name_fi' => 'VEGGIE CLASH', 'name_en' => 'VEGGIE CLASH', 'description_fi' => 'Beyond Meat -pihvi, Jukolan cheddar ja sweet chili -majoneesi. Saatavilla myös vegaanisena.', 'description_en' => 'Beyond Meat patty, Jukola cheddar and sweet chili mayo. Also available vegan.', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
-        ['id' => 'm11', 'name_fi' => 'FISHERMAN', 'name_en' => 'FISHERMAN', 'description_fi' => 'Paneroitu kuhafilee, pikkelikaalia ja -sipulia, salaattia, Myrttistä ja ranch-majoneesia.', 'description_en' => 'Breaded pike perch fillet, pickled cabbage and onion, salad, Myrttinen relish and ranch mayo.', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm5b', 'name_fi' => 'SMASH', 'name_en' => 'SMASH', 'description_fi' => '80 g rapea smash-naudanpihvi, salaattia, pikkelöityä sipulia, Myrttinen-juustoa ja Jukolan cheddaria.', 'description_en' => '80 g crispy smashed beef patty, lettuce, pickled onion, Myrttinen cheese, and Jukola cheddar', 'price' => 0, 'category' => 'burgers-with-fries', 'dietary_tags' => '', 'visible' => true],
+        ['id' => 'm6', 'name_fi' => 'SINGLE', 'name_en' => 'SINGLE', 'description_fi' => '1 pihvi, Louisiana-majoneesia', 'description_en' => '1 patty, Louisiana mayo', 'price' => 14.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'VL', 'visible' => true],
+        ['id' => 'm7', 'name_fi' => 'DOUBLE', 'name_en' => 'DOUBLE', 'description_fi' => '2 pihviä, Louisiana-majoneesia', 'description_en' => '2 patties, Louisiana mayo', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'VL', 'visible' => true],
+        ['id' => 'm8', 'name_fi' => 'CHORIZO SMASH', 'name_en' => 'CHORIZO SMASH', 'description_fi' => '2 pihviä, ranch-majoneesia', 'description_en' => '2 patties, ranch mayo', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm9', 'name_fi' => 'HANGOVER', 'name_en' => 'HANGOVER', 'description_fi' => '2 pihviä, pekonia, pikkelöityjä jalapeñoja, Aura-sinihomejuustoa ja ranch-majoneesia', 'description_en' => '2 patties, bacon, pickled jalapeños, Aura blue cheese, and ranch mayo', 'price' => 20, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm10', 'name_fi' => 'VEGGIE CLASH', 'name_en' => 'VEGGIE CLASH', 'description_fi' => 'Beyond Meat -pihvi, Jukolan cheddar ja sweet & chili -majoneesi. Saatavilla myös vegaanisena', 'description_en' => 'Beyond Meat patty, Jukola cheddar, and sweet & chili mayo. Also available vegan', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => '', 'visible' => true],
+        ['id' => 'm11', 'name_fi' => 'FISHERMAN', 'name_en' => 'FISHERMAN', 'description_fi' => 'Paneroitu kuhafilee, pikkelöityä kaalia ja sipulia, salaattia, Myrttinen-juustoa ja ranch-majoneesia', 'description_en' => 'Breaded pike-perch fillet, pickled cabbage and onion, lettuce, Myrttinen cheese, and ranch mayo', 'price' => 18.50, 'category' => 'burgers-with-fries', 'dietary_tags' => 'L', 'visible' => true],
 
-        ['id' => 'm12', 'name_fi' => 'KANA TAI SAVULOHI', 'name_en' => 'CHICKEN OR SMOKED SALMON', 'description_fi' => 'Vinaigrettea, tomaattia, mummonkurkkua, pikkelöityä punasipulia ja punakaalia, guacamolea ja ranch-majoneesia.', 'description_en' => 'Vinaigrette, tomato, cucumber pickles, pickled red onion and cabbage, guacamole and ranch mayo.', 'price' => 18, 'category' => 'salads', 'dietary_tags' => 'L,G', 'visible' => true],
+        ['id' => 'm12', 'name_fi' => 'CHICKEN OR SMOKED SALMON', 'name_en' => 'CHICKEN OR SMOKED SALMON', 'description_fi' => 'Vinaigrettea, tomaattia, mummonkurkkua, pikkelöityä punasipulia ja punakaalia, guacamolea ja ranch-majoneesia', 'description_en' => 'Vinaigrette, tomato, grandma-style pickles, pickled red onion and red cabbage, guacamole, and ranch mayo', 'price' => 18, 'category' => 'salads', 'dietary_tags' => 'L,G', 'visible' => true],
 
-        ['id' => 'm13', 'name_fi' => 'PARMESAN FRIES + DIPPI', 'name_en' => 'PARMESAN FRIES + DIP', 'description_fi' => '', 'description_en' => '', 'price' => 8, 'category' => 'snacks', 'dietary_tags' => '', 'visible' => true],
-        ['id' => 'm14', 'name_fi' => 'FLIPPED FRIES', 'name_en' => 'FLIPPED FRIES', 'description_fi' => 'Tomaattia, Auraa, pikkelöityä punasipulia, chiliä ja Louisiana-majoneesia.', 'description_en' => 'Tomato, Aura blue cheese, pickled red onion, chili and Louisiana mayo.', 'price' => 10, 'category' => 'snacks', 'dietary_tags' => 'VL,G', 'visible' => true],
-        ['id' => 'm15', 'name_fi' => 'FLIPPED NACHOS', 'name_en' => 'FLIPPED NACHOS', 'description_fi' => 'Cheddar-kastiketta, pikkelöityä punasipulia ja jalapenoa, tomaattia, guacamolea ja ranch-majoneesia.', 'description_en' => 'Cheddar sauce, pickled red onion and jalapeno, tomato, guacamole and ranch mayo.', 'price' => 10, 'category' => 'snacks', 'dietary_tags' => 'L,G', 'visible' => true],
+        ['id' => 'm13', 'name_fi' => 'PARMESAN FRIES + DIP', 'name_en' => 'PARMESAN FRIES + DIP', 'description_fi' => '', 'description_en' => '', 'price' => 8, 'category' => 'snacks', 'dietary_tags' => '', 'visible' => true],
+        ['id' => 'm14', 'name_fi' => 'FLIPPED FRIES', 'name_en' => 'FLIPPED FRIES', 'description_fi' => 'Tomaattia, Aura-sinihomejuustoa, pikkelöityä punasipulia, chiliä ja Louisiana-majoneesia', 'description_en' => 'Tomato, Aura blue cheese, pickled red onion, chili, and Louisiana mayo', 'price' => 10, 'category' => 'snacks', 'dietary_tags' => 'VL,G', 'visible' => true],
+        ['id' => 'm15', 'name_fi' => 'FLIPPED NACHOS', 'name_en' => 'FLIPPED NACHOS', 'description_fi' => 'Cheddar-kastiketta, pikkelöityä punasipulia ja jalapeñoja, tomaattia, guacamolea ja ranch-majoneesia', 'description_en' => 'Cheddar sauce, pickled red onion and jalapeños, tomato, guacamole, and ranch mayo', 'price' => 10, 'category' => 'snacks', 'dietary_tags' => 'L,G', 'visible' => true],
 
-        ['id' => 'm16', 'name_fi' => 'SMASH + FRIES', 'name_en' => 'SMASH + FRIES', 'description_fi' => '1 rapea 80 g pihvi, Jukolan cheddar, ranch-majoneesi, ketsuppi ja salaatti.', 'description_en' => '1 crisp 80 g patty, Jukola cheddar, ranch mayo, ketchup and salad.', 'price' => 10, 'category' => 'kids', 'dietary_tags' => 'L', 'visible' => true],
-        ['id' => 'm17', 'name_fi' => 'RANUT + DIPPI', 'name_en' => 'FRIES + DIP', 'description_fi' => '', 'description_en' => '', 'price' => 6, 'category' => 'kids', 'dietary_tags' => 'G,L,V', 'visible' => true],
-        ['id' => 'm18', 'name_fi' => 'FISH & CHIPS', 'name_en' => 'FISH & CHIPS', 'description_fi' => 'Rapeaa kuhaa, ranskalaisia ja ranch-majoneesia.', 'description_en' => 'Crispy pike perch, fries and ranch mayo.', 'price' => 10, 'category' => 'kids', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm16', 'name_fi' => 'SMASH + FRIES', 'name_en' => 'SMASH + FRIES', 'description_fi' => '1 rapea 80 g pihvi, Jukolan cheddar, ranch-majoneesi, ketsuppi ja salaatti', 'description_en' => '1 crispy 80 g patty, Jukola cheddar, ranch mayo, ketchup, and lettuce', 'price' => 10, 'category' => 'kids', 'dietary_tags' => 'L', 'visible' => true],
+        ['id' => 'm17', 'name_fi' => 'FRIES + DIP', 'name_en' => 'FRIES + DIP', 'description_fi' => '', 'description_en' => '', 'price' => 6, 'category' => 'kids', 'dietary_tags' => 'G,L,V', 'visible' => true],
+        ['id' => 'm18', 'name_fi' => 'FISH & CHIPS', 'name_en' => 'FISH & CHIPS', 'description_fi' => 'Rapeaa kuhaa ja ranskalaisia ranch-majoneesilla', 'description_en' => 'Crispy pike-perch and fries with ranch mayo', 'price' => 10, 'category' => 'kids', 'dietary_tags' => 'L', 'visible' => true],
 
-        ['id' => 'm19', 'name_fi' => 'Korianteri-lime', 'name_en' => 'Coriander lime', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'L,G', 'visible' => true],
-        ['id' => 'm20', 'name_fi' => 'Sweet chili', 'name_en' => 'Sweet chili', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'V,G', 'visible' => true],
+        ['id' => 'm19', 'name_fi' => 'Cilantro-lime', 'name_en' => 'Cilantro-lime', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'L,G', 'visible' => true],
+        ['id' => 'm20', 'name_fi' => 'Sweet & chili', 'name_en' => 'Sweet & chili', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'V,G', 'visible' => true],
         ['id' => 'm21', 'name_fi' => 'Louisiana', 'name_en' => 'Louisiana', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'VL,G', 'visible' => true],
         ['id' => 'm22', 'name_fi' => 'Aioli', 'name_en' => 'Aioli', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'L,G', 'visible' => true],
         ['id' => 'm23', 'name_fi' => 'Ranch', 'name_en' => 'Ranch', 'description_fi' => '', 'description_en' => '', 'price' => 0, 'category' => 'dips', 'dietary_tags' => 'L,G', 'visible' => true],

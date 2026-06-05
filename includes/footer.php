@@ -86,13 +86,16 @@ $socialLabels = [
             </div>
             <?php endif; ?>
         </div>
-        <div class="footer__bottom border-t border-editorial text-xs text-muted">
-            <p>&copy; <?= date('Y') ?> Konttiravintola Waves</p>
-            <p><?= esc($address !== '' ? $address : t('Satamakatu 2 B, 40100 Jyväskylä', 'Satamakatu 2 B, 40100 Jyväskylä')) ?></p>
+        <div class="footer-notice border-t border-editorial">
+            <p class="footer-notice__label"><?= t('Epävirallinen sivusto', 'Unofficial website') ?></p>
+            <p class="footer-notice__text"><?= t('Tämä ei ole Konttiravintola Wavesin virallinen verkkosivusto. Sivusto on toteutettu itsenäisenä projektina, ja kaikki sivuston kautta lähetetty palaute ohjataan sivuston tekijälle eikä välity Wavesin henkilöstölle.', 'This is not the official Konttiravintola Waves website. The site is maintained as an independent project, and all feedback sent through this site is directed to the site creator rather than Waves staff.') ?></p>
         </div>
-        <p class="footer__credit text-xs text-muted opacity-50">
-            <?= t('Sivusto: ', 'Site by: ') ?><a href="https://www.linkedin.com/in/miikkamgr/" target="_blank" rel="noopener" class="hover:text-text transition-colors">Miikka</a>
-        </p>
+        <div class="footer__bottom text-xs text-muted">
+            <p><?= esc($address !== '' ? $address : t('Satamakatu 2 B, 40100 Jyväskylä', 'Satamakatu 2 B, 40100 Jyväskylä')) ?></p>
+            <p>
+                <?= t('Sivusto: ', 'Site by: ') ?><a href="https://www.linkedin.com/in/miikkamgr/" target="_blank" rel="noopener" class="hover:text-text transition-colors">Miikka</a>
+            </p>
+        </div>
     </div>
 </footer>
 
@@ -100,46 +103,31 @@ $socialLabels = [
 <?php if (!empty($loadLeaflet)): ?>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-if (document.getElementById('map')) {
-  var map = L.map('map', {scrollWheelZoom: false, zoomControl: true, attributionControl: false}).setView([62.2386, 25.7531], 15);
-  L.tileLayer('https://api.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey=01c622ecbd814385a3da39c682350bf3', {
+if (document.getElementById('map') && window.L) {
+  var wavesLatLng = [62.2386, 25.7531];
+  var map = L.map('map', {
+    scrollWheelZoom: false,
+    zoomControl: true,
+    attributionControl: true
+  }).setView(wavesLatLng, 17);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: 'Maps &copy; <a href="https://www.thunderforest.com">Thunderforest</a>, Data &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
   var pinIcon = L.divIcon({
-    className: '',
-    html: '<div style="width:32px;height:42px;position:relative;"><svg viewBox="0 0 24 36" width="32" height="42"><path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z" fill="#c8d86b"/><circle cx="12" cy="12" r="5" fill="#07110f"/></svg></div>',
-    iconSize: [32, 42],
-    iconAnchor: [16, 42],
-    popupAnchor: [0, -42]
+    className: 'waves-map-marker',
+    html: '<span class="waves-map-marker__pulse"></span><span class="waves-map-marker__pin"><svg viewBox="0 0 52 64" width="52" height="64" aria-hidden="true" focusable="false"><path d="M26 4C14.4 4 6 13 6 24.4 6 40.6 26 59 26 59s20-18.4 20-34.6C46 13 37.6 4 26 4z" fill="#07110f" stroke="#f5f5dc" stroke-width="4"/><circle cx="26" cy="24" r="11" fill="#c5e063" stroke="#07110f" stroke-width="4"/><text x="26" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#07110f">W</text></svg></span>',
+    iconSize: [52, 64],
+    iconAnchor: [26, 59],
+    popupAnchor: [0, -58]
   });
-  L.marker([62.2386, 25.7531], {icon: pinIcon}).addTo(map).bindPopup('<strong>Waves</strong><br>Satamakatu 2 B');
-  var pois = [
-    {name:'Paviljonki',lat:62.2391,lon:25.7592,type:'landmark'},
-    {name:'Rautatieasema',lat:62.2407,lon:25.7525,type:'transit'},
-    {name:'Jyväskylä-kirjaimet',lat:62.2374,lon:25.7541,type:'landmark'},
-    {name:'P-Matkakeskus',lat:62.2431,lon:25.7571,type:'parking'},
-    {name:'P-Paviljonki',lat:62.2390,lon:25.7552,type:'parking'},
-    {name:'Hiisi',lat:62.2392,lon:25.7545,type:'restaurant'},
-    {name:'Faneri',lat:62.2399,lon:25.7587,type:'restaurant'},
-    {name:'Sataman Viilu',lat:62.2353,lon:25.7596,type:'restaurant'}
-  ];
-  var typeColor = {landmark:'#ff6b35',transit:'#2563eb',parking:'#16a34a',restaurant:'#9333ea'};
-  pois.forEach(function(p) {
-    var c = typeColor[p.type]||'#555';
-    var dotIcon = L.divIcon({
-      className: '',
-      html: '<div style="width:8px;height:8px;border-radius:50%;background:'+c+';border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);"></div>',
-      iconSize: [8, 8],
-      iconAnchor: [4, 4]
-    });
-    var marker = L.marker([p.lat, p.lon], {icon: dotIcon}).addTo(map);
-    marker.bindTooltip(p.name, {
-      permanent: true,
-      direction: 'right',
-      offset: [6, 0],
-      className: 'poi-label poi-' + p.type
-    });
+  L.marker(wavesLatLng, {
+    icon: pinIcon,
+    title: 'Waves',
+    alt: 'Waves'
+  }).addTo(map).bindPopup('<strong>Waves</strong><br>Satamakatu 2 B');
+  map.whenReady(function() {
+    map.invalidateSize();
   });
 }
 </script>
