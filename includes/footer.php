@@ -104,7 +104,7 @@ $socialLabels = [
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 if (document.getElementById('map') && window.L) {
-  var wavesLatLng = [62.2386, 25.7531];
+  var wavesLatLng = [62.237716, 25.750620];
   var map = L.map('map', {
     scrollWheelZoom: false,
     zoomControl: true,

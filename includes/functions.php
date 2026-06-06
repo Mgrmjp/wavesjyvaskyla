@@ -441,8 +441,8 @@ function restaurantSchema(array $settings): array {
         ],
         'geo' => [
             '@type' => 'GeoCoordinates',
-            'latitude' => 62.2386,
-            'longitude' => 25.7531,
+            'latitude' => 62.237716,
+            'longitude' => 25.750620,
         ],
     ];
 

@@ -59,7 +59,7 @@ include INCLUDES_DIR . '/header.php';
             <div class="contact-map-actions">
                 <p class="contact-map-address"><?= esc($mapAddress) ?></p>
                 <div class="contact-map-links">
-                    <a href="https://www.openstreetmap.org/?mlat=62.2386&mlon=25.7531#map=17/62.2386/25.7531" target="_blank" rel="noopener" class="contact-map-link"><?= t('Avaa kartta', 'Open map') ?> &rarr;</a>
+                    <a href="https://www.openstreetmap.org/?mlat=62.237716&mlon=25.750620#map=19/62.237594/25.751044" target="_blank" rel="noopener" class="contact-map-link"><?= t('Avaa kartta', 'Open map') ?> &rarr;</a>
                     <a href="<?= esc($directionsUrl) ?>" target="_blank" rel="noopener" class="btn contact-directions-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                     <?= t('Reittiohjeet', 'Directions') ?>

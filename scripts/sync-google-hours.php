@@ -174,7 +174,7 @@ function fetchPlace(array $options): array
             'regionCode' => 'FI',
             'locationBias' => [
                 'circle' => [
-                    'center' => ['latitude' => 62.2386, 'longitude' => 25.7531],
+                    'center' => ['latitude' => 62.237716, 'longitude' => 25.750620],
                     'radius' => 5000.0,
                 ],
             ],

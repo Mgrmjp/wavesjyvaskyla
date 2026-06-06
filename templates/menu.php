@@ -96,7 +96,7 @@ include INCLUDES_DIR . '/header.php';
             <div class="menu-hero-meta" aria-label="<?= t('Ravintolan tiedot', 'Restaurant details') ?>">
                 <span><?= t('Jyväskylän satama', 'Jyväskylä harbour') ?></span>
                 <span><?= t('Ei pöytävarauksia', 'No reservations') ?></span>
-                <span>62.2386° N, 25.7531° E</span>
+                <span>62.237716° N, 25.750620° E</span>
             </div>
         </div>
     </section>
