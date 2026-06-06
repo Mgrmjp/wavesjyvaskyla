@@ -57,6 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if (array_key_exists('kitchen_wait_minutes', $_POST)) {
+        $s['kitchen_wait_minutes'] = max(0, min(180, (int) $_POST['kitchen_wait_minutes']));
+    }
+
     DataStore::save('settings', $s);
     header('Location: hours.php?saved=1');
     exit;
@@ -112,6 +116,21 @@ include __DIR__ . '/includes/header.php';
 
     <form method="post">
         <input type="hidden" name="csrf" value="<?= csrf() ?>">
+
+        <div class="form-group" style="margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--admin-border)">
+            <label for="kitchen_wait_minutes">Keittiön odotusaika (min)</label>
+            <input
+                type="number"
+                id="kitchen_wait_minutes"
+                name="kitchen_wait_minutes"
+                min="0"
+                max="180"
+                step="5"
+                value="<?= (int) ($s['kitchen_wait_minutes'] ?? 0) ?>"
+                style="max-width:8rem"
+            >
+            <p class="text-sm text-gray" style="margin-top:0.45rem">Näytetään sivuston ylätunnisteessa kun ravintola on auki. 0 = piilotettu.</p>
+        </div>
 
         <div class="editor-items-stack" style="padding-bottom:0">
             <?php $dayFi = ['mon'=>'Maanantai','tue'=>'Tiistai','wed'=>'Keskiviikko','thu'=>'Torstai','fri'=>'Perjantai','sat'=>'Lauantai','sun'=>'Sunnuntai']; ?>

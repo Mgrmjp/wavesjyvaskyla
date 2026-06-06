@@ -51,6 +51,21 @@ $visibleCategories = array_values(array_filter($categories, function ($cat) use 
     return $slug !== '' && !empty($grouped[$slug]);
 }));
 
+$hasAiMenuImages = false;
+foreach ($grouped as $groupItems) {
+    foreach ($groupItems as $item) {
+        if (isAiGeneratedMenuImage((string) ($item['image'] ?? ''))) {
+            $hasAiMenuImages = true;
+            break 2;
+        }
+    }
+}
+
+$aiImageDisclaimer = t(
+    'Tekoälyllä luotu havainnekuva. Todellinen annos ja esillepano poikkeavat kuvasta.',
+    'AI-generated illustrative image. Actual portions and presentation may vary.'
+);
+
 $formatPrice = function ($price): string {
     if ($price === '' || $price === null || (float)$price <= 0) {
         return '';
@@ -179,11 +194,27 @@ include INCLUDES_DIR . '/header.php';
                     <?php endif; ?>
                 </div>
 
-                <?php $itemImage = uploadAsset((string) ($item['image'] ?? '')); ?>
+                <?php
+                    $itemImageFilename = (string) ($item['image'] ?? '');
+                    $itemImage = uploadAsset($itemImageFilename);
+                    $isAiImage = isAiGeneratedMenuImage($itemImageFilename);
+                ?>
                 <?php if ($itemImage !== ''): ?>
-                <div class="menu-item-img" aria-hidden="true">
+                <button
+                    type="button"
+                    class="menu-item-img<?= $isAiImage ? ' menu-item-img--ai' : '' ?>"
+                    data-menu-image-trigger
+                    data-menu-image-src="<?= esc($itemImage) ?>"
+                    data-menu-image-title="<?= esc($name) ?>"
+                    data-menu-image-ai="<?= $isAiImage ? '1' : '0' ?>"
+                    <?php if ($isAiImage): ?>data-ai-disclaimer="<?= esc($aiImageDisclaimer) ?>"<?php endif; ?>
+                    aria-label="<?= esc(t('Näytä suurempi kuva annoksesta ', 'View larger image of ') . $name) ?>"
+                >
                     <img src="<?= esc($itemImage) ?>" alt="" loading="lazy">
-                </div>
+                    <?php if ($isAiImage): ?>
+                    <span class="menu-item-img__ai-label" aria-hidden="true">AI</span>
+                    <?php endif; ?>
+                </button>
                 <?php endif; ?>
 
                 <?php if ($tags): ?>
@@ -218,6 +249,9 @@ include INCLUDES_DIR . '/header.php';
             <strong>V</strong> <?= t('Vegaaninen', 'Vegan') ?>
             <strong>M</strong> <?= t('Maidoton', 'Dairy-free') ?>
         </p>
+        <?php if ($hasAiMenuImages): ?>
+        <p class="menu-ai-disclaimer"><?= t('AI-merkityt kuvat ovat tekoälyllä luotuja havainnekuvia. Todellinen annos ja esillepano poikkeavat kuvasta.', 'Images marked AI are AI-generated illustrations. Actual portions and presentation may vary.') ?></p>
+        <?php endif; ?>
     </div>
 
     <!-- ── FOOTER DESTINATION ───────────────────── -->

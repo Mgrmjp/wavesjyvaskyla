@@ -143,6 +143,127 @@
     }
   }
 
+  /* ─── Menu image viewer ─── */
+  var imageTriggers = document.querySelectorAll('[data-menu-image-trigger]');
+  if (imageTriggers.length) {
+    var isFinnish = document.documentElement.getAttribute('lang') === 'fi';
+    var viewer = document.createElement('div');
+    var backdrop = document.createElement('div');
+    var panel = document.createElement('div');
+    var closeButton = document.createElement('button');
+    var viewerImage = document.createElement('img');
+    var viewerBody = document.createElement('div');
+    var viewerTitle = document.createElement('p');
+    var viewerNote = document.createElement('p');
+    var previousFocus = null;
+    var previousOverflow = '';
+
+    viewer.className = 'menu-image-viewer';
+    viewer.hidden = true;
+    viewer.setAttribute('role', 'dialog');
+    viewer.setAttribute('aria-modal', 'true');
+    viewer.setAttribute('aria-labelledby', 'menu-image-viewer-title');
+
+    backdrop.className = 'menu-image-viewer__backdrop';
+    panel.className = 'menu-image-viewer__panel';
+
+    closeButton.type = 'button';
+    closeButton.className = 'menu-image-viewer__close';
+    closeButton.setAttribute('aria-label', isFinnish ? 'Sulje suurempi kuva' : 'Close larger image');
+    closeButton.innerHTML =
+      '<svg viewBox="0 0 12 12" aria-hidden="true" focusable="false">' +
+      '<line x1="2" y1="2" x2="10" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<line x1="10" y1="2" x2="2" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' +
+      '</svg>';
+
+    viewerImage.className = 'menu-image-viewer__image';
+    viewerImage.loading = 'lazy';
+
+    viewerBody.className = 'menu-image-viewer__body';
+    viewerTitle.id = 'menu-image-viewer-title';
+    viewerTitle.className = 'menu-image-viewer__title';
+    viewerNote.className = 'menu-image-viewer__note';
+    viewerNote.textContent = isFinnish
+      ? 'Tekoälyllä luotu havainnekuva. Todellinen annos ja esillepano poikkeavat kuvasta.'
+      : 'AI-generated illustrative image. Actual portions and presentation may vary.';
+
+    viewerBody.appendChild(viewerTitle);
+    viewerBody.appendChild(viewerNote);
+    panel.appendChild(closeButton);
+    panel.appendChild(viewerImage);
+    panel.appendChild(viewerBody);
+    viewer.appendChild(backdrop);
+    viewer.appendChild(panel);
+    document.body.appendChild(viewer);
+
+    function closeMenuImageViewer() {
+      if (viewer.hidden) return;
+      viewer.hidden = true;
+      viewerImage.removeAttribute('src');
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus && typeof previousFocus.focus === 'function') {
+        previousFocus.focus();
+      }
+    }
+
+    function openMenuImageViewer(trigger) {
+      var src = trigger.getAttribute('data-menu-image-src') || '';
+      var title = trigger.getAttribute('data-menu-image-title') || '';
+      var isAi = trigger.getAttribute('data-menu-image-ai') === '1';
+      if (!src) return;
+
+      previousFocus = document.activeElement;
+      previousOverflow = document.body.style.overflow;
+      viewerImage.src = src;
+      viewerImage.alt = title;
+      viewerTitle.textContent = title;
+      viewerNote.hidden = !isAi;
+      document.body.style.overflow = 'hidden';
+      viewer.hidden = false;
+      closeButton.focus();
+    }
+
+    function focusableViewerElements() {
+      return Array.prototype.slice.call(
+        viewer.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+      ).filter(function (el) {
+        return !el.disabled && el.offsetParent !== null;
+      });
+    }
+
+    imageTriggers.forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        openMenuImageViewer(trigger);
+      });
+    });
+
+    backdrop.addEventListener('click', closeMenuImageViewer);
+    closeButton.addEventListener('click', closeMenuImageViewer);
+
+    document.addEventListener('keydown', function (event) {
+      if (viewer.hidden) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenuImageViewer();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      var focusable = focusableViewerElements();
+      if (!focusable.length) return;
+
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
   /* ─── Organic hero wave deformation ─── */
   var wavePaths = document.querySelectorAll('.wave-divider path');
   if (wavePaths.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

@@ -19,6 +19,24 @@ include INCLUDES_DIR . '/header.php';
 <section class="max-w-5xl mx-auto px-5 pt-8 pb-20">
     <h1 class="display text-accent mb-4"><?= esc($page['title']) ?></h1>
     <p class="lead max-w-xl mb-12"><?= t('Maanantaista perjantaihin', 'Monday through Friday') ?></p>
+    <div class="lunch-summary mb-12" aria-label="<?= t('Lounaan tiedot', 'Lunch details') ?>">
+        <div class="lunch-summary__item">
+            <span class="lunch-summary__label"><?= t('Aika', 'Time') ?></span>
+            <strong><?= t('Ma-pe klo 10:30-14', 'Mon-Fri 10:30 AM-2:00 PM') ?></strong>
+        </div>
+        <div class="lunch-summary__item">
+            <span class="lunch-summary__label"><?= t('Sisältää', 'Includes') ?></span>
+            <strong><?= t('Kahvin tai teen', 'Coffee or tea') ?></strong>
+        </div>
+        <div class="lunch-summary__price">
+            <span><?= t('Lounas', 'Lunch') ?></span>
+            <strong>14 €</strong>
+        </div>
+        <div class="lunch-summary__drinks">
+            <span><?= t('Lounasolut: 5 € Sandels / 0,33 l', 'Lunch beer: €5 Sandels (0.33 L)') ?></span>
+            <span><?= t('Lounasviini: 5 € Riesling / 12 cl', 'Lunch wine: €5 Riesling (12 cl)') ?></span>
+        </div>
+    </div>
     <div class="rule-accent mb-16"></div>
 
     <?php foreach ($days as $day): ?>
@@ -51,6 +69,13 @@ include INCLUDES_DIR . '/header.php';
         <?php endif; ?>
     </div>
     <?php endforeach; ?>
+
+    <div class="lunch-abbreviations">
+        <span><?= t('Merkinnät', 'Labels') ?></span>
+        <strong>L</strong> <?= t('Laktoositon', 'Lactose-free') ?>
+        <strong>G</strong> <?= t('Gluteeniton', 'Gluten-free') ?>
+        <strong>VL</strong> <?= t('Vähälaktoottinen', 'Low-lactose') ?>
+    </div>
 </section>
 
 <?php include INCLUDES_DIR . '/footer.php'; ?>

@@ -92,6 +92,7 @@ final class AppStore
         $pdo->exec('PRAGMA foreign_keys = ON');
 
         self::createSchema($pdo);
+        self::ensureSchemaUpgrades($pdo);
         self::$pdo = $pdo;
 
         if (self::meta('json_imported_at') === null) {
@@ -125,7 +126,8 @@ final class AppStore
                 seo_title_fi TEXT NOT NULL DEFAULT "",
                 seo_title_en TEXT NOT NULL DEFAULT "",
                 seo_description_fi TEXT NOT NULL DEFAULT "",
-                seo_description_en TEXT NOT NULL DEFAULT ""
+                seo_description_en TEXT NOT NULL DEFAULT "",
+                kitchen_wait_minutes INTEGER NOT NULL DEFAULT 0
             )'
         );
         $pdo->exec(
@@ -301,6 +303,24 @@ final class AppStore
         }
     }
 
+    private static function ensureSchemaUpgrades(PDO $pdo): void
+    {
+        self::ensureColumn($pdo, 'settings', 'kitchen_wait_minutes', 'INTEGER NOT NULL DEFAULT 0');
+    }
+
+    private static function ensureColumn(PDO $pdo, string $table, string $column, string $definition): void
+    {
+        $stmt = $pdo->query('PRAGMA table_info(' . $table . ')');
+        $columns = $stmt ? $stmt->fetchAll() : [];
+        foreach ($columns as $col) {
+            if (($col['name'] ?? '') === $column) {
+                return;
+            }
+        }
+
+        $pdo->exec('ALTER TABLE ' . $table . ' ADD COLUMN ' . $column . ' ' . $definition);
+    }
+
     private static function readLegacyJson(string $name): array
     {
         $path = DATA_DIR . '/' . $name . '.json';
@@ -339,6 +359,7 @@ final class AppStore
                 'seo_title_en' => (string) $row['seo_title_en'],
                 'seo_description_fi' => (string) $row['seo_description_fi'],
                 'seo_description_en' => (string) $row['seo_description_en'],
+                'kitchen_wait_minutes' => (int) ($row['kitchen_wait_minutes'] ?? 0),
             ];
         }
 
@@ -388,10 +409,12 @@ final class AppStore
             $stmt = $pdo->prepare(
                 'INSERT INTO settings (
                     singleton_id, title_fi, title_en, hero_text_fi, hero_text_en, intro_fi, intro_en,
-                    phone, email, address, seo_title_fi, seo_title_en, seo_description_fi, seo_description_en
+                    phone, email, address, seo_title_fi, seo_title_en, seo_description_fi, seo_description_en,
+                    kitchen_wait_minutes
                 ) VALUES (
                     1, :title_fi, :title_en, :hero_text_fi, :hero_text_en, :intro_fi, :intro_en,
-                    :phone, :email, :address, :seo_title_fi, :seo_title_en, :seo_description_fi, :seo_description_en
+                    :phone, :email, :address, :seo_title_fi, :seo_title_en, :seo_description_fi, :seo_description_en,
+                    :kitchen_wait_minutes
                 )
                 ON CONFLICT(singleton_id) DO UPDATE SET
                     title_fi = excluded.title_fi,
@@ -406,7 +429,8 @@ final class AppStore
                     seo_title_fi = excluded.seo_title_fi,
                     seo_title_en = excluded.seo_title_en,
                     seo_description_fi = excluded.seo_description_fi,
-                    seo_description_en = excluded.seo_description_en'
+                    seo_description_en = excluded.seo_description_en,
+                    kitchen_wait_minutes = excluded.kitchen_wait_minutes'
             );
             $stmt->execute([
                 ':title_fi' => (string) ($settings['title_fi'] ?? ''),
@@ -422,6 +446,7 @@ final class AppStore
                 ':seo_title_en' => (string) ($settings['seo_title_en'] ?? ''),
                 ':seo_description_fi' => (string) ($settings['seo_description_fi'] ?? ''),
                 ':seo_description_en' => (string) ($settings['seo_description_en'] ?? ''),
+                ':kitchen_wait_minutes' => max(0, min(180, (int) ($settings['kitchen_wait_minutes'] ?? 0))),
             ]);
 
             $pdo->exec('DELETE FROM social_links');

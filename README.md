@@ -127,6 +127,31 @@ Create the first admin user from the command line:
 php scripts/create-admin-user.php admin your-password
 ```
 
+## Developer AI Menu Images
+
+Menu item images can be generated as a developer-only OpenAI Batch job. The script writes auditable batch inputs and manifests under `data/ai-menu-image-batches/`, saves collected files to `uploads/`, and names generated files with the `menu_ai_` prefix. Public menu cards automatically show an AI marker and disclaimer for those generated filenames.
+
+Preview the batch JSONL without calling OpenAI:
+
+```bash
+php scripts/menu-ai-images.php plan --variants=3
+```
+
+Submit a batch:
+
+```bash
+OPENAI_API_KEY='your-api-key' php scripts/menu-ai-images.php submit --variants=3
+```
+
+Check and collect results:
+
+```bash
+OPENAI_API_KEY='your-api-key' php scripts/menu-ai-images.php status batch_abc123
+OPENAI_API_KEY='your-api-key' php scripts/menu-ai-images.php collect batch_abc123 --apply
+```
+
+Useful options: `--quality=low|medium|high`, `--size=1536x1024`, `--all` to include items that already have images, `--include-hidden`, `--include-zero-price`, `--item=ID_OR_NAME`, and `--overwrite` when collecting with `--apply`.
+
 ## Deployment (Hetzner Ubuntu + Nginx)
 
 ```bash

@@ -488,6 +488,30 @@ function isOpenNow(): bool {
     return false;
 }
 
+function kitchenWaitMinutes(): int
+{
+    return max(0, (int) (settings()['kitchen_wait_minutes'] ?? 0));
+}
+
+function headerKitchenWait(): ?array
+{
+    $minutes = kitchenWaitMinutes();
+    if ($minutes <= 0) {
+        $minutes = 15;
+    }
+
+    return [
+        'minutes' => $minutes,
+        'text' => t('Keittiön odotus', 'Kitchen wait'),
+        'time' => '~' . $minutes . ' min',
+        'test' => t('Testi', 'Test'),
+        'title' => t(
+            'Testi – ei oikeaa odotusaikaa',
+            'Test only – not actual wait time'
+        ),
+    ];
+}
+
 function dayLabel(string $key): string {
     $fi = ['mon'=>'Maanantai','tue'=>'Tiistai','wed'=>'Keskiviikko','thu'=>'Torstai','fri'=>'Perjantai','sat'=>'Lauantai','sun'=>'Sunnuntai'];
     $en = ['mon'=>'Monday','tue'=>'Tuesday','wed'=>'Wednesday','thu'=>'Thursday','fri'=>'Friday','sat'=>'Saturday','sun'=>'Sunday'];
@@ -539,6 +563,7 @@ function defaultSettings(): array {
         'seo_title_en' => '',
         'seo_description_fi' => '',
         'seo_description_en' => '',
+        'kitchen_wait_minutes' => 0,
     ];
 }
 
@@ -577,6 +602,11 @@ function safeUploadFilename(string $filename): string {
 function uploadAsset(string $filename): string {
     $filename = safeUploadFilename($filename);
     return $filename === '' ? '' : publicAsset('/uploads/' . $filename);
+}
+
+function isAiGeneratedMenuImage(string $filename): bool {
+    $filename = safeUploadFilename($filename);
+    return str_starts_with($filename, 'menu_ai_');
 }
 
 function uploadedImageExtension(array $file, int $maxPixels = 40000000): ?string {

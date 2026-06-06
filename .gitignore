@@ -1,5 +1,6 @@
 node_modules/
 screenshots/
+.env
 assets/css/index.css
 /data/*.json
 /data/*.sqlite

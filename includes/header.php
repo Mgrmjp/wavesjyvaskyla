@@ -2,6 +2,7 @@
 $s = settings();
 $notices = notices();
 $isOpen = isOpenNow();
+$kitchenWait = headerKitchenWait();
 $page = $page ?? [];
 $pageSlug = (string) ($page['slug'] ?? '');
 $seoTitle = seoTitle($s, $page);
@@ -131,6 +132,7 @@ $slugEn = Router::slugForLang($pageSlug, 'en');
                 ?>
             </a>
         </div>
+        <div class="site-header__actions">
         <button id="menu-toggle" class="site-menu-toggle" aria-label="Menu" aria-expanded="false">
             <span></span>
             <span></span>
@@ -153,7 +155,9 @@ $slugEn = Router::slugForLang($pageSlug, 'en');
 <?php $alt = lang() === 'fi' ? 'en' : 'fi'; ?>
         <a href="<?= $alt === 'en' ? '/en' . ($slugEn ? '/' . $slugEn : '') : '/' . $slugFi ?>" class="site-lang" aria-label="<?= strtoupper($alt) ?>"><?php if ($alt === 'fi'): ?><svg viewBox="0 0 1800 1100" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><rect width="1800" height="1100" fill="#fff"/><rect width="1800" height="300" y="400" fill="#003580"/><rect width="300" height="1100" x="500" fill="#003580"/></svg><?php else: ?><svg viewBox="0 0 60 30" width="22" height="15" style="display:block;border-radius:2px;overflow:hidden;"><clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#s)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg><?php endif; ?></a>
         </nav>
+        </div>
     </div>
+    <?php include INCLUDES_DIR . '/kitchen-wait-chip.php'; ?>
 </header>
 <nav id="mobile-menu" class="site-mobile-menu hidden">
     <div class="site-mobile-menu__inner">
