@@ -1,8 +1,12 @@
 node_modules/
 screenshots/
 .env
+.env.*
+!.env.example
 assets/css/index.css
+uploads/
 /data/*.json
 /data/*.sqlite
 /data/*.db
+/data/ai-menu-image-batches/
 !/data/.gitkeep
