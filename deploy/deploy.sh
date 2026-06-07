@@ -16,12 +16,14 @@ rsync -avz \
     --exclude='.env.*' \
     --exclude='node_modules' \
     --exclude='screenshots' \
+    --exclude='temp' \
     --exclude='src' \
     --exclude='.agents' \
     --exclude='.codex' \
     --exclude='docker*' \
     --exclude='Dockerfile' \
     --exclude='README.md' \
+    --exclude='DESIGN_REF.png' \
     --exclude='docs/' \
     --exclude='data/*.json' \
     --exclude='data/*.sqlite' \
@@ -33,7 +35,8 @@ rsync -avz \
 # 2. Remove sensitive/dev artifacts if a previous deploy left them behind
 ssh ${REMOTE_USER}@${REMOTE_HOST} "\
     rm -f ${REMOTE_DIR}/.env ${REMOTE_DIR}/.env.* && \
-    rm -rf ${REMOTE_DIR}/data/ai-menu-image-batches \
+    rm -f ${REMOTE_DIR}/DESIGN_REF.png && \
+    rm -rf ${REMOTE_DIR}/temp ${REMOTE_DIR}/data/ai-menu-image-batches \
 "
 
 # 3. Fix permissions
