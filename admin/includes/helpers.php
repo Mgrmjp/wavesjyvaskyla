@@ -97,3 +97,88 @@ function renderDaySelect(string $name, string $selected, string $attrs = ''): vo
     }
     echo '</select>';
 }
+
+function adminUploadImages(): array
+{
+    $images = array_values(array_filter(array_map(
+        static function (string $path): ?array {
+            if (!is_file($path)) {
+                return null;
+            }
+
+            $filename = safeUploadFilename(basename($path));
+            if ($filename === '') {
+                return null;
+            }
+
+            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            if (!in_array($ext, ['avif', 'jpg', 'jpeg', 'png', 'webp'], true)) {
+                return null;
+            }
+
+            return [
+                'filename' => $filename,
+                'src' => uploadAsset($filename),
+                'mtime' => filemtime($path) ?: 0,
+            ];
+        },
+        glob(ROOT . '/uploads/*') ?: []
+    )));
+
+    usort($images, static fn(array $a, array $b): int => $b['mtime'] <=> $a['mtime']);
+    return $images;
+}
+
+function adminUploadImageSrc(string $selectedImage, array $uploadImages): string
+{
+    $selectedImage = safeUploadFilename($selectedImage);
+    if ($selectedImage === '') {
+        return '';
+    }
+
+    foreach ($uploadImages as $image) {
+        if (($image['filename'] ?? '') === $selectedImage) {
+            return (string) ($image['src'] ?? '');
+        }
+    }
+
+    return '';
+}
+
+function renderUploadImagePicker(string $inputName, string $selectedImage, array $uploadImages, string $pickerId): void
+{
+    $selectedImage = safeUploadFilename($selectedImage);
+    $selectedSrc = adminUploadImageSrc($selectedImage, $uploadImages);
+    ?>
+    <div class="menu-image-picker" id="<?= esc($pickerId) ?>">
+        <input type="hidden" name="<?= esc($inputName) ?>" value="<?= esc($selectedImage) ?>" data-picker-value>
+        <div class="menu-image-picker__summary">
+            <div class="menu-image-picker__preview" data-picker-preview>
+                <?php if ($selectedSrc !== ''): ?>
+                <img src="<?= esc($selectedSrc) ?>" alt="" loading="lazy" data-picker-preview-image>
+                <?php else: ?>
+                <span data-picker-placeholder><?= $selectedImage !== '' ? 'Kuva puuttuu' : 'Ei kuvaa' ?></span>
+                <?php endif; ?>
+            </div>
+            <div class="menu-image-picker__meta">
+                <div class="menu-image-picker__filename" data-picker-filename><?= esc($selectedImage !== '' ? $selectedImage : 'Ei valintaa') ?></div>
+                <div class="text-xs text-gray"><?= $selectedImage !== '' ? 'Valitse toinen kuva tai tyhjennä.' : 'Valitse valmis kuva alta.' ?></div>
+            </div>
+            <button type="button" class="menu-image-picker__clear" data-picker-clear <?= $selectedImage === '' ? 'disabled' : '' ?>>Tyhjennä</button>
+        </div>
+        <?php if (empty($uploadImages)): ?>
+        <div class="menu-image-picker__empty">Ei kuvia vielä. Lataa kuva yllä, niin se ilmestyy tähän.</div>
+        <?php else: ?>
+        <div class="menu-image-picker__grid" role="listbox" aria-label="Valitse kuva">
+            <?php foreach ($uploadImages as $image): ?>
+            <?php $filename = (string) ($image['filename'] ?? ''); $isSelected = $filename === $selectedImage; ?>
+            <button type="button" class="menu-image-option<?= $isSelected ? ' is-selected' : '' ?>" data-image-value="<?= esc($filename) ?>" data-image-src="<?= esc((string) ($image['src'] ?? '')) ?>" aria-pressed="<?= $isSelected ? 'true' : 'false' ?>">
+                <span class="menu-image-option__thumb"><img src="<?= esc((string) ($image['src'] ?? '')) ?>" alt="" loading="lazy"></span>
+                <span class="menu-image-option__name"><?= esc($filename) ?></span>
+            </button>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+    <?php
+}

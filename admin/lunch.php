@@ -5,6 +5,7 @@ require_once __DIR__ . '/includes/helpers.php';
 adminAuth();
 
 $data = DataStore::ensure('lunch', ['items' => []]);
+$uploadImages = adminUploadImages();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     checkCsrf();
@@ -22,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'price' => (float)($_POST['price'][$i] ?? 0),
             'dietary_tags' => $_POST['tags'][$i] ?? '',
             'visible' => !empty($_POST['visible'][$i]),
+            'image' => safeUploadFilename((string) ($_POST['image'][$i] ?? '')),
         ];
     }
     DataStore::save('lunch', $data);
@@ -44,11 +46,13 @@ foreach ($data['items'] as $item) {
 }
 $totalItems = count($data['items']);
 $visibleItems = count(array_filter($data['items'], fn($i) => !empty($i['visible'])));
+$itemsWithoutImage = count(array_filter($data['items'], fn($i) => empty($i['image'])));
 ?>
 
 <div class="editor-list-overview">
     <span class="editor-overview-pill"><strong><?= $totalItems ?></strong> lounasta</span>
     <span class="editor-overview-pill"><strong><?= $visibleItems ?></strong> näkyvissä</span>
+    <?php if ($itemsWithoutImage > 0): ?><span class="editor-overview-pill" style="border-color:var(--warning-line);background:var(--warning-bg);color:var(--warning)"><strong><?= $itemsWithoutImage ?></strong> ilman kuvaa</span><?php endif; ?>
 </div>
 
 <form method="post" class="mt-4">
@@ -114,6 +118,10 @@ $visibleItems = count(array_filter($data['items'], fn($i) => !empty($i['visible'
                                 <label>Tagit</label>
                                 <input class="input-compact" type="text" name="tags[<?= $idx ?>]" value="<?= esc($item['dietary_tags'] ?? '') ?>" placeholder="L, G, V">
                             </div>
+                            <div class="form-group" style="grid-column:1 / -1">
+                                <label>Annoskuva</label>
+                                <?php renderUploadImagePicker('image[' . $idx . ']', (string) ($item['image'] ?? ''), $uploadImages, 'lunch-image-' . $idx); ?>
+                            </div>
                         </div>
                     </div>
                     <?php $idx++; ?>
@@ -147,6 +155,10 @@ $visibleItems = count(array_filter($data['items'], fn($i) => !empty($i['visible'
                             <div class="form-group">
                                 <label>Tagit</label>
                                 <input class="input-compact" type="text" name="tags[<?= $idx ?>]" placeholder="L, G, V">
+                            </div>
+                            <div class="form-group" style="grid-column:1 / -1">
+                                <label>Annoskuva</label>
+                                <?php renderUploadImagePicker('image[' . $idx . ']', '', $uploadImages, 'lunch-image-' . $idx); ?>
                             </div>
                         </div>
                         <input type="hidden" name="visible[<?= $idx ?>]" value="1">

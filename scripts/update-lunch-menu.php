@@ -22,7 +22,8 @@ function lunchItem(
     string $weekday,
     string $nameFi,
     string $nameEn,
-    string $tags
+    string $tags,
+    string $image = ''
 ): array {
     return [
         'id' => $id,
@@ -34,6 +35,7 @@ function lunchItem(
         'price' => 0,
         'dietary_tags' => $tags,
         'visible' => true,
+        'image' => $image,
     ];
 }
 
@@ -66,6 +68,22 @@ $items = [
 RevisionLog::init(DATA_DIR);
 
 $before = DataStore::load('lunch');
+$existingImages = [];
+foreach (($before['items'] ?? []) as $item) {
+    $itemId = (string) ($item['id'] ?? '');
+    if ($itemId !== '') {
+        $existingImages[$itemId] = (string) ($item['image'] ?? '');
+    }
+}
+
+foreach ($items as &$item) {
+    $itemId = (string) ($item['id'] ?? '');
+    if ($itemId !== '' && isset($existingImages[$itemId])) {
+        $item['image'] = $existingImages[$itemId];
+    }
+}
+unset($item);
+
 $data = ['items' => $items];
 DataStore::save('lunch', $data);
 RevisionLog::log('lunch', 'updated', $data, $before);

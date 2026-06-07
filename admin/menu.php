@@ -383,22 +383,6 @@ if (isset($flashMessages[$flash])): ?><div class="alert"><?= esc($flashMessages[
     </form>
 </div>
 
-<script>
-document.querySelectorAll('.menu-image-picker').forEach((picker) => {
-    const hiddenInput = picker.querySelector('[data-picker-value]');
-    const filename = picker.querySelector('[data-picker-filename]');
-    const preview = picker.querySelector('[data-picker-preview]');
-    const clearButton = picker.querySelector('[data-picker-clear]');
-    const renderState = (value, src) => {
-        hiddenInput.value = value; filename.textContent = value || 'Ei valintaa'; preview.innerHTML = '';
-        if (src) { const img = document.createElement('img'); img.src = src; img.alt = ''; img.loading = 'lazy'; preview.appendChild(img); }
-        else { const p = document.createElement('span'); p.textContent = value ? 'Kuva puuttuu' : 'Ei kuvaa'; preview.appendChild(p); }
-        clearButton.disabled = value === '';
-        picker.querySelectorAll('.menu-image-option').forEach((o) => { const s = o.dataset.imageValue === value; o.classList.toggle('is-selected', s); o.setAttribute('aria-pressed', s ? 'true' : 'false'); });
-    };
-    picker.querySelectorAll('.menu-image-option').forEach((o) => { o.addEventListener('click', () => { renderState(o.dataset.imageValue || '', o.dataset.imageSrc || ''); }); });
-    clearButton.addEventListener('click', () => { renderState('', ''); });
-});
 document.querySelectorAll('.editor-list-item').forEach((item) => {
     const titleInput = item.querySelector('input[name^="item_name_fi"]');
     const categorySelect = item.querySelector('select[name^="item_category"]');

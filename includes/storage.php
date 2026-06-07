@@ -210,7 +210,8 @@ final class AppStore
                 description_en TEXT NOT NULL DEFAULT "",
                 price REAL NOT NULL DEFAULT 0,
                 dietary_tags TEXT NOT NULL DEFAULT "",
-                is_visible INTEGER NOT NULL DEFAULT 0
+                is_visible INTEGER NOT NULL DEFAULT 0,
+                image TEXT NOT NULL DEFAULT ""
             )'
         );
         $pdo->exec(
@@ -306,6 +307,7 @@ final class AppStore
     private static function ensureSchemaUpgrades(PDO $pdo): void
     {
         self::ensureColumn($pdo, 'settings', 'kitchen_wait_minutes', 'INTEGER NOT NULL DEFAULT 0');
+        self::ensureColumn($pdo, 'lunch_items', 'image', 'TEXT NOT NULL DEFAULT ""');
     }
 
     private static function ensureColumn(PDO $pdo, string $table, string $column, string $definition): void
@@ -639,7 +641,7 @@ final class AppStore
         $lunch = [
             'items' => self::fetchAll(
                 'SELECT id, weekday, name_fi, name_en, description_fi, description_en, price,
-                        dietary_tags, is_visible
+                        dietary_tags, is_visible, image
                  FROM lunch_items ORDER BY row_order ASC, id ASC',
                 static fn(array $item): array => [
                     'id' => (string) $item['id'],
@@ -651,6 +653,7 @@ final class AppStore
                     'price' => (float) $item['price'],
                     'dietary_tags' => (string) $item['dietary_tags'],
                     'visible' => (bool) $item['is_visible'],
+                    'image' => (string) $item['image'],
                 ]
             ),
         ];
@@ -666,10 +669,10 @@ final class AppStore
             $stmt = $pdo->prepare(
                 'INSERT INTO lunch_items (
                     id, row_order, weekday, name_fi, name_en, description_fi, description_en,
-                    price, dietary_tags, is_visible
+                    price, dietary_tags, is_visible, image
                  ) VALUES (
                     :id, :row_order, :weekday, :name_fi, :name_en, :description_fi, :description_en,
-                    :price, :dietary_tags, :is_visible
+                    :price, :dietary_tags, :is_visible, :image
                  )'
             );
             foreach (array_values($data['items'] ?? []) as $index => $item) {
@@ -684,6 +687,7 @@ final class AppStore
                     ':price' => (float) ($item['price'] ?? 0),
                     ':dietary_tags' => (string) ($item['dietary_tags'] ?? ''),
                     ':is_visible' => !empty($item['visible']) ? 1 : 0,
+                    ':image' => (string) ($item['image'] ?? ''),
                 ]);
             }
         });

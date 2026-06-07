@@ -604,9 +604,17 @@ function uploadAsset(string $filename): string {
     return $filename === '' ? '' : publicAsset('/uploads/' . $filename);
 }
 
-function isAiGeneratedMenuImage(string $filename): bool {
+function isAiGeneratedFoodImage(string $filename): bool {
     $filename = safeUploadFilename($filename);
-    return str_starts_with($filename, 'menu_ai_');
+    return str_starts_with($filename, 'menu_ai_') || str_starts_with($filename, 'lunch_ai_');
+}
+
+function isAiGeneratedMenuImage(string $filename): bool {
+    return isAiGeneratedFoodImage($filename);
+}
+
+function isAiGeneratedLunchImage(string $filename): bool {
+    return isAiGeneratedFoodImage($filename);
 }
 
 function uploadedImageExtension(array $file, int $maxPixels = 40000000): ?string {

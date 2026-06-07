@@ -30,12 +30,14 @@ Usage:
   OPENAI_API_KEY=... php scripts/menu-ai-images.php collect <batch_id> [--apply] [--overwrite]
 
 Options:
+  --store=menu|lunch       Target store. Default: menu
   --variants=N              Images per selected item. Default: 1
   --quality=low|medium|high Image quality. Default: medium
   --size=WxH                Output size. Default: 1536x1024
   --all                     Include items that already have images
   --include-hidden          Include hidden menu items
   --include-zero-price      Include zero-price notes/dips
+  --day=mon|tue|wed|thu|fri Limit lunch items to one weekday
   --item=ID_OR_NAME         Limit to one item id or name match
   --limit=N                 Limit selected items
   --apply                   On collect, assign first generated image per item
@@ -90,6 +92,16 @@ function menuAiOptionInt(array $options, string $key, int $default, int $min, in
 function menuAiOptionString(array $options, string $key, string $default): string
 {
     return trim((string) ($options[$key] ?? $default));
+}
+
+function menuAiStore(array $options): string
+{
+    $store = strtolower(menuAiOptionString($options, 'store', 'menu'));
+    if (!in_array($store, ['menu', 'lunch'], true)) {
+        throw new InvalidArgumentException('--store must be menu or lunch.');
+    }
+
+    return $store;
 }
 
 function menuAiEnsureBatchDir(): void
@@ -164,17 +176,43 @@ function menuAiCategoryTitles(array $categories): array
     return $titles;
 }
 
-function menuAiSelectedItems(array $menu, array $options): array
+function menuAiLunchDayLabel(string $weekday): string
+{
+    return match ($weekday) {
+        'mon' => 'Monday lunch',
+        'tue' => 'Tuesday lunch',
+        'wed' => 'Wednesday lunch',
+        'thu' => 'Thursday lunch',
+        'fri' => 'Friday lunch',
+        default => 'Weekday lunch',
+    };
+}
+
+function menuAiLoadStoreData(string $store): array
+{
+    return match ($store) {
+        'menu' => DataStore::ensure('menu', ['categories' => defaultMenuCategories(), 'items' => defaultMenuItems()]),
+        'lunch' => DataStore::ensure('lunch', ['items' => []]),
+        default => throw new InvalidArgumentException('Unsupported store: ' . $store),
+    };
+}
+
+function menuAiSelectedItems(array $data, array $options, string $store): array
 {
     $includeExisting = !empty($options['all']);
     $includeHidden = !empty($options['include-hidden']);
     $includeZeroPrice = !empty($options['include-zero-price']);
     $needle = strtolower(menuAiOptionString($options, 'item', ''));
     $limit = isset($options['limit']) ? menuAiOptionInt($options, 'limit', 1, 1, 500) : null;
-    $categoryTitles = menuAiCategoryTitles($menu['categories'] ?? []);
+    $day = strtolower(menuAiOptionString($options, 'day', ''));
+    if ($store === 'lunch' && $day !== '' && !in_array($day, ['mon', 'tue', 'wed', 'thu', 'fri'], true)) {
+        throw new InvalidArgumentException('--day must be mon, tue, wed, thu, or fri.');
+    }
+
+    $categoryTitles = $store === 'menu' ? menuAiCategoryTitles($data['categories'] ?? []) : [];
     $selected = [];
 
-    foreach (array_values($menu['items'] ?? []) as $index => $item) {
+    foreach (array_values($data['items'] ?? []) as $index => $item) {
         $itemId = (string) ($item['id'] ?? '');
         $name = trim((string) (($item['name_en'] ?? '') ?: ($item['name_fi'] ?? '')));
         if ($itemId === '' || $name === '') {
@@ -186,7 +224,10 @@ function menuAiSelectedItems(array $menu, array $options): array
         if (!$includeExisting && trim((string) ($item['image'] ?? '')) !== '') {
             continue;
         }
-        if (!$includeZeroPrice && (float) ($item['price'] ?? 0) <= 0) {
+        if ($store === 'menu' && !$includeZeroPrice && (float) ($item['price'] ?? 0) <= 0) {
+            continue;
+        }
+        if ($store === 'lunch' && $day !== '' && strtolower((string) ($item['weekday'] ?? '')) !== $day) {
             continue;
         }
         if ($needle !== '') {
@@ -196,7 +237,9 @@ function menuAiSelectedItems(array $menu, array $options): array
             }
         }
 
-        $category = (string) ($item['category'] ?? '');
+        $category = $store === 'menu'
+            ? (string) ($item['category'] ?? '')
+            : menuAiLunchDayLabel(strtolower((string) ($item['weekday'] ?? '')));
         $selected[] = [
             'index' => $index,
             'item' => $item,
@@ -211,14 +254,16 @@ function menuAiSelectedItems(array $menu, array $options): array
     return $selected;
 }
 
-function menuAiPrompt(array $item, string $categoryTitle): string
+function menuAiPrompt(array $item, string $categoryTitle, string $store): string
 {
     $name = trim((string) (($item['name_en'] ?? '') ?: ($item['name_fi'] ?? '')));
     $description = trim((string) (($item['description_en'] ?? '') ?: ($item['description_fi'] ?? '')));
     $tags = trim((string) ($item['dietary_tags'] ?? ''));
 
     $parts = [
-        'Create a realistic food photography image for a restaurant menu illustration.',
+        $store === 'lunch'
+            ? 'Create a realistic food photography image for a restaurant lunch menu illustration.'
+            : 'Create a realistic food photography image for a restaurant menu illustration.',
         '',
         'Dish: ' . $name,
     ];
@@ -232,6 +277,9 @@ function menuAiPrompt(array $item, string $categoryTitle): string
     if ($tags !== '') {
         $parts[] = 'Dietary tags: ' . $tags;
     }
+    if ($store === 'lunch') {
+        $parts[] = 'Service: weekday lunch special.';
+    }
 
     $parts[] = '';
     $parts[] = 'Visual direction: photorealistic casual restaurant food photography, realistic portion size, simple plate or basket, natural daylight, relaxed Nordic harbour container restaurant feeling, shallow depth of field.';
@@ -243,6 +291,7 @@ function menuAiPrompt(array $item, string $categoryTitle): string
 
 function menuAiBuildRequests(array $menu, array $options): array
 {
+    $store = menuAiStore($options);
     $variants = menuAiOptionInt($options, 'variants', 1, 1, 8);
     $quality = menuAiOptionString($options, 'quality', 'medium');
     if (!in_array($quality, ['low', 'medium', 'high'], true)) {
@@ -255,17 +304,17 @@ function menuAiBuildRequests(array $menu, array $options): array
     }
 
     $requests = [];
-    foreach (menuAiSelectedItems($menu, $options) as $entry) {
+    foreach (menuAiSelectedItems($menu, $options, $store) as $entry) {
         $item = $entry['item'];
         $itemId = (string) ($item['id'] ?? '');
-        $prompt = menuAiPrompt($item, (string) ($entry['category_title'] ?? ''));
+        $prompt = menuAiPrompt($item, (string) ($entry['category_title'] ?? ''), $store);
         for ($variant = 1; $variant <= $variants; $variant++) {
             $variantPrompt = $prompt;
             if ($variants > 1) {
                 $variantPrompt .= "\nVariant: {$variant}. Use a distinct camera angle and plating while keeping the dish recognizable.";
             }
 
-            $customId = 'menu_ai_' . menuAiSafeIdPart($itemId) . '_v' . $variant;
+            $customId = $store . '_ai_' . menuAiSafeIdPart($itemId) . '_v' . $variant;
             $body = [
                 'model' => 'gpt-image-2',
                 'prompt' => $variantPrompt,
@@ -277,6 +326,7 @@ function menuAiBuildRequests(array $menu, array $options): array
             ];
 
             $requests[] = [
+                'store' => $store,
                 'custom_id' => $customId,
                 'item_id' => $itemId,
                 'item_index' => (int) ($entry['index'] ?? 0),
@@ -338,10 +388,11 @@ function menuAiEstimateStandardCost(array $requests): ?float
 function menuAiCreatePlan(array $options, string $id): array
 {
     menuAiEnsureBatchDir();
-    $menu = DataStore::ensure('menu', ['categories' => defaultMenuCategories(), 'items' => defaultMenuItems()]);
+    $store = menuAiStore($options);
+    $menu = menuAiLoadStoreData($store);
     $requests = menuAiBuildRequests($menu, $options);
     if ($requests === []) {
-        throw new RuntimeException('No menu items matched the selected options.');
+        throw new RuntimeException('No ' . $store . ' items matched the selected options.');
     }
 
     $inputPath = menuAiInputPath($id);
@@ -351,6 +402,7 @@ function menuAiCreatePlan(array $options, string $id): array
     $standardCost = menuAiEstimateStandardCost($requests);
     $manifest = [
         'id' => $id,
+        'store' => $store,
         'batch_id' => null,
         'endpoint' => MENU_AI_BATCH_ENDPOINT,
         'created_at' => date('c'),
@@ -458,7 +510,7 @@ function menuAiSubmit(array $options): void
         'input_file_id' => (string) $file['id'],
         'endpoint' => MENU_AI_BATCH_ENDPOINT,
         'completion_window' => '24h',
-        'metadata' => ['kind' => 'waves_menu_ai_images'],
+        'metadata' => ['kind' => 'waves_menu_ai_images', 'store' => (string) ($manifest['store'] ?? 'menu')],
     ]);
 
     $batchId = (string) ($batch['id'] ?? '');
@@ -489,6 +541,7 @@ function menuAiSubmit(array $options): void
 
 function menuAiPrintPlanSummary(array $manifest, bool $batch): void
 {
+    fwrite(STDOUT, 'Store: ' . (string) ($manifest['store'] ?? 'menu') . PHP_EOL);
     fwrite(STDOUT, 'Requests: ' . (int) ($manifest['request_count'] ?? 0) . PHP_EOL);
     fwrite(STDOUT, 'Items: ' . (int) ($manifest['selected_item_count'] ?? 0) . PHP_EOL);
     fwrite(STDOUT, 'Input: ' . (string) ($manifest['input_path'] ?? '') . PHP_EOL);
@@ -540,6 +593,7 @@ function menuAiSaveGeneratedImage(array $request, string $bytes): string
         throw new RuntimeException('Uploads directory is not writable.');
     }
 
+    $store = in_array((string) ($request['store'] ?? ''), ['menu', 'lunch'], true) ? (string) $request['store'] : 'menu';
     $itemId = menuAiSafeIdPart((string) ($request['item_id'] ?? 'item'));
     $variant = (int) ($request['variant'] ?? 1);
     $hash = substr(sha1($bytes), 0, 12);
@@ -548,8 +602,8 @@ function menuAiSaveGeneratedImage(array $request, string $bytes): string
         throw new RuntimeException('Generated image bytes were not a supported image.');
     }
 
-    $tmpPath = ROOT . '/uploads/tmp_menu_ai_' . generateId() . '.' . $ext;
-    $filename = 'menu_ai_' . $itemId . '_v' . $variant . '_' . $hash . '.avif';
+    $tmpPath = ROOT . '/uploads/tmp_' . $store . '_ai_' . generateId() . '.' . $ext;
+    $filename = $store . '_ai_' . $itemId . '_v' . $variant . '_' . $hash . '.avif';
     $destPath = ROOT . '/uploads/' . $filename;
 
     if (file_put_contents($tmpPath, $bytes, LOCK_EX) === false) {
@@ -629,6 +683,7 @@ function menuAiCollect(string $batchId, array $options): void
 
         $filename = menuAiSaveGeneratedImage($request, $bytes);
         $generated[] = [
+            'store' => (string) ($request['store'] ?? ($manifest['store'] ?? 'menu')),
             'custom_id' => $customId,
             'item_id' => (string) ($request['item_id'] ?? ''),
             'item_name' => (string) ($request['item_name'] ?? ''),
@@ -646,7 +701,7 @@ function menuAiCollect(string $batchId, array $options): void
     menuAiWriteJson(menuAiManifestPath($batchId), $manifest);
 
     if (!empty($options['apply'])) {
-        menuAiApplyGenerated($generated, !empty($options['overwrite']));
+        menuAiApplyGenerated((string) ($manifest['store'] ?? 'menu'), $generated, !empty($options['overwrite']));
     }
 
     fwrite(STDOUT, 'Collected images: ' . count($generated) . PHP_EOL);
@@ -655,7 +710,7 @@ function menuAiCollect(string $batchId, array $options): void
     }
 }
 
-function menuAiApplyGenerated(array $generated, bool $overwrite): void
+function menuAiApplyGenerated(string $store, array $generated, bool $overwrite): void
 {
     usort($generated, static function (array $a, array $b): int {
         $itemCompare = strcmp((string) ($a['item_id'] ?? ''), (string) ($b['item_id'] ?? ''));
@@ -681,11 +736,16 @@ function menuAiApplyGenerated(array $generated, bool $overwrite): void
     }
 
     RevisionLog::init(DATA_DIR);
-    $menu = DataStore::ensure('menu', ['categories' => defaultMenuCategories(), 'items' => defaultMenuItems()]);
-    $before = $menu;
+    $data = menuAiLoadStoreData($store);
+    $before = $data;
     $updated = 0;
 
-    foreach ($menu['items'] ?? [] as &$item) {
+    if (!isset($data['items']) || !is_array($data['items'])) {
+        fwrite(STDOUT, 'No ' . $store . ' items are available to update.' . PHP_EOL);
+        return;
+    }
+
+    foreach ($data['items'] as &$item) {
         $itemId = (string) ($item['id'] ?? '');
         if (!isset($firstByItem[$itemId])) {
             continue;
@@ -695,19 +755,21 @@ function menuAiApplyGenerated(array $generated, bool $overwrite): void
         }
 
         $item['image'] = safeUploadFilename($firstByItem[$itemId]);
-        $item['updated_at'] = date('c');
+        if ($store === 'menu') {
+            $item['updated_at'] = date('c');
+        }
         $updated++;
     }
     unset($item);
 
     if ($updated === 0) {
-        fwrite(STDOUT, 'No menu items were updated. Use --overwrite to replace existing images.' . PHP_EOL);
+        fwrite(STDOUT, 'No ' . $store . ' items were updated. Use --overwrite to replace existing images.' . PHP_EOL);
         return;
     }
 
-    DataStore::save('menu', $menu);
-    RevisionLog::log('menu', 'updated', $menu, $before);
-    fwrite(STDOUT, 'Applied generated images to menu items: ' . $updated . PHP_EOL);
+    DataStore::save($store, $data);
+    RevisionLog::log($store, 'updated', $data, $before);
+    fwrite(STDOUT, 'Applied generated images to ' . $store . ' items: ' . $updated . PHP_EOL);
 }
 
 function menuAiMain(array $argv): int

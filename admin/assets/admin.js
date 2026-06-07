@@ -36,8 +36,8 @@
         }
       }
       if (!dirty) {
-        for (var key of current.keys()) {
-          if (!initialData.has(key) || initialData.get(key) !== current.get(key)) {
+        for (var currentKey of current.keys()) {
+          if (!initialData.has(currentKey) || initialData.get(currentKey) !== current.get(currentKey)) {
             dirty = true;
             break;
           }
@@ -256,6 +256,51 @@
     });
   }
 
+  function initMenuImagePickers() {
+    document.querySelectorAll('.menu-image-picker').forEach(function (picker) {
+      if (picker.dataset.pickerReady === '1') return;
+      picker.dataset.pickerReady = '1';
+
+      var hiddenInput = picker.querySelector('[data-picker-value]');
+      var filename = picker.querySelector('[data-picker-filename]');
+      var preview = picker.querySelector('[data-picker-preview]');
+      var clearButton = picker.querySelector('[data-picker-clear]');
+      if (!hiddenInput || !filename || !preview || !clearButton) return;
+
+      function renderState(value, src) {
+        hiddenInput.value = value;
+        filename.textContent = value || 'Ei valintaa';
+        preview.innerHTML = '';
+        if (src) {
+          var img = document.createElement('img');
+          img.src = src;
+          img.alt = '';
+          img.loading = 'lazy';
+          preview.appendChild(img);
+        } else {
+          var placeholder = document.createElement('span');
+          placeholder.textContent = value ? 'Kuva puuttuu' : 'Ei kuvaa';
+          preview.appendChild(placeholder);
+        }
+        clearButton.disabled = value === '';
+        picker.querySelectorAll('.menu-image-option').forEach(function (option) {
+          var selected = option.dataset.imageValue === value;
+          option.classList.toggle('is-selected', selected);
+          option.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        });
+      }
+
+      picker.querySelectorAll('.menu-image-option').forEach(function (option) {
+        option.addEventListener('click', function () {
+          renderState(option.dataset.imageValue || '', option.dataset.imageSrc || '');
+        });
+      });
+      clearButton.addEventListener('click', function () {
+        renderState('', '');
+      });
+    });
+  }
+
   function escapeHtml(text) {
     var d = document.createElement('div');
     d.textContent = text;
@@ -299,6 +344,7 @@
     initDragAndDrop();
     initSocialRows();
     initFileUploads();
+    initMenuImagePickers();
     initPasswordValidation();
 
     /* === Lunch Accordion Add Buttons === */
