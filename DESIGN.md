@@ -104,23 +104,23 @@ All spacing is based on `0.25rem` increments.
 ### Palette (CSS variables)
 
 ```css
---menu-cream: var(--color-text); /* #f4ead7 — primary text */
---menu-cream-soft: rgba(244, 234, 215, 0.72); /* descriptions, secondary */
---menu-muted: var(--color-muted); /* #b8ad97 — labels, meta */
---menu-gold: var(--color-warm); /* #b97845 — dividers, dots */
---menu-accent: var(--color-accent); /* #c8d86b — prices, badges */
---menu-border: rgba(244, 234, 215, 0.12); /* default card border */
---menu-border-hover: rgba(244, 234, 215, 0.22); /* hover border */
---menu-surface: rgba(244, 234, 215, 0.04); /* card background */
---menu-surface-hover: rgba(244, 234, 215, 0.07); /* card hover */
---menu-surface-accent: rgba(200, 216, 107, 0.08); /* badge bg */
+--menu-cream: var(--color-text); /* #F7F5EF - primary text */
+--menu-cream-soft: rgba(247, 245, 239, 0.72); /* descriptions, secondary */
+--menu-muted: var(--color-muted); /* #88B7B0 - labels, meta */
+--menu-gold: var(--color-warm); /* #F2C76B - dividers, dots */
+--menu-accent: var(--color-accent); /* #0FB5A8 - prices, badges */
+--menu-border: rgba(247, 245, 239, 0.12); /* default card border */
+--menu-border-hover: rgba(247, 245, 239, 0.22); /* hover border */
+--menu-surface: #1e2a36; /* card background */
+--menu-surface-hover: #263948; /* card hover */
+--menu-surface-accent: rgba(15, 181, 168, 0.08); /* badge bg */
 ```
 
 ### Contrast requirements
 
-- Card title: `menu-cream` on `menu-surface` → ratio ~11:1 ✓
-- Price: `menu-accent` on `menu-surface` → ratio ~5.5:1 ✓
-- Description: `menu-cream-soft` on `menu-surface` → ratio ~4.2:1 ✓
+- Card title: `menu-cream` on `menu-surface` → ratio ~13.4:1 ✓
+- Price: `menu-accent` on `menu-surface` → ratio ~5.7:1 ✓
+- Description: `menu-cream-soft` on `menu-surface` → ratio ~7.0:1 ✓
 - All text passes WCAG AA at any size
 
 ---
@@ -165,9 +165,9 @@ Shadow only on hover — never on default. Keeps the resting state calm.
 
 ```css
 .menu-card--featured {
-  border-color: rgba(200, 216, 107, 0.28);
+  border-color: rgba(15, 181, 168, 0.28);
   background:
-    linear-gradient(135deg, rgba(200, 216, 107, 0.06) 0%, transparent 100%), var(--menu-surface);
+    linear-gradient(135deg, rgba(15, 181, 168, 0.06) 0%, transparent 100%), var(--menu-surface);
 }
 ```
 

@@ -26,7 +26,7 @@ $socialLabels = [
                     $svg = preg_replace('/<!DOCTYPE[^>]*>\s*/', '', $svg);
                     $svg = preg_replace('/\s*width="[^"]*"/', '', $svg);
                     $svg = preg_replace('/\s*height="[^"]*"/', '', $svg);
-                    $svg = preg_replace('/<svg\s/', '<svg fill="#f4ead7" style="width:120px;height:auto;display:block;margin-bottom:0.75rem;" ', $svg, 1);
+                    $svg = preg_replace('/<svg\s/', '<svg fill="#f7f5ef" style="width:120px;height:auto;display:block;margin-bottom:0.75rem;" ', $svg, 1);
                     echo $svg;
                 } else {
                     echo '<p class="text-xl font-extrabold mb-2" style="letter-spacing:0">WAVES</p>';
@@ -116,7 +116,7 @@ if (document.getElementById('map') && window.L) {
   }).addTo(map);
   var pinIcon = L.divIcon({
     className: 'waves-map-marker',
-    html: '<span class="waves-map-marker__pulse"></span><span class="waves-map-marker__pin"><svg viewBox="0 0 52 64" width="52" height="64" aria-hidden="true" focusable="false"><path d="M26 4C14.4 4 6 13 6 24.4 6 40.6 26 59 26 59s20-18.4 20-34.6C46 13 37.6 4 26 4z" fill="#07110f" stroke="#f5f5dc" stroke-width="4"/><circle cx="26" cy="24" r="11" fill="#c5e063" stroke="#07110f" stroke-width="4"/><text x="26" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#07110f">W</text></svg></span>',
+    html: '<span class="waves-map-marker__pulse"></span><span class="waves-map-marker__pin"><svg viewBox="0 0 52 64" width="52" height="64" aria-hidden="true" focusable="false"><path d="M26 4C14.4 4 6 13 6 24.4 6 40.6 26 59 26 59s20-18.4 20-34.6C46 13 37.6 4 26 4z" fill="#0A111B" stroke="#F7F5EF" stroke-width="4"/><circle cx="26" cy="24" r="11" fill="#0FB5A8" stroke="#0A111B" stroke-width="4"/><text x="26" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#0A111B">W</text></svg></span>',
     iconSize: [52, 64],
     iconAnchor: [26, 59],
     popupAnchor: [0, -58]

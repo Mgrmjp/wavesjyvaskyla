@@ -55,8 +55,8 @@ $restaurantSchema = restaurantSchema($s);
 <link rel="icon" href="<?= publicAsset('/android-chrome-512x512.png') ?>" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="<?= publicAsset('/apple-touch-icon.png') ?>">
 <link rel="manifest" href="<?= publicAsset('/site.webmanifest') ?>">
-<meta name="theme-color" content="#07110f">
-<meta name="msapplication-TileColor" content="#07110f">
+<meta name="theme-color" content="#0A111B">
+<meta name="msapplication-TileColor" content="#0A111B">
 <meta name="msapplication-TileImage" content="<?= publicAsset('/mstile-150x150.png') ?>">
 <?php
 $slugFi = Router::slugForLang($pageSlug, 'fi');
@@ -124,7 +124,7 @@ $slugEn = Router::slugForLang($pageSlug, 'en');
                     $svg = preg_replace('/<!DOCTYPE[^>]*>\s*/', '', $svg);
                     $svg = preg_replace('/\s*width="[^"]*"/', '', $svg);
                     $svg = preg_replace('/\s*height="[^"]*"/', '', $svg);
-                    $svg = preg_replace('/<svg\s/', '<svg fill="#f4ead7" style="width:auto;display:block;" ', $svg, 1);
+                    $svg = preg_replace('/<svg\s/', '<svg fill="#f7f5ef" style="width:auto;display:block;" ', $svg, 1);
                     echo $svg;
                 } else {
                     echo '<span>WAVES</span>';
