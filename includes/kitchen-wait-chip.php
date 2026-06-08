@@ -10,4 +10,5 @@ if ($kitchenWait === null) {
         <span class="site-header-wait__time"><?= esc($kitchenWait['time']) ?></span>
     </span>
     <span class="site-header-wait__tag"><?= esc($kitchenWait['test']) ?></span>
+    <span class="site-header-wait__info"><?= esc($kitchenWait['title']) ?></span>
 </div>

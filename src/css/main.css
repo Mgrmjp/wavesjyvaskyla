@@ -1038,6 +1038,11 @@
     display: grid;
     place-items: center;
     padding: clamp(0.5rem, 2vw, 1.25rem);
+    padding:
+      max(clamp(0.5rem, 2vw, 1.25rem), env(safe-area-inset-top))
+      max(clamp(0.5rem, 2vw, 1.25rem), env(safe-area-inset-right))
+      max(clamp(0.5rem, 2vw, 1.25rem), env(safe-area-inset-bottom))
+      max(clamp(0.5rem, 2vw, 1.25rem), env(safe-area-inset-left));
   }
 
   .menu-image-viewer[hidden] {
@@ -1057,7 +1062,9 @@
     gap: 0.85rem;
     width: min(64rem, 100%);
     max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     overflow: auto;
+    overscroll-behavior: contain;
     padding: 0.75rem;
     border: 1px solid var(--menu-border-hover);
     border-radius: 8px;
@@ -1100,6 +1107,7 @@
   .menu-image-viewer__image {
     width: 100%;
     max-height: min(82vh, 64rem);
+    max-height: min(72dvh, 64rem);
     object-fit: contain;
     border-radius: 6px;
     background: var(--color-bg);
@@ -1124,6 +1132,57 @@
     color: var(--menu-cream-soft);
     font-size: 0.78rem;
     line-height: 1.55;
+  }
+
+  @media (max-width: 767px) {
+    .menu-image-viewer {
+      padding:
+        max(0.5rem, env(safe-area-inset-top))
+        max(0.5rem, env(safe-area-inset-right))
+        max(0.5rem, env(safe-area-inset-bottom))
+        max(0.5rem, env(safe-area-inset-left));
+    }
+
+    .menu-image-viewer__panel {
+      gap: 0.65rem;
+      width: min(100%, calc(100dvw - 1rem));
+      max-height: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      padding: 0.55rem;
+    }
+
+    .menu-image-viewer__close {
+      top: 0.55rem;
+      right: 0.55rem;
+    }
+
+    .menu-image-viewer__image {
+      max-height: calc(100dvh - 9.25rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    }
+
+    .menu-image-viewer__body {
+      gap: 0.3rem;
+      padding: 0 0.15rem 0.15rem;
+    }
+  }
+
+  @media (max-height: 520px) {
+    .menu-image-viewer__panel {
+      gap: 0.5rem;
+    }
+
+    .menu-image-viewer__image {
+      max-height: calc(100dvh - 7.25rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    }
+
+    .menu-image-viewer__title {
+      font-size: 0.82rem;
+      line-height: 1.2;
+    }
+
+    .menu-image-viewer__note {
+      font-size: 0.7rem;
+      line-height: 1.35;
+    }
   }
 
   /* ─── DIETARY TAGS ─── */
@@ -1483,10 +1542,6 @@
   }
 
   @media (max-width: 420px) {
-    .site-header-wait__text {
-      display: none;
-    }
-
     .site-header-wait {
       max-width: calc(100vw - 1.5rem);
       padding: 0.42rem 0.72rem;
@@ -1501,9 +1556,15 @@
     .site-header-wait {
       position: fixed;
       right: 0.75rem;
-      bottom: env(safe-area-inset-bottom);
+      bottom: max(0.75rem, env(safe-area-inset-bottom));
       left: 0.75rem;
+      display: grid;
+      grid-template-columns: auto minmax(0, auto) auto;
+      grid-template-areas:
+        'pulse main tag'
+        '. info info';
       justify-content: center;
+      row-gap: 0.22rem;
       width: auto;
       max-width: min(24rem, calc(100vw - 1.5rem));
       margin: 0 auto;
@@ -1555,6 +1616,7 @@
   }
 
   .site-header-wait__pulse {
+    grid-area: pulse;
     flex-shrink: 0;
     width: 0.4rem;
     height: 0.4rem;
@@ -1565,6 +1627,7 @@
   }
 
   .site-header-wait__main {
+    grid-area: main;
     display: inline-flex;
     align-items: baseline;
     gap: 0.35rem;
@@ -1590,6 +1653,7 @@
   }
 
   .site-header-wait__tag {
+    grid-area: tag;
     flex-shrink: 0;
     padding: 0.12rem 0.38rem;
     border: 1px solid rgb(242 199 107 / 28%);
@@ -1601,6 +1665,23 @@
     letter-spacing: 0.1em;
     line-height: 1;
     text-transform: uppercase;
+  }
+
+  .site-header-wait__info {
+    display: none;
+    grid-area: info;
+    max-width: 100%;
+    color: rgb(247 245 239 / 62%);
+    font-size: 0.58rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: left;
+  }
+
+  @media (max-width: 767px) {
+    .site-header-wait__info {
+      display: block;
+    }
   }
 
   /* ─── NAVIGATION ─── */
