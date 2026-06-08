@@ -509,6 +509,7 @@ function headerKitchenWait(): ?array
             'Testi – ei oikeaa odotusaikaa',
             'Test only – not actual wait time'
         ),
+        'info' => t('Ei oikeaa odotusaikaa', 'Not actual wait time'),
     ];
 }
 
