@@ -203,6 +203,7 @@
   .menu-row-name {
     font-weight: 600;
     font-size: 1.125rem;
+    overflow-wrap: break-word;
   }
 
   .menu-row-desc {
@@ -250,6 +251,7 @@
   .lunch-row__body {
     grid-area: body;
     min-width: 0;
+    overflow: hidden;
   }
 
   .lunch-row--with-image .menu-row-price {
